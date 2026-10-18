@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Install from the repository root:
-#   cp scripts/pre-commit .git/hooks/pre-commit
-#   chmod +x .git/hooks/pre-commit
+# Install:
+# cp scripts/pre-commit .git/hooks/pre-commit
+# chmod +x .git/hooks/pre-commit
 # On Windows, run the hook through Git Bash (Git for Windows).
 
 set -euo pipefail
