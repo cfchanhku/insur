@@ -12,11 +12,22 @@ class AppTheme {
 
   /// Returns the light theme.
   ThemeData light() {
-    throw UnimplementedError();
+    return ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color(0xFF145C74),
+      ),
+      useMaterial3: true,
+    );
   }
 
   /// Returns the dark theme.
   ThemeData dark() {
-    throw UnimplementedError();
+    return ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color(0xFF145C74),
+        brightness: Brightness.dark,
+      ),
+      useMaterial3: true,
+    );
   }
 }

@@ -5,6 +5,9 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'l10n/app_localizations.dart';
+import 'theme/app_theme.dart';
+
 /// Configures the application shell, routes, theme, and localized resources.
 class InsurApp extends StatelessWidget {
   /// Creates the root application widget.
@@ -12,6 +15,16 @@ class InsurApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    const appTheme = AppTheme();
+
+    return MaterialApp(
+      onGenerateTitle: (BuildContext context) =>
+          AppLocalizations.of(context).app_title,
+      theme: appTheme.light(),
+      darkTheme: appTheme.dark(),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const SizedBox.shrink(), // TODO(insur): Replace with SplashScreen.
+    );
   }
 }
