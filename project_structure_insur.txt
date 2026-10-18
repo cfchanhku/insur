@@ -1,0 +1,35 @@
+insurance_policy_manager/
+├── lib/
+│   ├── main.dart                  # Entry point
+│   ├── app.dart                   # Root widget
+│   ├── l10n/                      # Translations (ARB)
+│   ├── theme/                     # Design tokens + theme
+│   ├── core/                      # Cross-cutting concerns
+│   │   ├── security/              # Crypto, KDF, keys
+│   │   ├── database/              # SQLCipher wrapper
+│   │   ├── audit/                 # Audit log
+│   │   └── backup/                # Backup/restore
+│   ├── features/                  # Feature modules
+│   │   ├── auth/                  # Login, biometric, recovery
+│   │   ├── clients/               # Client CRUD
+│   │   ├── policies/              # Policy CRUD
+│   │   ├── plans/                 # Plan CRUD
+│   │   ├── riders/                # Rider CRUD
+│   │   ├── export/                # PDF export
+│   │   ├── backup/                # Backup/restore UI
+│   │   ├── audit/                 # Audit log UI
+│   │   └── settings/              # Settings
+│   └── shared/                    # Reusable widgets
+├── test/                          # Unit tests
+├── integration_test/              # Integration tests
+├── assets/                        # Fonts, images
+├── android/                       # Android platform
+├── ios/                           # iOS platform
+├── macos/                         # macOS platform
+├── windows/                       # Windows platform
+├── docs/                          # Documentation
+├── pubspec.yaml
+├── l10n.yaml
+├── .fvmrc                         # Pinned Flutter version
+├── .gitignore
+└── .gitattributes

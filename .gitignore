@@ -1,0 +1,69 @@
+# Flutter and Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDE
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Operating systems
+.DS_Store
+Thumbs.db
+
+# Data and keys - never commit sensitive local data
+*.db
+*.db-shm
+*.db-wal
+*.enc
+*.key
+*.pem
+*.p12
+*.jks
+*.mobileprovision
+.env
+.env.*
+!.env.example
+secrets/
+symbols/
+
+# Build artifacts
+*.apk
+*.aab
+*.ipa
+*.dmg
+*.msix
+*.deb
+*.rpm
+*.AppImage
+*.tar.gz
+*.zip
+
+# direnv
+.direnv/
+.envrc.local
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Coverage
+coverage/
+*.lcov
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.swp
+*~
