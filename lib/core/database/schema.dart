@@ -1,1 +1,12 @@
-// TODO: Define the versioned database schema and integrity constraints.
+/// Declares the versioned SQL schema for local application data.
+library;
+
+// TODO(insur): Implement — see docs/IMPLEMENTATION_PLAN.md
+
+/// Provides schema creation statements for a new database.
+class InsurSchema {
+  /// Returns the SQL statements required to create the initial schema.
+  List<String> createStatements() {
+    throw UnimplementedError();
+  }
+}
