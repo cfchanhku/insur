@@ -7,7 +7,7 @@ library;
 class InsurLogger {
   /// Records an informational event identified by a non-sensitive code.
   void info(String eventCode) {
-    throw UnimplementedError();
+    throw UnimplementedError('InsurLogger.info');
   }
 
   /// Records a failure without including personally identifiable information.
@@ -16,6 +16,6 @@ class InsurLogger {
     Object? error,
     StackTrace? stackTrace,
   }) {
-    throw UnimplementedError();
+    throw UnimplementedError('InsurLogger.error');
   }
 }

@@ -9,7 +9,7 @@ import 'dart:typed_data';
 class PlatformSecureStorage {
   /// Reads the value associated with [key], or returns null when absent.
   Future<Uint8List?> read({required String key}) async {
-    throw UnimplementedError();
+    throw UnimplementedError('PlatformSecureStorage.read');
   }
 
   /// Securely stores [value] under [key].
@@ -17,11 +17,11 @@ class PlatformSecureStorage {
     required String key,
     required Uint8List value,
   }) async {
-    throw UnimplementedError();
+    throw UnimplementedError('PlatformSecureStorage.write');
   }
 
   /// Deletes the value associated with [key].
   Future<void> delete({required String key}) async {
-    throw UnimplementedError();
+    throw UnimplementedError('PlatformSecureStorage.delete');
   }
 }

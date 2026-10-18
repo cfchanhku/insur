@@ -12,6 +12,6 @@ class BackupService {
     required Uint8List databaseBytes,
     required Uint8List encryptionKey,
   }) async {
-    throw UnimplementedError();
+    throw UnimplementedError('BackupService.createBackup');
   }
 }

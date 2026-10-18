@@ -14,7 +14,7 @@ class FieldCrypto {
     required Uint8List plaintext,
     required Uint8List associatedData,
   }) async {
-    throw UnimplementedError();
+    throw UnimplementedError('FieldCrypto.encrypt');
   }
 
   /// Authenticates and decrypts [ciphertext].
@@ -24,6 +24,6 @@ class FieldCrypto {
     required Uint8List ciphertext,
     required Uint8List associatedData,
   }) async {
-    throw UnimplementedError();
+    throw UnimplementedError('FieldCrypto.decrypt');
   }
 }

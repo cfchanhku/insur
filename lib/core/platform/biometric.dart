@@ -7,11 +7,11 @@ library;
 class BiometricAuthenticator {
   /// Returns whether biometric authentication is available on this device.
   Future<bool> isAvailable() async {
-    throw UnimplementedError();
+    throw UnimplementedError('BiometricAuthenticator.isAvailable');
   }
 
   /// Requests biometric authentication with a localized [reason].
   Future<bool> authenticate({required String reason}) async {
-    throw UnimplementedError();
+    throw UnimplementedError('BiometricAuthenticator.authenticate');
   }
 }

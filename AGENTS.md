@@ -120,7 +120,7 @@ Use established project patterns consistently; do not introduce a new state-mana
 ## 4. Code Style
 
 - Follow `analysis_options.yaml` and Dart formatter output; do not suppress diagnostics without documenting an approved reason.
-- Order imports: Dart SDK, Flutter SDK, third-party packages, then project imports. Separate groups with a blank line and use package imports for project code.
+- Order imports: Dart SDK, Flutter SDK, third-party packages, then project imports. Separate groups with a blank line; use relative imports for other files under `lib/` to match the configured analyzer lint.
 - Prefer `const` constructors, immutable values, small cohesive methods, explicit types at public boundaries, and exhaustive switches.
 - Keep widgets focused. Separate state transitions and data access from rendering.
 - Document public APIs with `///` comments when their contract is not self-evident.

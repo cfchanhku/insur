@@ -12,6 +12,14 @@ class RestoreService {
     required Uint8List backupBytes,
     required Uint8List encryptionKey,
   }) async {
-    throw UnimplementedError();
+    throw UnimplementedError('RestoreService.restoreBackup');
+  }
+
+  /// Verifies backup authenticity and format without modifying local data.
+  Future<bool> verifyIntegrity({
+    required Uint8List backupBytes,
+    required Uint8List encryptionKey,
+  }) async {
+    throw UnimplementedError('RestoreService.verifyIntegrity');
   }
 }

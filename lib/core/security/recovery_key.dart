@@ -7,11 +7,16 @@ library;
 class RecoveryKeyService {
   /// Securely generates a new recovery key.
   Future<String> generate() async {
-    throw UnimplementedError();
+    throw UnimplementedError('RecoveryKeyService.generate');
   }
 
   /// Verifies whether [candidate] is valid for the configured vault.
   Future<bool> verify(String candidate) async {
-    throw UnimplementedError();
+    throw UnimplementedError('RecoveryKeyService.verify');
+  }
+
+  /// Rotates the current recovery key after validating [currentKey].
+  Future<String> rotate({required String currentKey}) async {
+    throw UnimplementedError('RecoveryKeyService.rotate');
   }
 }

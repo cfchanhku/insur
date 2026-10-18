@@ -5,8 +5,11 @@ library;
 
 /// Provides schema creation statements for a new database.
 class InsurSchema {
+  /// Current database schema version.
+  static const int version = 1;
+
   /// Returns the SQL statements required to create the initial schema.
   List<String> createStatements() {
-    throw UnimplementedError();
+    throw UnimplementedError('InsurSchema.createStatements');
   }
 }

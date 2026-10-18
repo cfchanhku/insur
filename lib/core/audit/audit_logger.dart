@@ -9,11 +9,16 @@ import 'audit_entry.dart';
 class AuditLogger {
   /// Records a non-sensitive [entry] in the audit log.
   Future<void> record(AuditEntry entry) async {
-    throw UnimplementedError();
+    throw UnimplementedError('AuditLogger.record');
+  }
+
+  /// Appends an event identified by the non-sensitive [eventType].
+  Future<AuditEntry> append({required String eventType}) async {
+    throw UnimplementedError('AuditLogger.append');
   }
 
   /// Verifies the integrity of the complete audit chain.
   Future<bool> verifyChain() async {
-    throw UnimplementedError();
+    throw UnimplementedError('AuditLogger.verifyChain');
   }
 }

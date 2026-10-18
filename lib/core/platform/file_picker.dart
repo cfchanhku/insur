@@ -9,7 +9,7 @@ import 'dart:typed_data';
 class PlatformFilePicker {
   /// Selects a file and returns its local path, or null if cancelled.
   Future<String?> pickFile() async {
-    throw UnimplementedError();
+    throw UnimplementedError('PlatformFilePicker.pickFile');
   }
 
   /// Writes [bytes] to a user-selected file named [suggestedName].
@@ -17,6 +17,6 @@ class PlatformFilePicker {
     required String suggestedName,
     required Uint8List bytes,
   }) async {
-    throw UnimplementedError();
+    throw UnimplementedError('PlatformFilePicker.saveFile');
   }
 }
