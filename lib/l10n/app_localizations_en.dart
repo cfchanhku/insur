@@ -9,5 +9,21 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Insurance Policy Manager';
+  String get app_title => 'Insurance Policy Manager';
+
+  @override
+  String get app_tagline =>
+      'Your insurance information, securely on this device.';
+
+  @override
+  String get action_next => 'Next';
+
+  @override
+  String get action_back => 'Back';
+
+  @override
+  String get action_cancel => 'Cancel';
+
+  @override
+  String get action_save => 'Save';
 }

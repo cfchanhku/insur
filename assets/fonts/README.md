@@ -1,7 +1,3 @@
-Place approved, licensed Noto Sans Traditional Chinese font files here:
+# Fonts
 
-- `NotoSansTC-Regular.ttf`
-- `NotoSansTC-Medium.ttf`
-- `NotoSansTC-SemiBold.ttf`
-
-Do not add unlicensed font files. Font files are referenced by `pubspec.yaml`; install the approved files before building the application.
+Place `NotoSansTC-Regular.ttf`, `NotoSansTC-Medium.ttf`, and `NotoSansTC-SemiBold.ttf` here. Download approved files from Google Fonts and retain the applicable font license notice with the assets. The font files are referenced by `pubspec.yaml`; do not commit unlicensed fonts.

@@ -1,4 +1,9 @@
 {
   "@@locale": "en",
-  "appName": "Insurance Policy Manager"
+  "app_title": "Insurance Policy Manager",
+  "app_tagline": "Your insurance information, securely on this device.",
+  "action_next": "Next",
+  "action_back": "Back",
+  "action_cancel": "Cancel",
+  "action_save": "Save"
 }

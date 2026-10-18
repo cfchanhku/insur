@@ -99,11 +99,41 @@ abstract class AppLocalizations {
     Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant')
   ];
 
-  /// No description provided for @appName.
+  /// No description provided for @app_title.
   ///
   /// In en, this message translates to:
   /// **'Insurance Policy Manager'**
-  String get appName;
+  String get app_title;
+
+  /// No description provided for @app_tagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your insurance information, securely on this device.'**
+  String get app_tagline;
+
+  /// No description provided for @action_next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get action_next;
+
+  /// No description provided for @action_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get action_back;
+
+  /// No description provided for @action_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get action_cancel;
+
+  /// No description provided for @action_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get action_save;
 }
 
 class _AppLocalizationsDelegate
