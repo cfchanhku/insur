@@ -1,0 +1,80 @@
+name: insur
+description: Secure local insurance policy manager
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+  flutter: '>=3.38.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  # Locale-aware date, number, and message formatting.
+  intl: ^0.20.2
+  # SQLCipher native libraries for encrypted SQLite database storage.
+  sqlcipher_flutter_libs: ^0.6.5
+  # SQLite bindings used by the database integration.
+  sqlite3: ^2.9.4
+  # Platform-neutral path construction for database and file locations.
+  path: ^1.9.1
+  # Resolve platform application data directories.
+  path_provider: ^2.1.5
+  # Cryptographic primitives and authenticated-encryption APIs.
+  cryptography: ^2.7.0
+  # Access platform secure storage for protected key material.
+  flutter_secure_storage: ^9.2.4
+  # Platform biometric authentication.
+  local_auth: ^2.3.0
+  # Generate PDF documents for user-requested exports.
+  pdf: ^3.11.3
+  # Preview, print, and share generated PDF documents through platform APIs.
+  printing: ^5.14.2
+  # Let users choose backup and export destinations using native pickers.
+  file_picker: ^10.3.3
+  # Framework-independent state management primitives.
+  riverpod: ^2.6.1
+  # Flutter widgets and bindings for Riverpod providers.
+  flutter_riverpod: ^2.6.1
+  # Declarative, cross-platform application routing.
+  go_router: ^15.1.2
+  # Load non-secret local development configuration when explicitly needed.
+  flutter_dotenv: ^5.2.1
+  # Generate UUIDs for persistent entity identifiers.
+  uuid: ^4.5.1
+  # Structured application logging; sensitive values must be redacted.
+  logging: ^1.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  # Flutter's recommended baseline lint rules.
+  flutter_lints: ^5.0.0
+  # Generate code for project serialization and other declared builders.
+  build_runner: ^2.4.15
+  # Support custom analyzer rules in development.
+  custom_lint: ^0.7.5
+  # Enforce Riverpod-specific best practices during analysis.
+  riverpod_lint: ^2.6.5
+  # Provide lightweight test doubles for unit and widget tests.
+  mocktail: ^1.0.4
+  integration_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/images/
+    - assets/fonts/
+  fonts:
+    - family: NotoSansTC
+      fonts:
+        - asset: assets/fonts/NotoSansTC-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansTC-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSansTC-SemiBold.ttf
+          weight: 600
