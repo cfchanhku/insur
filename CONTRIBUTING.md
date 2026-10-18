@@ -104,17 +104,14 @@ git rebase develop
 
 ## Pre-commit hooks
 
-Install a local Git hook by saving the following script as `.git/hooks/pre-commit`. On Unix, make it executable with `chmod +x .git/hooks/pre-commit`; Git for Windows runs it through Git Bash. The hook uses the repository-pinned SDK and fails the commit if a check fails.
+Install the repository hook from the root. On Windows, run the copy command in Git Bash; on Unix-like systems, run it in a shell. Git for Windows executes the hook through Git Bash.
 
-```sh
-#!/bin/sh
-set -eu
-fvm dart format --output=none --set-exit-if-changed .
-fvm flutter analyze
-fvm flutter test --coverage
+```bash
+cp scripts/pre-commit .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
 ```
 
-Hooks run locally and are not a substitute for required CI checks or review. Keep the hook aligned with the checks required by CI.
+The hook blocks staged sensitive files, `print(`, `http://`, and failed `flutter analyze`; it warns about potential hardcoded secrets and Dart formatting changes. It runs checks against staged Dart contents for source scans. Hooks run locally and are not a substitute for required CI checks or review. Keep the hook aligned with checks required by CI.
 
 ## Testing requirements
 

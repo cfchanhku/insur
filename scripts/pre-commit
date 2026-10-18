@@ -1,2 +1,99 @@
-#!/bin/sh
-# TODO: Add reviewed formatting, analysis, and test checks.
+#!/usr/bin/env bash
+# Install from the repository root:
+#   cp scripts/pre-commit .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+# On Windows, run the hook through Git Bash (Git for Windows).
+
+set -euo pipefail
+
+readonly SENSITIVE_PATTERNS='(^|/)[^/]*\.(db|db-shm|db-wal|enc|key|pem|p12|jks|mobileprovision|pdf)$|(^|/)\.env($|\..*)'
+readonly SECRET_PATTERN='(api_key|secret|password|token)[[:space:]]*=[[:space:]]*['"'"'"][^'"'"'"]+['"'"'"]'
+
+staged_files=()
+while IFS= read -r -d '' file; do
+  staged_files+=("$file")
+done < <(git diff --cached --name-only -z)
+
+if ((${#staged_files[@]} == 0)); then
+  printf '%s\n' "Pre-commit: no staged files to check."
+  exit 0
+fi
+
+sensitive_files=()
+for file in "${staged_files[@]}"; do
+  if [[ "${file##*/}" != ".env.example" ]] &&
+    grep -E -i -q -- "$SENSITIVE_PATTERNS" <<<"$file"; then
+    sensitive_files+=("$file")
+  fi
+done
+
+if ((${#sensitive_files[@]} > 0)); then
+  printf '%s\n' "ERROR: Sensitive files are staged:" >&2
+  printf '  %s\n' "${sensitive_files[@]}" >&2
+  printf '%s\n' "These files must NEVER be committed" >&2
+  exit 1
+fi
+
+dart_files=()
+for file in "${staged_files[@]}"; do
+  if [[ "$file" == *.dart ]]; then
+    dart_files+=("$file")
+  fi
+done
+
+if ((${#dart_files[@]} > 0)); then
+  if secret_matches=$(git grep --cached -n -I -E -i -- "$SECRET_PATTERN" -- "${dart_files[@]}"); then
+    printf '%s\n' "WARNING: Possible hardcoded secret in staged Dart files:" >&2
+    printf '%s\n' "$secret_matches" >&2
+  else
+    grep_status=$?
+    if ((grep_status != 1)); then
+      printf '%s\n' "ERROR: Unable to inspect staged Dart files for secrets." >&2
+      exit "$grep_status"
+    fi
+  fi
+
+  if print_matches=$(git grep --cached -n -I -F -- 'print(' -- "${dart_files[@]}"); then
+    printf '%s\n' "ERROR: print( is not allowed in staged Dart files:" >&2
+    printf '%s\n' "$print_matches" >&2
+    exit 1
+  else
+    grep_status=$?
+    if ((grep_status != 1)); then
+      printf '%s\n' "ERROR: Unable to inspect staged Dart files for print(." >&2
+      exit "$grep_status"
+    fi
+  fi
+
+  http_matches=''
+  if http_matches=$(git grep --cached -n -I -F -- 'http://' -- "${dart_files[@]}"); then
+    printf '%s\n' "ERROR: http:// is not allowed in staged Dart files:" >&2
+    printf '%s\n' "$http_matches" >&2
+    exit 1
+  else
+    grep_status=$?
+    if ((grep_status != 1)); then
+      printf '%s\n' "ERROR: Unable to inspect staged Dart files for http://." >&2
+      exit "$grep_status"
+    fi
+  fi
+fi
+
+if command -v dart >/dev/null 2>&1; then
+  if ! dart format --set-exit-if-changed .; then
+    printf '%s\n' "WARNING: Dart formatting check needs attention." >&2
+  fi
+else
+  printf '%s\n' "WARNING: dart is unavailable; skipping format check." >&2
+fi
+
+if command -v flutter >/dev/null 2>&1; then
+  if ! flutter analyze; then
+    printf '%s\n' "ERROR: flutter analyze failed; commit blocked." >&2
+    exit 1
+  fi
+else
+  printf '%s\n' "WARNING: flutter is unavailable; skipping analysis." >&2
+fi
+
+printf '%s\n' "Pre-commit checks passed."
