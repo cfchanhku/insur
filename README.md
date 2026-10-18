@@ -96,6 +96,11 @@ Platform-specific toolchains and signing configuration are required. iOS builds 
 - [AGENTS.md](AGENTS.md) — persistent project instructions for AI coding assistants
 - [SECURITY.md](SECURITY.md) — security design and vulnerability reporting
 - [docs/](docs/) — project documentation
+  - [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
+  - [Wireframes and UI specifications](docs/WIREFRAMES.md)
+  - [Development setup](docs/DEVELOPMENT_SETUP.md)
+  - [Build matrix](docs/BUILD_MATRIX.md)
+  - [Multi-app setup](docs/MULTI_APP_SETUP.md)
 
 ## License
 
