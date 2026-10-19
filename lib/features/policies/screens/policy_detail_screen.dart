@@ -50,6 +50,7 @@ class _PolicyDetailScreenState extends ConsumerState<PolicyDetailScreen> {
       await repository.archive(widget.id);
       ref
         ..invalidate(policiesByClientProvider(clientId))
+        ..invalidate(archivedPoliciesProvider)
         ..invalidate(policyByIdProvider(widget.id));
       if (mounted) {
         context.pop();

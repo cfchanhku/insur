@@ -144,6 +144,14 @@ class PlanRepository {
     );
   }
 
+  /// Returns only archived plans, newest archive first.
+  Future<List<Plan>> findAllArchived() {
+    return _findMany(
+      where: '${Schema.archivedAt} IS NOT NULL',
+      orderBy: '${Schema.archivedAt} DESC, ${Schema.id} ASC',
+    );
+  }
+
   /// Returns plans in [category], excluding archived records by default.
   Future<List<Plan>> findByCategory(
     PlanCategory category, {
@@ -207,12 +215,13 @@ class PlanRepository {
   Future<List<Plan>> _findMany({
     required String? where,
     List<Object?>? whereArgs,
+    String? orderBy,
   }) async {
     final rows = await _db.query(
       Schema.plans,
       where: where,
       whereArgs: whereArgs,
-      orderBy: '${Schema.createdAt} ASC, ${Schema.id} ASC',
+      orderBy: orderBy ?? '${Schema.createdAt} ASC, ${Schema.id} ASC',
     );
     final plans = <Plan>[];
     for (final row in rows) {

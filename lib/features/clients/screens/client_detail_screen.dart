@@ -52,6 +52,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
       await repository.archive(widget.id);
       ref
         ..invalidate(clientListProvider)
+        ..invalidate(archivedClientsProvider)
         ..invalidate(clientPolicyCountsProvider)
         ..invalidate(clientByIdProvider(widget.id));
       if (mounted) {

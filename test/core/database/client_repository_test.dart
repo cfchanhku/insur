@@ -5,10 +5,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:insur/core/database/database.dart';
 import 'package:insur/core/database/repositories/audit_repository.dart';
 import 'package:insur/core/database/repositories/client_repository.dart';
+import 'package:insur/core/database/repositories/plan_repository.dart';
+import 'package:insur/core/database/repositories/policy_repository.dart';
+import 'package:insur/core/database/repositories/rider_repository.dart';
 import 'package:insur/core/database/schema.dart';
 import 'package:insur/core/security/field_crypto.dart';
 import 'package:insur/features/clients/models/client.dart';
 import 'package:insur/features/clients/models/client_enums.dart';
+import 'package:insur/features/plans/models/plan.dart';
+import 'package:insur/features/plans/models/plan_category.dart';
+import 'package:insur/features/policies/models/policy.dart';
+import 'package:insur/features/policies/models/policy_status.dart';
+import 'package:insur/features/riders/models/rider.dart';
 
 import 'database_test_helper.dart';
 
@@ -119,6 +127,18 @@ void main() {
 
       expect(await repository.findAll(includeArchived: true), hasLength(1));
     });
+
+    test('findAllArchived returns only archived clients', () async {
+      await repository.save(_client());
+      final archived = await repository.save(
+        _client(name: 'Archived synthetic person'),
+      );
+      await repository.archive(archived.id!);
+
+      expect(await repository.findAllArchived(), <Client>[
+        (await repository.findById(archived.id!))!,
+      ]);
+    });
   });
 
   group('ClientRepository — archive / restore', () {
@@ -140,14 +160,65 @@ void main() {
       expect((await repository.findById(saved.id!))!.archivedAt, isNull);
     });
 
-    test('delete archives rather than physically erasing the record', () async {
+    test('delete permanently erases the record', () async {
       final saved = await repository.save(_client());
 
       await repository.delete(saved.id!);
 
-      expect(await repository.findById(saved.id!), isNotNull);
-      expect((await repository.findById(saved.id!))!.archivedAt, isNotNull);
+      expect(await repository.findById(saved.id!), isNull);
     });
+
+    test(
+      'delete permanently removes the client hierarchy atomically',
+      () async {
+        final client = await repository.save(_client());
+        final policies = PolicyRepository(
+          db: database,
+          fieldCrypto: fieldCrypto,
+          audit: audit,
+        );
+        final plans = PlanRepository(
+          db: database,
+          fieldCrypto: fieldCrypto,
+          audit: audit,
+        );
+        final riders = RiderRepository(
+          db: database,
+          fieldCrypto: fieldCrypto,
+          audit: audit,
+        );
+        final policy = await policies.save(
+          Policy(
+            clientId: client.id!,
+            policyNo: 'SYNTHETIC-001',
+            company: 'Example Insurer',
+            effectiveDate: DateTime.utc(2020),
+            firstPremiumDate: DateTime.utc(2020),
+            currency: 'HKD',
+            status: PolicyStatus.active,
+            createdAt: null,
+            updatedAt: null,
+          ),
+        );
+        final plan = await plans.save(
+          Plan(
+            policyId: policy.id!,
+            category: PlanCategory.life,
+            planName: 'Life',
+          ),
+        );
+        final rider = await riders.save(
+          Rider(planId: plan.id!, riderName: 'Synthetic rider'),
+        );
+
+        await repository.delete(client.id!);
+
+        expect(await repository.findById(client.id!), isNull);
+        expect(await policies.findById(policy.id!), isNull);
+        expect(await plans.findById(plan.id!), isNull);
+        expect(await riders.findById(rider.id!), isNull);
+      },
+    );
   });
 
   group('ClientRepository — PII encryption', () {

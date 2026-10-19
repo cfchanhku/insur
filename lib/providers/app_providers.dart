@@ -270,6 +270,24 @@ final planCategoryFilterProvider = StateProvider.family<PlanCategory?, String>((
   return null;
 });
 
+/// Loads archived clients for the archive screen.
+final archivedClientsProvider = FutureProvider<List<Client>>((Ref ref) async {
+  final repository = await ref.watch(clientRepositoryProvider.future);
+  return repository.findAllArchived();
+});
+
+/// Loads archived policies for the archive screen.
+final archivedPoliciesProvider = FutureProvider<List<Policy>>((Ref ref) async {
+  final repository = await ref.watch(policyRepositoryProvider.future);
+  return repository.findAllArchived();
+});
+
+/// Loads archived plans for the archive screen.
+final archivedPlansProvider = FutureProvider<List<Plan>>((Ref ref) async {
+  final repository = await ref.watch(planRepositoryProvider.future);
+  return repository.findAllArchived();
+});
+
 /// Resolves the platform's application-support directory for the local DB.
 ///
 /// `path_provider` maps this to the appropriate per-application location on

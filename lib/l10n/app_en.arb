@@ -234,7 +234,57 @@
   "client_form_saved": "Client saved",
   "client_not_found": "Client not found",
   "archive_title": "Archive",
+  "archive_tab_clients": "Clients",
+  "archive_tab_policies": "Policies",
+  "archive_tab_plans": "Plans",
+  "archive_empty_clients": "No archived clients",
+  "archive_empty_policies": "No archived policies",
+  "archive_empty_plans": "No archived plans",
+  "archive_restore": "Restore",
+  "archive_delete": "Delete permanently",
+  "archive_restore_success": "Record restored",
+  "archive_delete_success": "Record permanently deleted",
+  "archive_archived_on": "Archived on {date}",
+  "@archive_archived_on": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "archive_delete_confirm_title": "Permanently delete?",
+  "archive_delete_confirm_body_1": "This will permanently delete the record and all related data. This cannot be undone.",
+  "archive_delete_confirm_body_2": "Are you absolutely sure? This is your last chance to cancel.",
+  "archive_delete_confirm_action": "Delete permanently",
+  "archive_delete_cancel": "Cancel",
+  "archive_delete_continue": "Continue",
+  "archive_delete_final": "Delete",
+  "archive_restore_confirm_title": "Restore record?",
+  "archive_restore_confirm_body": "The record will reappear in the main list.",
+  "archive_restore_confirm_action": "Restore",
+  "archive_error_restore": "Failed to restore: {message}",
+  "@archive_error_restore": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "archive_error_delete": "Failed to delete: {message}",
+  "@archive_error_delete": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
   "settings_title": "Settings",
+  "settings_coming_soon": "Settings coming soon",
+  "settings_coming_soon_body": "Language, auto-lock, biometric, backup, and audit log options will be available in a future update.",
+  "settings_logout": "Logout",
+  "settings_logout_confirm_title": "Logout?",
+  "settings_logout_confirm_body": "You will need your passphrase to sign in again.",
+  "settings_logout_confirm_action": "Logout",
   "action_retry": "Retry",
   "error_generic": "An error occurred. Please try again.",
   "recovery_title": "Recovery",

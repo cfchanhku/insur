@@ -5,13 +5,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:insur/core/database/database.dart';
 import 'package:insur/core/database/repositories/audit_repository.dart';
 import 'package:insur/core/database/repositories/client_repository.dart';
+import 'package:insur/core/database/repositories/plan_repository.dart';
 import 'package:insur/core/database/repositories/policy_repository.dart';
+import 'package:insur/core/database/repositories/rider_repository.dart';
 import 'package:insur/core/database/schema.dart';
 import 'package:insur/core/security/field_crypto.dart';
 import 'package:insur/features/clients/models/client.dart';
 import 'package:insur/features/clients/models/client_enums.dart';
+import 'package:insur/features/plans/models/plan.dart';
+import 'package:insur/features/plans/models/plan_category.dart';
 import 'package:insur/features/policies/models/policy.dart';
 import 'package:insur/features/policies/models/policy_status.dart';
+import 'package:insur/features/riders/models/rider.dart';
 
 import 'database_test_helper.dart';
 
@@ -106,6 +111,16 @@ void main() {
 
       expect(await repository.findAll(), <Policy>[inserted]);
     });
+
+    test('findAllArchived returns only archived policies', () async {
+      await repository.save(_policy(clientId));
+      final archived = await repository.save(_policy(clientId));
+      await repository.archive(archived.id!);
+
+      expect(await repository.findAllArchived(), <Policy>[
+        (await repository.findById(archived.id!))!,
+      ]);
+    });
   });
 
   group('PolicyRepository — archive / restore', () {
@@ -127,13 +142,34 @@ void main() {
       expect(await repository.findAll(), hasLength(1));
     });
 
-    test('delete archives the policy instead of erasing it', () async {
+    test('delete permanently erases the policy and its descendants', () async {
       final saved = await repository.save(_policy(clientId));
+      final plans = PlanRepository(
+        db: database,
+        fieldCrypto: fieldCrypto,
+        audit: audit,
+      );
+      final riders = RiderRepository(
+        db: database,
+        fieldCrypto: fieldCrypto,
+        audit: audit,
+      );
+      final plan = await plans.save(
+        Plan(
+          policyId: saved.id!,
+          category: PlanCategory.life,
+          planName: 'Synthetic plan',
+        ),
+      );
+      final rider = await riders.save(
+        Rider(planId: plan.id!, riderName: 'Synthetic rider'),
+      );
 
       await repository.delete(saved.id!);
 
-      expect(await repository.findById(saved.id!), isNotNull);
-      expect((await repository.findById(saved.id!))!.archivedAt, isNotNull);
+      expect(await repository.findById(saved.id!), isNull);
+      expect(await plans.findById(plan.id!), isNull);
+      expect(await riders.findById(rider.id!), isNull);
     });
   });
 

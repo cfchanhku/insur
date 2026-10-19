@@ -44,6 +44,11 @@ class FakeClientRepository implements ClientRepository {
       .toList(growable: false);
 
   @override
+  Future<List<Client>> findAllArchived() async => _clients
+      .where((Client client) => client.archivedAt != null)
+      .toList(growable: false);
+
+  @override
   Future<void> archive(String id) async {
     final index = _clients.indexWhere((Client client) => client.id == id);
     if (index >= 0) {

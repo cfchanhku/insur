@@ -152,6 +152,20 @@ class PolicyRepository {
     return policies;
   }
 
+  /// Returns only archived policies, newest archive first.
+  Future<List<Policy>> findAllArchived() async {
+    final rows = await _db.query(
+      Schema.policies,
+      where: '${Schema.archivedAt} IS NOT NULL',
+      orderBy: '${Schema.archivedAt} DESC, ${Schema.id} ASC',
+    );
+    final policies = <Policy>[];
+    for (final row in rows) {
+      policies.add(await _fromRow(row));
+    }
+    return policies;
+  }
+
   /// Archives a policy without physically deleting the business record.
   Future<void> archive(String id) async {
     await _audit.recordMutation(
@@ -174,14 +188,45 @@ class PolicyRepository {
     );
   }
 
-  /// Archives the policy and records the requested deletion event.
+  /// Permanently deletes a policy and all its plans and riders atomically.
   Future<void> delete(String id) async {
     await _audit.recordMutation(
       eventType: AuditEventType.delete,
       entityType: _entityType,
       entityId: id,
-      mutation: (Transaction transaction) =>
-          _setArchived(transaction, id, DateTime.now().toUtc()),
+      mutation: (Transaction transaction) async {
+        final planIds = await transaction.query(
+          Schema.plans,
+          columns: <String>[Schema.id],
+          where: '${Schema.policyId} = ?',
+          whereArgs: <Object?>[id],
+        );
+        final ids = planIds
+            .map((Map<String, Object?> row) => row[Schema.id])
+            .whereType<String>()
+            .toList(growable: false);
+        if (ids.isNotEmpty) {
+          final placeholders = List<String>.filled(ids.length, '?').join(', ');
+          await transaction.delete(
+            Schema.riders,
+            where: '${Schema.planId} IN ($placeholders)',
+            whereArgs: ids,
+          );
+          await transaction.delete(
+            Schema.plans,
+            where: '${Schema.id} IN ($placeholders)',
+            whereArgs: ids,
+          );
+        }
+        final deleted = await transaction.delete(
+          Schema.policies,
+          where: '${Schema.id} = ?',
+          whereArgs: <Object?>[id],
+        );
+        if (deleted != 1) {
+          throw StateError('Policy delete did not affect exactly one row');
+        }
+      },
     );
   }
 

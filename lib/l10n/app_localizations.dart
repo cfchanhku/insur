@@ -1117,11 +1117,185 @@ abstract class AppLocalizations {
   /// **'Archive'**
   String get archive_title;
 
+  /// No description provided for @archive_tab_clients.
+  ///
+  /// In en, this message translates to:
+  /// **'Clients'**
+  String get archive_tab_clients;
+
+  /// No description provided for @archive_tab_policies.
+  ///
+  /// In en, this message translates to:
+  /// **'Policies'**
+  String get archive_tab_policies;
+
+  /// No description provided for @archive_tab_plans.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans'**
+  String get archive_tab_plans;
+
+  /// No description provided for @archive_empty_clients.
+  ///
+  /// In en, this message translates to:
+  /// **'No archived clients'**
+  String get archive_empty_clients;
+
+  /// No description provided for @archive_empty_policies.
+  ///
+  /// In en, this message translates to:
+  /// **'No archived policies'**
+  String get archive_empty_policies;
+
+  /// No description provided for @archive_empty_plans.
+  ///
+  /// In en, this message translates to:
+  /// **'No archived plans'**
+  String get archive_empty_plans;
+
+  /// No description provided for @archive_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get archive_restore;
+
+  /// No description provided for @archive_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get archive_delete;
+
+  /// No description provided for @archive_restore_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Record restored'**
+  String get archive_restore_success;
+
+  /// No description provided for @archive_delete_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Record permanently deleted'**
+  String get archive_delete_success;
+
+  /// No description provided for @archive_archived_on.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived on {date}'**
+  String archive_archived_on(String date);
+
+  /// No description provided for @archive_delete_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete?'**
+  String get archive_delete_confirm_title;
+
+  /// No description provided for @archive_delete_confirm_body_1.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete the record and all related data. This cannot be undone.'**
+  String get archive_delete_confirm_body_1;
+
+  /// No description provided for @archive_delete_confirm_body_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you absolutely sure? This is your last chance to cancel.'**
+  String get archive_delete_confirm_body_2;
+
+  /// No description provided for @archive_delete_confirm_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get archive_delete_confirm_action;
+
+  /// No description provided for @archive_delete_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get archive_delete_cancel;
+
+  /// No description provided for @archive_delete_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get archive_delete_continue;
+
+  /// No description provided for @archive_delete_final.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get archive_delete_final;
+
+  /// No description provided for @archive_restore_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore record?'**
+  String get archive_restore_confirm_title;
+
+  /// No description provided for @archive_restore_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'The record will reappear in the main list.'**
+  String get archive_restore_confirm_body;
+
+  /// No description provided for @archive_restore_confirm_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get archive_restore_confirm_action;
+
+  /// No description provided for @archive_error_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to restore: {message}'**
+  String archive_error_restore(String message);
+
+  /// No description provided for @archive_error_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete: {message}'**
+  String archive_error_delete(String message);
+
   /// No description provided for @settings_title.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings_title;
+
+  /// No description provided for @settings_coming_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings coming soon'**
+  String get settings_coming_soon;
+
+  /// No description provided for @settings_coming_soon_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Language, auto-lock, biometric, backup, and audit log options will be available in a future update.'**
+  String get settings_coming_soon_body;
+
+  /// No description provided for @settings_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get settings_logout;
+
+  /// No description provided for @settings_logout_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout?'**
+  String get settings_logout_confirm_title;
+
+  /// No description provided for @settings_logout_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'You will need your passphrase to sign in again.'**
+  String get settings_logout_confirm_body;
+
+  /// No description provided for @settings_logout_confirm_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get settings_logout_confirm_action;
 
   /// No description provided for @action_retry.
   ///

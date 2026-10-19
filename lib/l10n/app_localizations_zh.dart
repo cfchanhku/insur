@@ -554,7 +554,105 @@ class AppLocalizationsZh extends AppLocalizations {
   String get archive_title => 'Archive';
 
   @override
+  String get archive_tab_clients => 'Clients';
+
+  @override
+  String get archive_tab_policies => 'Policies';
+
+  @override
+  String get archive_tab_plans => 'Plans';
+
+  @override
+  String get archive_empty_clients => 'No archived clients';
+
+  @override
+  String get archive_empty_policies => 'No archived policies';
+
+  @override
+  String get archive_empty_plans => 'No archived plans';
+
+  @override
+  String get archive_restore => 'Restore';
+
+  @override
+  String get archive_delete => 'Delete permanently';
+
+  @override
+  String get archive_restore_success => 'Record restored';
+
+  @override
+  String get archive_delete_success => 'Record permanently deleted';
+
+  @override
+  String archive_archived_on(String date) {
+    return 'Archived on $date';
+  }
+
+  @override
+  String get archive_delete_confirm_title => 'Permanently delete?';
+
+  @override
+  String get archive_delete_confirm_body_1 =>
+      'This will permanently delete the record and all related data. This cannot be undone.';
+
+  @override
+  String get archive_delete_confirm_body_2 =>
+      'Are you absolutely sure? This is your last chance to cancel.';
+
+  @override
+  String get archive_delete_confirm_action => 'Delete permanently';
+
+  @override
+  String get archive_delete_cancel => 'Cancel';
+
+  @override
+  String get archive_delete_continue => 'Continue';
+
+  @override
+  String get archive_delete_final => 'Delete';
+
+  @override
+  String get archive_restore_confirm_title => 'Restore record?';
+
+  @override
+  String get archive_restore_confirm_body =>
+      'The record will reappear in the main list.';
+
+  @override
+  String get archive_restore_confirm_action => 'Restore';
+
+  @override
+  String archive_error_restore(String message) {
+    return 'Failed to restore: $message';
+  }
+
+  @override
+  String archive_error_delete(String message) {
+    return 'Failed to delete: $message';
+  }
+
+  @override
   String get settings_title => 'Settings';
+
+  @override
+  String get settings_coming_soon => 'Settings coming soon';
+
+  @override
+  String get settings_coming_soon_body =>
+      'Language, auto-lock, biometric, backup, and audit log options will be available in a future update.';
+
+  @override
+  String get settings_logout => 'Logout';
+
+  @override
+  String get settings_logout_confirm_title => 'Logout?';
+
+  @override
+  String get settings_logout_confirm_body =>
+      'You will need your passphrase to sign in again.';
+
+  @override
+  String get settings_logout_confirm_action => 'Logout';
 
   @override
   String get action_retry => 'Retry';
@@ -1115,10 +1213,103 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get client_not_found => '找不到客戶';
 
   @override
-  String get archive_title => '封存';
+  String get archive_title => '封存區';
+
+  @override
+  String get archive_tab_clients => '客戶';
+
+  @override
+  String get archive_tab_policies => '保單';
+
+  @override
+  String get archive_tab_plans => '計劃';
+
+  @override
+  String get archive_empty_clients => '尚無封存的客戶';
+
+  @override
+  String get archive_empty_policies => '尚無封存的保單';
+
+  @override
+  String get archive_empty_plans => '尚無封存的計劃';
+
+  @override
+  String get archive_restore => '還原';
+
+  @override
+  String get archive_delete => '永久刪除';
+
+  @override
+  String get archive_restore_success => '已還原';
+
+  @override
+  String get archive_delete_success => '已永久刪除';
+
+  @override
+  String archive_archived_on(String date) {
+    return '封存於 $date';
+  }
+
+  @override
+  String get archive_delete_confirm_title => '確定永久刪除？';
+
+  @override
+  String get archive_delete_confirm_body_1 => '此操作將永久刪除記錄及所有相關資料，且無法復原。';
+
+  @override
+  String get archive_delete_confirm_body_2 => '您確定要繼續？這是最後的取消機會。';
+
+  @override
+  String get archive_delete_confirm_action => '永久刪除';
+
+  @override
+  String get archive_delete_cancel => '取消';
+
+  @override
+  String get archive_delete_continue => '繼續';
+
+  @override
+  String get archive_delete_final => '刪除';
+
+  @override
+  String get archive_restore_confirm_title => '還原記錄？';
+
+  @override
+  String get archive_restore_confirm_body => '記錄將重新出現在主清單中。';
+
+  @override
+  String get archive_restore_confirm_action => '還原';
+
+  @override
+  String archive_error_restore(String message) {
+    return '還原失敗：$message';
+  }
+
+  @override
+  String archive_error_delete(String message) {
+    return '刪除失敗：$message';
+  }
 
   @override
   String get settings_title => '設定';
+
+  @override
+  String get settings_coming_soon => '設定即將推出';
+
+  @override
+  String get settings_coming_soon_body => '語言、自動鎖定、生物辨識、備份及稽核記錄選項將於未來更新提供。';
+
+  @override
+  String get settings_logout => '登出';
+
+  @override
+  String get settings_logout_confirm_title => '確定登出？';
+
+  @override
+  String get settings_logout_confirm_body => '您將需要密碼才能再次登入。';
+
+  @override
+  String get settings_logout_confirm_action => '登出';
 
   @override
   String get action_retry => '重試';

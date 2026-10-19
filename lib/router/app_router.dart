@@ -14,6 +14,7 @@ import '../features/lock/screens/lock_screen.dart';
 import '../features/plans/screens/plan_form_screen.dart';
 import '../features/policies/screens/policy_detail_screen.dart';
 import '../features/policies/screens/policy_form_screen.dart';
+import '../features/settings/screens/settings_screen.dart';
 import '../features/setup/screens/setup_wizard_screen.dart';
 import '../features/splash/screens/splash_screen.dart';
 import '../l10n/app_localizations.dart';
@@ -87,10 +88,7 @@ final routerProvider = Provider<GoRouter>((Ref ref) {
       ),
       GoRoute(
         path: '/settings',
-        builder: (context, state) => PlaceholderScreen(
-          title: AppLocalizations.of(context).settings_title,
-          message: AppLocalizations.of(context).coming_soon,
-        ),
+        builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
         path: '/policies/new',

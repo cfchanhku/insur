@@ -67,13 +67,13 @@ void main() {
       expect((await audit.findLast())?.eventType, AuditEventType.restore);
     });
 
-    test('delete emits DELETE while retaining the record', () async {
+    test('delete emits DELETE and removes the record', () async {
       final client = await repository.save(_client());
 
       await repository.delete(client.id!);
 
       expect((await audit.findLast())?.eventType, AuditEventType.delete);
-      expect(await repository.findById(client.id!), isNotNull);
+      expect(await repository.findById(client.id!), isNull);
     });
 
     test('mutation entries contain no client PII in metadata', () async {

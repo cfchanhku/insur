@@ -227,6 +227,16 @@ void main() {
       expect(await repository.findAll(), isEmpty);
       expect(await repository.findAll(includeArchived: true), hasLength(1));
     });
+
+    test('findAllArchived returns only archived riders', () async {
+      await repository.save(_rider(planId));
+      final archived = await repository.save(_rider(planId));
+      await repository.archive(archived.id!);
+
+      expect(await repository.findAllArchived(), <Rider>[
+        (await repository.findById(archived.id!))!,
+      ]);
+    });
   });
 
   group('RiderRepository — archive / restore', () {

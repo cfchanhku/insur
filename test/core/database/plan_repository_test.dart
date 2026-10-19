@@ -244,6 +244,16 @@ void main() {
       expect(await repository.findAll(includeArchived: true), hasLength(1));
     });
 
+    test('findAllArchived returns only archived plans', () async {
+      await repository.save(_plan(firstPolicyId));
+      final archived = await repository.save(_plan(firstPolicyId));
+      await repository.archive(archived.id!);
+
+      expect(await repository.findAllArchived(), <Plan>[
+        (await repository.findById(archived.id!))!,
+      ]);
+    });
+
     test('findByCategory filters by the serialized category', () async {
       final life = await repository.save(
         _plan(firstPolicyId, category: PlanCategory.life),

@@ -140,6 +140,20 @@ class ClientRepository {
     return clients;
   }
 
+  /// Returns only archived clients, newest archive first.
+  Future<List<Client>> findAllArchived() async {
+    final rows = await _db.query(
+      Schema.clients,
+      where: '${Schema.archivedAt} IS NOT NULL',
+      orderBy: '${Schema.archivedAt} DESC, ${Schema.id} ASC',
+    );
+    final clients = <Client>[];
+    for (final row in rows) {
+      clients.add(await _fromRow(row));
+    }
+    return clients;
+  }
+
   /// Archives a client without physically deleting the business record.
   Future<void> archive(String id) async {
     await _audit.recordMutation(
@@ -162,14 +176,66 @@ class ClientRepository {
     );
   }
 
-  /// Archives the client and records the requested deletion event.
+  /// Permanently deletes a client and all related records atomically.
   Future<void> delete(String id) async {
     await _audit.recordMutation(
       eventType: AuditEventType.delete,
       entityType: _entityType,
       entityId: id,
-      mutation: (Transaction transaction) =>
-          _setArchived(transaction, id, DateTime.now().toUtc()),
+      mutation: (Transaction transaction) async {
+        final policyIds = await transaction.query(
+          Schema.policies,
+          columns: <String>[Schema.id],
+          where: '${Schema.clientId} = ?',
+          whereArgs: <Object?>[id],
+        );
+        final ids = policyIds
+            .map((Map<String, Object?> row) => row[Schema.id])
+            .whereType<String>()
+            .toList(growable: false);
+        if (ids.isNotEmpty) {
+          final placeholders = List<String>.filled(ids.length, '?').join(', ');
+          final planIds = await transaction.query(
+            Schema.plans,
+            columns: <String>[Schema.id],
+            where: '${Schema.policyId} IN ($placeholders)',
+            whereArgs: ids,
+          );
+          final plans = planIds
+              .map((Map<String, Object?> row) => row[Schema.id])
+              .whereType<String>()
+              .toList(growable: false);
+          if (plans.isNotEmpty) {
+            final planPlaceholders = List<String>.filled(
+              plans.length,
+              '?',
+            ).join(', ');
+            await transaction.delete(
+              Schema.riders,
+              where: '${Schema.planId} IN ($planPlaceholders)',
+              whereArgs: plans,
+            );
+            await transaction.delete(
+              Schema.plans,
+              where: '${Schema.id} IN ($planPlaceholders)',
+              whereArgs: plans,
+            );
+          }
+          await transaction.delete(
+            Schema.policies,
+            where: '${Schema.id} IN ($placeholders)',
+            whereArgs: ids,
+          );
+        }
+        final deleted = await transaction.delete(
+          Schema.clients,
+          where: '${Schema.id} = ?',
+          whereArgs: <Object?>[id],
+        );
+        if (deleted != 1) {
+          throw StateError('Client delete did not affect exactly one row');
+        }
+      },
     );
   }
 

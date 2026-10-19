@@ -555,7 +555,105 @@ class AppLocalizationsEn extends AppLocalizations {
   String get archive_title => 'Archive';
 
   @override
+  String get archive_tab_clients => 'Clients';
+
+  @override
+  String get archive_tab_policies => 'Policies';
+
+  @override
+  String get archive_tab_plans => 'Plans';
+
+  @override
+  String get archive_empty_clients => 'No archived clients';
+
+  @override
+  String get archive_empty_policies => 'No archived policies';
+
+  @override
+  String get archive_empty_plans => 'No archived plans';
+
+  @override
+  String get archive_restore => 'Restore';
+
+  @override
+  String get archive_delete => 'Delete permanently';
+
+  @override
+  String get archive_restore_success => 'Record restored';
+
+  @override
+  String get archive_delete_success => 'Record permanently deleted';
+
+  @override
+  String archive_archived_on(String date) {
+    return 'Archived on $date';
+  }
+
+  @override
+  String get archive_delete_confirm_title => 'Permanently delete?';
+
+  @override
+  String get archive_delete_confirm_body_1 =>
+      'This will permanently delete the record and all related data. This cannot be undone.';
+
+  @override
+  String get archive_delete_confirm_body_2 =>
+      'Are you absolutely sure? This is your last chance to cancel.';
+
+  @override
+  String get archive_delete_confirm_action => 'Delete permanently';
+
+  @override
+  String get archive_delete_cancel => 'Cancel';
+
+  @override
+  String get archive_delete_continue => 'Continue';
+
+  @override
+  String get archive_delete_final => 'Delete';
+
+  @override
+  String get archive_restore_confirm_title => 'Restore record?';
+
+  @override
+  String get archive_restore_confirm_body =>
+      'The record will reappear in the main list.';
+
+  @override
+  String get archive_restore_confirm_action => 'Restore';
+
+  @override
+  String archive_error_restore(String message) {
+    return 'Failed to restore: $message';
+  }
+
+  @override
+  String archive_error_delete(String message) {
+    return 'Failed to delete: $message';
+  }
+
+  @override
   String get settings_title => 'Settings';
+
+  @override
+  String get settings_coming_soon => 'Settings coming soon';
+
+  @override
+  String get settings_coming_soon_body =>
+      'Language, auto-lock, biometric, backup, and audit log options will be available in a future update.';
+
+  @override
+  String get settings_logout => 'Logout';
+
+  @override
+  String get settings_logout_confirm_title => 'Logout?';
+
+  @override
+  String get settings_logout_confirm_body =>
+      'You will need your passphrase to sign in again.';
+
+  @override
+  String get settings_logout_confirm_action => 'Logout';
 
   @override
   String get action_retry => 'Retry';

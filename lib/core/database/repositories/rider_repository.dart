@@ -137,6 +137,14 @@ class RiderRepository {
     );
   }
 
+  /// Returns only archived riders, newest archive first.
+  Future<List<Rider>> findAllArchived() {
+    return _findMany(
+      where: '${Schema.archivedAt} IS NOT NULL',
+      orderBy: '${Schema.archivedAt} DESC, ${Schema.id} ASC',
+    );
+  }
+
   /// Archives a rider and records the action atomically.
   Future<void> archive(String id) =>
       _changeArchiveState(id, DateTime.now().toUtc(), AuditEventType.archive);
@@ -181,12 +189,13 @@ class RiderRepository {
   Future<List<Rider>> _findMany({
     required String? where,
     List<Object?>? whereArgs,
+    String? orderBy,
   }) async {
     final rows = await _db.query(
       Schema.riders,
       where: where,
       whereArgs: whereArgs,
-      orderBy: '${Schema.createdAt} ASC, ${Schema.id} ASC',
+      orderBy: orderBy ?? '${Schema.createdAt} ASC, ${Schema.id} ASC',
     );
     final riders = <Rider>[];
     for (final row in rows) {

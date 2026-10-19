@@ -81,13 +81,13 @@ void main() {
       expect((await audit.findLast())?.eventType, AuditEventType.restore);
     });
 
-    test('delete emits DELETE while retaining the record', () async {
+    test('delete emits DELETE and removes the record', () async {
       final policy = await repository.save(_createPolicy(clientId));
 
       await repository.delete(policy.id!);
 
       expect((await audit.findLast())?.eventType, AuditEventType.delete);
-      expect(await repository.findById(policy.id!), isNotNull);
+      expect(await repository.findById(policy.id!), isNull);
     });
 
     test('mutation entries contain no policy PII in metadata', () async {
