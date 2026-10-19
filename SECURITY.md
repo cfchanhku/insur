@@ -67,6 +67,11 @@ The intended design is local-first: application data is not uploaded to GitHub o
   yet integrated with client or policy persistence; callers remain responsible
   for key lifecycle and supplying matching AAD. Its secure-random 96-bit nonces
   make collisions extremely unlikely, but cannot guarantee absolute uniqueness.
+- **Key management:** The MVP stores the passphrase-derived master key
+  directly in `FlutterSecureStorage`, separately from its Argon2id salt, and
+  derives database, field, and audit subkeys in memory. The KeyManager and
+  inactivity timer are not yet integrated with the application UI. Wrapping
+  the master key with a separate key-encryption key is deferred.
 - **Database encryption:** SQLCipher using AES-256.
 - **Hashing and integrity:** SHA-256/SHA-512 for approved integrity and hash-chain uses; hashes are not substitutes for password hashing or authenticated encryption.
 - **Key hierarchy:** user authentication material derives or unlocks a protected key-encryption key using Argon2id; that key protects randomly generated data-encryption keys, which encrypt database and backup data. Keys must be separated by purpose, never hardcoded, and kept in approved platform secure storage where applicable. Exact parameters and lifecycle must follow the reviewed implementation and must not be inferred from this summary.
