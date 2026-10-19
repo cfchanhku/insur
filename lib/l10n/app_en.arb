@@ -19,5 +19,57 @@
   "plan_category_hospital": "Hospital",
   "plan_category_accident": "Accident",
   "plan_category_savings": "Savings",
-  "plan_category_other": "Other"
+  "plan_category_other": "Other",
+  "splash_loading": "Loading...",
+  "setup_title": "Setup",
+  "setup_subtitle": "Create a passphrase to protect your data",
+  "setup_passphrase": "Passphrase",
+  "setup_confirm_passphrase": "Confirm passphrase",
+  "setup_passphrase_hint": "At least 12 characters",
+  "setup_passphrase_mismatch": "Passphrases do not match",
+  "setup_passphrase_too_short": "Passphrase must be at least 12 characters",
+  "setup_create": "Create",
+  "setup_creating": "Creating...",
+  "setup_error": "Setup could not be completed. Please try again.",
+  "recovery_key_dialog_title": "Your Recovery Key",
+  "recovery_key_dialog_body": "This is the ONLY way to recover your data if you forget your passphrase.\n\nPrint it. Store it offline. Never share it.\n\nWe cannot recover your data without it.",
+  "recovery_key_dialog_copy": "Copy",
+  "recovery_key_copied": "Recovery key copied to clipboard.",
+  "recovery_key_dialog_confirm": "I have printed and stored it",
+  "login_title": "Sign In",
+  "login_subtitle": "Enter your passphrase to unlock",
+  "login_passphrase": "Passphrase",
+  "login_sign_in": "Sign In",
+  "login_signing_in": "Signing in...",
+  "login_biometric": "Unlock with biometric",
+  "login_error": "Incorrect passphrase. {attempts} attempts remaining.",
+  "@login_error": {
+    "placeholders": {
+      "attempts": {
+        "type": "int"
+      }
+    }
+  },
+  "login_forgot": "Forgot passphrase?",
+  "lock_title": "Locked",
+  "lock_subtitle": "Enter your passphrase to unlock",
+  "lock_unlock": "Unlock",
+  "home_welcome": "Welcome",
+  "home_coming_soon": "Home screen coming soon",
+  "home_state": "State: {state}",
+  "@home_state": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "home_lock": "Lock",
+  "home_logout": "Log out",
+  "error_generic": "An error occurred. Please try again.",
+  "recovery_title": "Recovery",
+  "coming_soon": "Coming soon",
+  "key_state_uninitialized": "not set up",
+  "key_state_locked": "locked",
+  "key_state_unlocked": "unlocked"
 }

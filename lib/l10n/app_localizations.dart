@@ -218,6 +218,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get plan_category_other;
+
+  /// No description provided for @splash_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get splash_loading;
+
+  /// No description provided for @setup_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup'**
+  String get setup_title;
+
+  /// No description provided for @setup_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a passphrase to protect your data'**
+  String get setup_subtitle;
+
+  /// No description provided for @setup_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get setup_passphrase;
+
+  /// No description provided for @setup_confirm_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm passphrase'**
+  String get setup_confirm_passphrase;
+
+  /// No description provided for @setup_passphrase_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 12 characters'**
+  String get setup_passphrase_hint;
+
+  /// No description provided for @setup_passphrase_mismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrases do not match'**
+  String get setup_passphrase_mismatch;
+
+  /// No description provided for @setup_passphrase_too_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase must be at least 12 characters'**
+  String get setup_passphrase_too_short;
+
+  /// No description provided for @setup_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get setup_create;
+
+  /// No description provided for @setup_creating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating...'**
+  String get setup_creating;
+
+  /// No description provided for @setup_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup could not be completed. Please try again.'**
+  String get setup_error;
+
+  /// No description provided for @recovery_key_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Recovery Key'**
+  String get recovery_key_dialog_title;
+
+  /// No description provided for @recovery_key_dialog_body.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the ONLY way to recover your data if you forget your passphrase.\n\nPrint it. Store it offline. Never share it.\n\nWe cannot recover your data without it.'**
+  String get recovery_key_dialog_body;
+
+  /// No description provided for @recovery_key_dialog_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get recovery_key_dialog_copy;
+
+  /// No description provided for @recovery_key_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery key copied to clipboard.'**
+  String get recovery_key_copied;
+
+  /// No description provided for @recovery_key_dialog_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'I have printed and stored it'**
+  String get recovery_key_dialog_confirm;
+
+  /// No description provided for @login_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get login_title;
+
+  /// No description provided for @login_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your passphrase to unlock'**
+  String get login_subtitle;
+
+  /// No description provided for @login_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get login_passphrase;
+
+  /// No description provided for @login_sign_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get login_sign_in;
+
+  /// No description provided for @login_signing_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in...'**
+  String get login_signing_in;
+
+  /// No description provided for @login_biometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock with biometric'**
+  String get login_biometric;
+
+  /// No description provided for @login_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect passphrase. {attempts} attempts remaining.'**
+  String login_error(int attempts);
+
+  /// No description provided for @login_forgot.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot passphrase?'**
+  String get login_forgot;
+
+  /// No description provided for @lock_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get lock_title;
+
+  /// No description provided for @lock_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your passphrase to unlock'**
+  String get lock_subtitle;
+
+  /// No description provided for @lock_unlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get lock_unlock;
+
+  /// No description provided for @home_welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome'**
+  String get home_welcome;
+
+  /// No description provided for @home_coming_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Home screen coming soon'**
+  String get home_coming_soon;
+
+  /// No description provided for @home_state.
+  ///
+  /// In en, this message translates to:
+  /// **'State: {state}'**
+  String home_state(String state);
+
+  /// No description provided for @home_lock.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock'**
+  String get home_lock;
+
+  /// No description provided for @home_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get home_logout;
+
+  /// No description provided for @error_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred. Please try again.'**
+  String get error_generic;
+
+  /// No description provided for @recovery_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery'**
+  String get recovery_title;
+
+  /// No description provided for @coming_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get coming_soon;
+
+  /// No description provided for @key_state_uninitialized.
+  ///
+  /// In en, this message translates to:
+  /// **'not set up'**
+  String get key_state_uninitialized;
+
+  /// No description provided for @key_state_locked.
+  ///
+  /// In en, this message translates to:
+  /// **'locked'**
+  String get key_state_locked;
+
+  /// No description provided for @key_state_unlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'unlocked'**
+  String get key_state_unlocked;
 }
 
 class _AppLocalizationsDelegate

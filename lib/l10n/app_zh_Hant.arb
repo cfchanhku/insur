@@ -19,5 +19,57 @@
   "plan_category_hospital": "住院",
   "plan_category_accident": "意外",
   "plan_category_savings": "儲蓄",
-  "plan_category_other": "其他"
+  "plan_category_other": "其他",
+  "splash_loading": "載入中...",
+  "setup_title": "設定",
+  "setup_subtitle": "建立密碼以保護您的資料",
+  "setup_passphrase": "密碼",
+  "setup_confirm_passphrase": "確認密碼",
+  "setup_passphrase_hint": "至少 12 個字元",
+  "setup_passphrase_mismatch": "兩次輸入的密碼不一致",
+  "setup_passphrase_too_short": "密碼至少需要 12 個字元",
+  "setup_create": "建立",
+  "setup_creating": "建立中...",
+  "setup_error": "無法完成設定，請再試一次。",
+  "recovery_key_dialog_title": "您的復原金鑰",
+  "recovery_key_dialog_body": "若您忘記密碼，這是唯一能復原資料的方法。\n\n請列印並離線保存。切勿分享。\n\n沒有此金鑰，我們無法為您復原資料。",
+  "recovery_key_dialog_copy": "複製",
+  "recovery_key_copied": "復原金鑰已複製到剪貼簿。",
+  "recovery_key_dialog_confirm": "我已列印並保存",
+  "login_title": "登入",
+  "login_subtitle": "輸入密碼以解鎖",
+  "login_passphrase": "密碼",
+  "login_sign_in": "登入",
+  "login_signing_in": "登入中...",
+  "login_biometric": "使用生物辨識解鎖",
+  "login_error": "密碼錯誤。剩餘 {attempts} 次嘗試。",
+  "@login_error": {
+    "placeholders": {
+      "attempts": {
+        "type": "int"
+      }
+    }
+  },
+  "login_forgot": "忘記密碼？",
+  "lock_title": "已鎖定",
+  "lock_subtitle": "輸入密碼以解鎖",
+  "lock_unlock": "解鎖",
+  "home_welcome": "歡迎",
+  "home_coming_soon": "主畫面即將推出",
+  "home_state": "狀態：{state}",
+  "@home_state": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "home_lock": "鎖定",
+  "home_logout": "登出",
+  "error_generic": "發生錯誤，請再試一次。",
+  "recovery_title": "復原",
+  "coming_soon": "即將推出",
+  "key_state_uninitialized": "尚未設定",
+  "key_state_locked": "已鎖定",
+  "key_state_unlocked": "已解鎖"
 }

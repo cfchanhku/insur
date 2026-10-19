@@ -1,13 +1,16 @@
 /// Entry point for the Insurance Policy Manager application.
 library;
 
-// TODO(insur): Implement — see docs/IMPLEMENTATION_PLAN.md
-
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 
 import 'app.dart';
 
-void main() {
-  // TODO(insur): Initialize logging, secure storage, database, and audit logger.
-  runApp(const InsurApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(isOptional: true);
+  Logger.root.level = Level.OFF;
+  runApp(const ProviderScope(child: InsurApp()));
 }
