@@ -13,5 +13,11 @@
   "gender_other": "其他",
   "policy_status_active": "生效中",
   "policy_status_lapsed": "失效",
-  "policy_status_surrendered": "退保"
+  "policy_status_surrendered": "退保",
+  "plan_category_life": "壽險",
+  "plan_category_ci": "危疾",
+  "plan_category_hospital": "住院",
+  "plan_category_accident": "意外",
+  "plan_category_savings": "儲蓄",
+  "plan_category_other": "其他"
 }

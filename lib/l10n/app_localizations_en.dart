@@ -50,4 +50,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get policy_status_surrendered => 'Surrendered';
+
+  @override
+  String get plan_category_life => 'Life';
+
+  @override
+  String get plan_category_ci => 'Critical Illness';
+
+  @override
+  String get plan_category_hospital => 'Hospital';
+
+  @override
+  String get plan_category_accident => 'Accident';
+
+  @override
+  String get plan_category_savings => 'Savings';
+
+  @override
+  String get plan_category_other => 'Other';
 }

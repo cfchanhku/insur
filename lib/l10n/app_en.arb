@@ -13,5 +13,11 @@
   "gender_other": "Other",
   "policy_status_active": "Active",
   "policy_status_lapsed": "Lapsed",
-  "policy_status_surrendered": "Surrendered"
+  "policy_status_surrendered": "Surrendered",
+  "plan_category_life": "Life",
+  "plan_category_ci": "Critical Illness",
+  "plan_category_hospital": "Hospital",
+  "plan_category_accident": "Accident",
+  "plan_category_savings": "Savings",
+  "plan_category_other": "Other"
 }

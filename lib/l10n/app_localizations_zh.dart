@@ -49,6 +49,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get policy_status_surrendered => 'Surrendered';
+
+  @override
+  String get plan_category_life => 'Life';
+
+  @override
+  String get plan_category_ci => 'Critical Illness';
+
+  @override
+  String get plan_category_hospital => 'Hospital';
+
+  @override
+  String get plan_category_accident => 'Accident';
+
+  @override
+  String get plan_category_savings => 'Savings';
+
+  @override
+  String get plan_category_other => 'Other';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -96,4 +114,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get policy_status_surrendered => '退保';
+
+  @override
+  String get plan_category_life => '壽險';
+
+  @override
+  String get plan_category_ci => '危疾';
+
+  @override
+  String get plan_category_hospital => '住院';
+
+  @override
+  String get plan_category_accident => '意外';
+
+  @override
+  String get plan_category_savings => '儲蓄';
+
+  @override
+  String get plan_category_other => '其他';
 }

@@ -182,6 +182,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Surrendered'**
   String get policy_status_surrendered;
+
+  /// No description provided for @plan_category_life.
+  ///
+  /// In en, this message translates to:
+  /// **'Life'**
+  String get plan_category_life;
+
+  /// No description provided for @plan_category_ci.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical Illness'**
+  String get plan_category_ci;
+
+  /// No description provided for @plan_category_hospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital'**
+  String get plan_category_hospital;
+
+  /// No description provided for @plan_category_accident.
+  ///
+  /// In en, this message translates to:
+  /// **'Accident'**
+  String get plan_category_accident;
+
+  /// No description provided for @plan_category_savings.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings'**
+  String get plan_category_savings;
+
+  /// No description provided for @plan_category_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get plan_category_other;
 }
 
 class _AppLocalizationsDelegate
