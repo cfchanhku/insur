@@ -1,23 +1,49 @@
-/// Applies ordered database schema migrations transactionally.
+/// Runs ordered, forward-only database migrations.
+///
+/// Never modify a migration that has shipped; add a new numbered migration
+/// instead. The sqflite `onUpgrade` callback invokes this function inside its
+/// migration transaction, so schema changes and version records roll back
+/// together on failure.
 library;
 
-// TODO(insur): Implement — see docs/IMPLEMENTATION_PLAN.md
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
-/// Coordinates migration from one stored schema version to another.
-class DatabaseMigrator {
-  /// Applies one migration from version [fromVersion] to [toVersion].
-  Future<void> migrateOne({
-    required int fromVersion,
-    required int toVersion,
-  }) async {
-    throw UnimplementedError('DatabaseMigrator.migrateOne');
+import 'schema.dart';
+
+/// Applies all migrations from [oldVersion] through [newVersion].
+Future<void> runMigrations(
+  Database db,
+  int oldVersion,
+  int newVersion,
+) async {
+  if (oldVersion < 0 ||
+      newVersion < oldVersion ||
+      newVersion > Schema.currentSchemaVersion) {
+    throw ArgumentError('Unsupported schema version transition');
   }
 
-  /// Migrates the database from [fromVersion] to [toVersion].
-  Future<void> migrate({
-    required int fromVersion,
-    required int toVersion,
-  }) async {
-    throw UnimplementedError('DatabaseMigrator.migrate');
+  for (var version = oldVersion + 1; version <= newVersion; version++) {
+    switch (version) {
+      case 1:
+        if (oldVersion != 0) {
+          throw StateError('Migration to schema version 1 is not supported');
+        }
+        for (final statement in Schema.createStatements) {
+          await db.execute(statement);
+        }
+        for (final index in Schema.indexes) {
+          await db.execute(index);
+        }
+      default:
+        throw StateError('No migration is defined for schema version $version');
+    }
+
+    await db.insert(
+      Schema.schemaVersion,
+      <String, Object?>{
+        Schema.version: version,
+        'applied_at': DateTime.now().toUtc().toIso8601String(),
+      },
+    );
   }
 }

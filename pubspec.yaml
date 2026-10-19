@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0+1
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: '>=3.9.0 <4.0.0'
   flutter: '>=3.38.0'
 
 dependencies:
@@ -18,6 +18,10 @@ dependencies:
   sqlcipher_flutter_libs: ^0.6.5
   # SQLite bindings used by the database integration.
   sqlite3: ^2.9.4
+  # SQLCipher-backed sqflite API for the encrypted application database.
+  sqflite_sqlcipher: ^3.1.0
+  # SQLCipher-linked FFI factory for Windows and Linux desktop targets.
+  sqflite_common_ffi: ^2.3.3
   # Platform-neutral path construction for database and file locations.
   path: ^1.9.1
   # Resolve platform application data directories.
