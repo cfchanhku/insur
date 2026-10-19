@@ -38,6 +38,7 @@ analyzer:
     - "build/**"
     - ".dart_tool/**"
     - "**/l10n/generated/**"
+    - windows/**
 
 linter:
   rules:

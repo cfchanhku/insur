@@ -5,5 +5,10 @@
   "action_next": "下一步",
   "action_back": "返回",
   "action_cancel": "取消",
-  "action_save": "儲存"
+  "action_save": "儲存",
+  "client_role_holder": "保單持有人",
+  "client_role_insured": "受保人",
+  "gender_male": "男",
+  "gender_female": "女",
+  "gender_other": "其他"
 }

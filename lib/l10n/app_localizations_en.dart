@@ -26,4 +26,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get action_save => 'Save';
+
+  @override
+  String get client_role_holder => 'Policy holder';
+
+  @override
+  String get client_role_insured => 'Insured';
+
+  @override
+  String get gender_male => 'Male';
+
+  @override
+  String get gender_female => 'Female';
+
+  @override
+  String get gender_other => 'Other';
 }

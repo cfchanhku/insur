@@ -134,6 +134,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get action_save;
+
+  /// No description provided for @client_role_holder.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy holder'**
+  String get client_role_holder;
+
+  /// No description provided for @client_role_insured.
+  ///
+  /// In en, this message translates to:
+  /// **'Insured'**
+  String get client_role_insured;
+
+  /// No description provided for @gender_male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get gender_male;
+
+  /// No description provided for @gender_female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get gender_female;
+
+  /// No description provided for @gender_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get gender_other;
 }
 
 class _AppLocalizationsDelegate

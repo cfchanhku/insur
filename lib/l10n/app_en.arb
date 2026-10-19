@@ -5,5 +5,10 @@
   "action_next": "Next",
   "action_back": "Back",
   "action_cancel": "Cancel",
-  "action_save": "Save"
+  "action_save": "Save",
+  "client_role_holder": "Policy holder",
+  "client_role_insured": "Insured",
+  "gender_male": "Male",
+  "gender_female": "Female",
+  "gender_other": "Other"
 }

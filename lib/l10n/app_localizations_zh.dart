@@ -25,6 +25,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get action_save => '儲存';
+
+  @override
+  String get client_role_holder => 'Policy holder';
+
+  @override
+  String get client_role_insured => 'Insured';
+
+  @override
+  String get gender_male => 'Male';
+
+  @override
+  String get gender_female => 'Female';
+
+  @override
+  String get gender_other => 'Other';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -48,4 +63,19 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get action_save => '儲存';
+
+  @override
+  String get client_role_holder => '保單持有人';
+
+  @override
+  String get client_role_insured => '受保人';
+
+  @override
+  String get gender_male => '男';
+
+  @override
+  String get gender_female => '女';
+
+  @override
+  String get gender_other => '其他';
 }
