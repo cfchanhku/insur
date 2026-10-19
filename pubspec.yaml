@@ -54,6 +54,10 @@ dependencies:
   logging: ^1.3.0
   package_info_plus: 8.0.2
 
+dependency_overrides:
+  # pdf 3.12 constrains archive below 4.1, so keep image on its compatible API.
+  image: 4.10.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

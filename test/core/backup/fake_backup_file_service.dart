@@ -27,8 +27,10 @@ class FakeBackupFileService implements BackupFileService {
       selectedDirectoryPath ?? directory.path;
 
   @override
-  Future<String?> pickSaveLocation({required String suggestedName}) async =>
-      path.join(directory.path, suggestedName);
+  Future<String?> pickSaveLocation({
+    required String suggestedName,
+    String extension = 'enc',
+  }) async => path.join(directory.path, suggestedName);
 
   @override
   Future<String?> pickOpenFile() async => selectedFilePath;

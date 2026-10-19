@@ -381,9 +381,19 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             title: Text(l10n.settings_backup_now),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.settings_backup_coming)),
-            ),
+            onTap: () => context.push('/backup'),
+          ),
+          ListTile(
+            title: Text(l10n.settings_restore_backup),
+            leading: const Icon(Icons.restore),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/restore'),
+          ),
+          ListTile(
+            title: Text(l10n.export_pdf_title),
+            leading: const Icon(Icons.picture_as_pdf_outlined),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/export'),
           ),
           _SectionHeader(title: l10n.settings_audit),
           ListTile(

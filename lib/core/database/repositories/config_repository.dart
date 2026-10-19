@@ -2,6 +2,8 @@
 /// table.
 library;
 
+import 'package:sqflite_sqlcipher/sqflite.dart' show Transaction;
+
 import '../database.dart';
 import '../schema.dart';
 
@@ -38,6 +40,21 @@ class ConfigRepository {
       '(${Schema.key}, ${Schema.value}, ${Schema.updatedAt}) VALUES (?, ?, ?)',
       <Object?>[key, value, DateTime.now().toUtc().toIso8601String()],
     );
+  }
+
+  /// Stores related configuration values atomically with UTC timestamps.
+  Future<void> setAll(Map<String, String> values) async {
+    await _db.db.transaction((Transaction transaction) async {
+      final now = DateTime.now().toUtc().toIso8601String();
+      for (final entry in values.entries) {
+        await transaction.rawInsert(
+          'INSERT OR REPLACE INTO ${Schema.appConfig} '
+          '(${Schema.key}, ${Schema.value}, ${Schema.updatedAt}) '
+          'VALUES (?, ?, ?)',
+          <Object?>[entry.key, entry.value, now],
+        );
+      }
+    });
   }
 
   /// Removes the configuration associated with [key].

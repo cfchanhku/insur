@@ -9,6 +9,9 @@ class SettingsKeys {
   static const String autoBackupFrequency = 'settings.auto_backup_frequency';
   static const String backupFolder = 'settings.backup_folder';
   static const String maxFailedAttempts = 'settings.max_failed_attempts';
+  static const String lastBackupAt = 'settings.last_backup_at';
+  static const String lastBackupPath = 'settings.last_backup_path';
+  static const String lastBackupSizeBytes = 'settings.last_backup_size_bytes';
 
   static const String defaultLanguage = 'en';
   static const String defaultThemeMode = 'system';

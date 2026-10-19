@@ -74,6 +74,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       drawer: _buildDrawer(context, l10n),
       actions: <Widget>[
         IconButton(
+          tooltip: l10n.export_pdf_title,
+          onPressed: () => context.push('/export'),
+          icon: const Icon(Icons.ios_share),
+        ),
+        IconButton(
           tooltip: l10n.home_lock,
           onPressed: _lock,
           icon: const Icon(Icons.lock),

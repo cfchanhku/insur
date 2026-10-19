@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../core/audit/audit_wiring.dart';
 import '../core/backup/backup_file_service.dart';
+import '../core/backup/backup_service.dart';
 import '../core/database/database.dart';
 import '../core/database/repositories/audit_repository.dart';
 import '../core/database/repositories/client_repository.dart';
@@ -66,6 +67,14 @@ final keyManagerStateProvider = StateProvider<KeyManagerState>(
   (Ref ref) => KeyManagerState.uninitialized,
 );
 
+/// Carries a completed restore event across the required fresh login.
+///
+/// The restored key manager is deliberately locked by BackupService, so the
+/// event can be appended only after the user unlocks the restored database.
+final pendingRestoreAuditSchemaProvider = StateProvider<int?>(
+  (Ref ref) => null,
+);
+
 /// Opens SQLCipher only while the key manager is unlocked.
 final appDatabaseProvider = FutureProvider<AppDatabase>((Ref ref) async {
   final state = ref.watch(keyManagerStateProvider);
@@ -97,6 +106,21 @@ final configRepositoryProvider = FutureProvider<ConfigRepository>((
 final backupFileServiceProvider = Provider<BackupFileService>(
   (Ref ref) => const PlatformBackupFileService(),
 );
+
+/// Provides the backup service for the active unlocked database session.
+final backupServiceProvider = FutureProvider<BackupService>((Ref ref) async {
+  final database = await ref.watch(appDatabaseProvider.future);
+  final keyManager = await ref.watch(keyManagerProvider.future);
+  final auditRepository = await ref.watch(auditRepositoryProvider.future);
+  final appVersion = await ref.watch(appVersionProvider.future);
+  return BackupService(
+    database: database,
+    keyManager: keyManager,
+    auditRepository: auditRepository,
+    fileService: ref.watch(backupFileServiceProvider),
+    appVersion: appVersion,
+  );
+});
 
 /// Loads the application version from the platform package metadata.
 final appVersionProvider = FutureProvider<String>((Ref ref) async {

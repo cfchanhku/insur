@@ -1836,6 +1836,426 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'unlocked'**
   String get key_state_unlocked;
+
+  /// No description provided for @backup_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backup_title;
+
+  /// No description provided for @backup_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an encrypted backup of your data'**
+  String get backup_subtitle;
+
+  /// No description provided for @backup_info_card_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted backup'**
+  String get backup_info_card_title;
+
+  /// No description provided for @backup_info_card_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups are encrypted with a passphrase you choose. Store this passphrase securely — without it, the backup cannot be restored.'**
+  String get backup_info_card_body;
+
+  /// No description provided for @backup_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup passphrase'**
+  String get backup_passphrase;
+
+  /// No description provided for @backup_confirm_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm backup passphrase'**
+  String get backup_confirm_passphrase;
+
+  /// No description provided for @backup_passphrase_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 12 characters'**
+  String get backup_passphrase_hint;
+
+  /// No description provided for @backup_choose_destination.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose destination'**
+  String get backup_choose_destination;
+
+  /// No description provided for @backup_destination_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination: {path}'**
+  String backup_destination_selected(String path);
+
+  /// No description provided for @backup_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create backup'**
+  String get backup_create;
+
+  /// No description provided for @backup_creating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating backup...'**
+  String get backup_creating;
+
+  /// No description provided for @backup_success_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup created'**
+  String get backup_success_title;
+
+  /// No description provided for @backup_success_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup saved to: {path}'**
+  String backup_success_body(String path);
+
+  /// No description provided for @backup_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup failed. Please try again.'**
+  String get backup_error;
+
+  /// No description provided for @backup_open_folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show saved location'**
+  String get backup_open_folder;
+
+  /// No description provided for @backup_last_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup: {date}'**
+  String backup_last_backup(String date);
+
+  /// No description provided for @backup_last_backup_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup size: {size} bytes'**
+  String backup_last_backup_size(String size);
+
+  /// No description provided for @backup_never.
+  ///
+  /// In en, this message translates to:
+  /// **'No backups yet'**
+  String get backup_never;
+
+  /// No description provided for @backup_password_mismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrases do not match'**
+  String get backup_password_mismatch;
+
+  /// No description provided for @backup_destination_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a destination to continue'**
+  String get backup_destination_required;
+
+  /// No description provided for @restore_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restore_title;
+
+  /// No description provided for @restore_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore will overwrite ALL current data. A pre-restore backup will be created automatically.'**
+  String get restore_warning;
+
+  /// No description provided for @restore_select_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Select backup file'**
+  String get restore_select_file;
+
+  /// No description provided for @restore_file_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'File: {name}'**
+  String restore_file_selected(String name);
+
+  /// No description provided for @restore_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup passphrase'**
+  String get restore_passphrase;
+
+  /// No description provided for @restore_confirm_checkbox.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand that restoring will overwrite my current data'**
+  String get restore_confirm_checkbox;
+
+  /// No description provided for @restore_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore now'**
+  String get restore_action;
+
+  /// No description provided for @restore_restoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring...'**
+  String get restore_restoring;
+
+  /// No description provided for @restore_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from backup?'**
+  String get restore_confirm_title;
+
+  /// No description provided for @restore_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current data will be replaced. A pre-restore backup will be saved first. Continue?'**
+  String get restore_confirm_body;
+
+  /// No description provided for @restore_confirm_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restore_confirm_action;
+
+  /// No description provided for @restore_success_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore complete'**
+  String get restore_success_title;
+
+  /// No description provided for @restore_success_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data has been restored. Please sign in again.'**
+  String get restore_success_body;
+
+  /// No description provided for @restore_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore failed. Check the backup and passphrase, then try again.'**
+  String get restore_error;
+
+  /// No description provided for @restore_error_closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Please close any other instance of the app before restoring.'**
+  String get restore_error_closed;
+
+  /// No description provided for @restore_file_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a backup file to continue'**
+  String get restore_file_required;
+
+  /// No description provided for @settings_restore_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from backup'**
+  String get settings_restore_backup;
+
+  /// No description provided for @export_pdf_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get export_pdf_title;
+
+  /// No description provided for @export_pdf_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select clients to export'**
+  String get export_pdf_subtitle;
+
+  /// No description provided for @export_pdf_select_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get export_pdf_select_all;
+
+  /// No description provided for @export_pdf_no_selection.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one client'**
+  String get export_pdf_no_selection;
+
+  /// No description provided for @export_pdf_language.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF language'**
+  String get export_pdf_language;
+
+  /// No description provided for @export_pdf_language_follow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow app'**
+  String get export_pdf_language_follow;
+
+  /// No description provided for @export_pdf_allow_print.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow printing'**
+  String get export_pdf_allow_print;
+
+  /// No description provided for @export_pdf_password.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF password'**
+  String get export_pdf_password;
+
+  /// No description provided for @export_pdf_confirm_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm PDF password'**
+  String get export_pdf_confirm_password;
+
+  /// No description provided for @export_pdf_password_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters'**
+  String get export_pdf_password_hint;
+
+  /// No description provided for @export_pdf_password_policy_note.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF password length is separate from your sign-in passphrase policy.'**
+  String get export_pdf_password_policy_note;
+
+  /// No description provided for @export_pdf_password_warning_title.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF password protection unavailable'**
+  String get export_pdf_password_warning_title;
+
+  /// No description provided for @export_pdf_password_warning_body.
+  ///
+  /// In en, this message translates to:
+  /// **'This version cannot encrypt PDF files or restrict copying and printing. The exported file will contain sensitive client information and will NOT be password-protected. Continue only if you can store it securely.'**
+  String get export_pdf_password_warning_body;
+
+  /// No description provided for @export_pdf_password_warning_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Export unprotected PDF'**
+  String get export_pdf_password_warning_continue;
+
+  /// No description provided for @export_pdf_export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get export_pdf_export;
+
+  /// No description provided for @export_pdf_exporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating PDF...'**
+  String get export_pdf_exporting;
+
+  /// No description provided for @export_pdf_success_title.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF exported'**
+  String get export_pdf_success_title;
+
+  /// No description provided for @export_pdf_success_body.
+  ///
+  /// In en, this message translates to:
+  /// **'The PDF is not password-protected. Keep the file secure: {path}'**
+  String export_pdf_success_body(String path);
+
+  /// No description provided for @export_pdf_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed. Please try again.'**
+  String get export_pdf_error;
+
+  /// No description provided for @export_pdf_open_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Share or open PDF'**
+  String get export_pdf_open_file;
+
+  /// No description provided for @export_pdf_empty_clients.
+  ///
+  /// In en, this message translates to:
+  /// **'No active clients to export'**
+  String get export_pdf_empty_clients;
+
+  /// No description provided for @pdf_doc_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance Policy Overview'**
+  String get pdf_doc_title;
+
+  /// No description provided for @pdf_generated_on.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated on {date}'**
+  String pdf_generated_on(String date);
+
+  /// No description provided for @pdf_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {current} of {total}'**
+  String pdf_page(int current, int total);
+
+  /// No description provided for @pdf_section_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get pdf_section_client;
+
+  /// No description provided for @pdf_section_policies.
+  ///
+  /// In en, this message translates to:
+  /// **'Policies'**
+  String get pdf_section_policies;
+
+  /// No description provided for @pdf_section_plans.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans'**
+  String get pdf_section_plans;
+
+  /// No description provided for @pdf_section_riders.
+  ///
+  /// In en, this message translates to:
+  /// **'Riders'**
+  String get pdf_section_riders;
+
+  /// No description provided for @pdf_policy_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy: {number}'**
+  String pdf_policy_title(String number);
+
+  /// No description provided for @pdf_plan_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan: {name}'**
+  String pdf_plan_title(String name);
+
+  /// No description provided for @pdf_rider_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider: {name}'**
+  String pdf_rider_title(String name);
+
+  /// No description provided for @pdf_not_available.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get pdf_not_available;
+
+  /// No description provided for @pdf_footer.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated on {date} · Page {current} of {total}'**
+  String pdf_footer(String date, int current, int total);
 }
 
 class _AppLocalizationsDelegate

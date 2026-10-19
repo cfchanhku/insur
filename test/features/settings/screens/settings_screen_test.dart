@@ -26,6 +26,11 @@ class _MemoryConfigRepository implements ConfigRepository {
   }
 
   @override
+  Future<void> setAll(Map<String, String> values) async {
+    this.values.addAll(values);
+  }
+
+  @override
   Future<void> delete(String key) async {
     values.remove(key);
   }

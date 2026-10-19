@@ -7,9 +7,12 @@ import 'package:go_router/go_router.dart';
 import '../features/archive/screens/archive_screen.dart';
 import '../features/audit/screens/audit_log_screen.dart';
 import '../features/auth/screens/login_screen.dart';
+import '../features/backup/screens/backup_screen.dart';
+import '../features/backup/screens/restore_screen.dart';
 import '../features/clients/screens/client_detail_screen.dart';
 import '../features/clients/screens/client_form_screen.dart';
 import '../features/common/placeholder_screen.dart';
+import '../features/export/screens/export_pdf_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/lock/screens/lock_screen.dart';
 import '../features/plans/screens/plan_form_screen.dart';
@@ -94,6 +97,18 @@ final routerProvider = Provider<GoRouter>((Ref ref) {
       GoRoute(
         path: '/settings/audit',
         builder: (context, state) => const AuditLogScreen(),
+      ),
+      GoRoute(
+        path: '/backup',
+        builder: (context, state) => const BackupScreen(),
+      ),
+      GoRoute(
+        path: '/restore',
+        builder: (context, state) => const RestoreScreen(),
+      ),
+      GoRoute(
+        path: '/export',
+        builder: (context, state) => const ExportPdfScreen(),
       ),
       GoRoute(
         path: '/policies/new',

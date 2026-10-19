@@ -14,6 +14,9 @@ class SettingsState {
     this.autoBackupFrequency = SettingsKeys.defaultAutoBackupFrequency,
     this.backupFolder = SettingsKeys.defaultBackupFolder,
     this.maxFailedAttempts = SettingsKeys.defaultMaxFailedAttempts,
+    this.lastBackupAt,
+    this.lastBackupPath = '',
+    this.lastBackupSizeBytes,
   });
 
   final String language;
@@ -23,6 +26,9 @@ class SettingsState {
   final String autoBackupFrequency;
   final String backupFolder;
   final int maxFailedAttempts;
+  final DateTime? lastBackupAt;
+  final String lastBackupPath;
+  final int? lastBackupSizeBytes;
 
   /// Returns a copy with only the supplied values changed.
   SettingsState copyWith({
@@ -33,6 +39,9 @@ class SettingsState {
     String? autoBackupFrequency,
     String? backupFolder,
     int? maxFailedAttempts,
+    DateTime? lastBackupAt,
+    String? lastBackupPath,
+    int? lastBackupSizeBytes,
   }) {
     return SettingsState(
       language: language ?? this.language,
@@ -42,6 +51,9 @@ class SettingsState {
       autoBackupFrequency: autoBackupFrequency ?? this.autoBackupFrequency,
       backupFolder: backupFolder ?? this.backupFolder,
       maxFailedAttempts: maxFailedAttempts ?? this.maxFailedAttempts,
+      lastBackupAt: lastBackupAt ?? this.lastBackupAt,
+      lastBackupPath: lastBackupPath ?? this.lastBackupPath,
+      lastBackupSizeBytes: lastBackupSizeBytes ?? this.lastBackupSizeBytes,
     );
   }
 
@@ -54,6 +66,9 @@ class SettingsState {
     'autoBackupFrequency': autoBackupFrequency,
     'backupFolder': backupFolder,
     'maxFailedAttempts': maxFailedAttempts,
+    'lastBackupAt': lastBackupAt?.toUtc().toIso8601String(),
+    'lastBackupPath': lastBackupPath,
+    'lastBackupSizeBytes': lastBackupSizeBytes,
   };
 
   /// Creates settings from a JSON-compatible map, rejecting invalid fields.
@@ -65,6 +80,9 @@ class SettingsState {
     final autoBackupFrequency = json['autoBackupFrequency'];
     final backupFolder = json['backupFolder'];
     final maxFailedAttempts = json['maxFailedAttempts'];
+    final lastBackupAt = json['lastBackupAt'];
+    final lastBackupPath = json['lastBackupPath'];
+    final lastBackupSizeBytes = json['lastBackupSizeBytes'];
 
     if (language is! String ||
         themeMode is! String ||
@@ -72,10 +90,19 @@ class SettingsState {
         biometricEnabled is! bool ||
         autoBackupFrequency is! String ||
         backupFolder is! String ||
-        maxFailedAttempts is! int) {
+        maxFailedAttempts is! int ||
+        (lastBackupAt != null && lastBackupAt is! String) ||
+        lastBackupPath is! String ||
+        (lastBackupSizeBytes != null && lastBackupSizeBytes is! int)) {
       throw ArgumentError('Settings JSON contains missing or invalid values');
     }
 
+    final parsedLastBackupAt = lastBackupAt == null
+        ? null
+        : DateTime.tryParse(lastBackupAt as String);
+    if (lastBackupAt != null && parsedLastBackupAt == null) {
+      throw ArgumentError('Settings JSON contains an invalid backup timestamp');
+    }
     return SettingsState(
       language: language,
       themeMode: themeMode,
@@ -84,6 +111,9 @@ class SettingsState {
       autoBackupFrequency: autoBackupFrequency,
       backupFolder: backupFolder,
       maxFailedAttempts: maxFailedAttempts,
+      lastBackupAt: parsedLastBackupAt,
+      lastBackupPath: lastBackupPath,
+      lastBackupSizeBytes: lastBackupSizeBytes as int?,
     );
   }
 
@@ -96,7 +126,10 @@ class SettingsState {
         other.biometricEnabled == biometricEnabled &&
         other.autoBackupFrequency == autoBackupFrequency &&
         other.backupFolder == backupFolder &&
-        other.maxFailedAttempts == maxFailedAttempts;
+        other.maxFailedAttempts == maxFailedAttempts &&
+        other.lastBackupAt == lastBackupAt &&
+        other.lastBackupPath == lastBackupPath &&
+        other.lastBackupSizeBytes == lastBackupSizeBytes;
   }
 
   @override
@@ -108,5 +141,8 @@ class SettingsState {
     autoBackupFrequency,
     backupFolder,
     maxFailedAttempts,
+    lastBackupAt,
+    lastBackupPath,
+    lastBackupSizeBytes,
   );
 }

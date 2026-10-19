@@ -24,13 +24,18 @@ import 'schema.dart';
 
 /// A single open SQLCipher database connection.
 class AppDatabase {
-  AppDatabase._(this.db);
+  AppDatabase._(this.db, this.path);
 
   /// FFI in-memory path, primarily intended for tests.
   static const String inMemoryDatabasePath = ':memory:';
 
   /// The underlying database connection for repository transactions.
   final Database db;
+
+  /// The filesystem path opened by this database wrapper.
+  final String path;
+
+  bool _isClosed = false;
 
   /// Opens [path] with a 32-byte SQLCipher [dbKey].
   ///
@@ -99,7 +104,7 @@ class AppDatabase {
         }
       }
     }
-    return AppDatabase._(database);
+    return AppDatabase._(database, path);
   }
 
   /// Opens a SQLCipher-encrypted in-memory database for tests.
@@ -108,7 +113,13 @@ class AppDatabase {
   }
 
   /// Closes the connection and releases its resources.
-  Future<void> close() => db.close();
+  Future<void> close() async {
+    if (_isClosed) {
+      return;
+    }
+    await db.close();
+    _isClosed = true;
+  }
 
   /// Executes a SQL statement.
   Future<void> execute(String sql) => db.execute(sql);

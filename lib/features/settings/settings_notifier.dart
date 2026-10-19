@@ -37,6 +37,23 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
       defaults.maxFailedAttempts,
       SettingsKeys.maxFailedAttempts,
     );
+    final lastBackupAtValue = values[SettingsKeys.lastBackupAt];
+    final lastBackupAt = lastBackupAtValue == null
+        ? null
+        : DateTime.tryParse(lastBackupAtValue);
+    if (lastBackupAtValue != null && lastBackupAt == null) {
+      throw const FormatException('Invalid stored backup timestamp');
+    }
+    final lastBackupPath =
+        values[SettingsKeys.lastBackupPath] ?? defaults.lastBackupPath;
+    final lastBackupSizeValue = values[SettingsKeys.lastBackupSizeBytes];
+    final lastBackupSizeBytes = lastBackupSizeValue == null
+        ? null
+        : int.tryParse(lastBackupSizeValue);
+    if (lastBackupSizeValue != null &&
+        (lastBackupSizeBytes == null || lastBackupSizeBytes < 0)) {
+      throw const FormatException('Invalid stored backup size');
+    }
 
     _validateLanguage(language);
     _validateThemeMode(themeMode);
@@ -52,6 +69,9 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
       autoBackupFrequency: autoBackupFrequency,
       backupFolder: backupFolder,
       maxFailedAttempts: maxFailedAttempts,
+      lastBackupAt: lastBackupAt,
+      lastBackupPath: lastBackupPath,
+      lastBackupSizeBytes: lastBackupSizeBytes,
     );
   }
 
@@ -126,6 +146,47 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
       '$attempts',
       (SettingsState current) => current.copyWith(maxFailedAttempts: attempts),
     );
+  }
+
+  /// Persists the last successful backup path and UTC timestamp atomically.
+  Future<void> recordBackup({
+    required String path,
+    required DateTime at,
+    required int sizeBytes,
+  }) async {
+    if (path.isEmpty) {
+      throw ArgumentError.value(path, 'path', 'Must not be empty');
+    }
+    if (sizeBytes <= 0) {
+      throw ArgumentError.value(sizeBytes, 'sizeBytes', 'Must be positive');
+    }
+    final previousState = state;
+    final current = state.valueOrNull;
+    if (current == null) {
+      throw StateError('Settings are not loaded');
+    }
+    final utcAt = at.toUtc();
+    try {
+      final repository = await ref.read(configRepositoryProvider.future);
+      await repository.setAll(<String, String>{
+        SettingsKeys.lastBackupAt: utcAt.toIso8601String(),
+        SettingsKeys.lastBackupPath: path,
+        SettingsKeys.lastBackupSizeBytes: '$sizeBytes',
+      });
+      state = AsyncData<SettingsState>(
+        current.copyWith(
+          lastBackupAt: utcAt,
+          lastBackupPath: path,
+          lastBackupSizeBytes: sizeBytes,
+        ),
+      );
+    } on Exception catch (error, stackTrace) {
+      state = AsyncError<SettingsState>(
+        error,
+        stackTrace,
+      ).copyWithPrevious(previousState);
+      rethrow;
+    }
   }
 
   Future<void> _update(

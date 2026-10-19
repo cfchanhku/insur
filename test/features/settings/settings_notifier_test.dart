@@ -27,6 +27,14 @@ class _MemoryConfigRepository implements ConfigRepository {
   }
 
   @override
+  Future<void> setAll(Map<String, String> values) async {
+    if (failWrites) {
+      throw _ConfigWriteException();
+    }
+    this.values.addAll(values);
+  }
+
+  @override
   Future<void> delete(String key) async {
     values.remove(key);
   }
@@ -155,6 +163,34 @@ void main() {
       '20',
       (SettingsNotifier notifier) => notifier.updateMaxFailedAttempts(20),
     );
+  });
+
+  test('records last backup metadata atomically in settings', () async {
+    final repository = _MemoryConfigRepository();
+    final container = _container(repository);
+    addTearDown(container.dispose);
+    await container.read(settingsProvider.future);
+    final timestamp = DateTime.utc(2026, 5, 1, 12);
+
+    await container
+        .read(settingsProvider.notifier)
+        .recordBackup(
+          path: r'C:\backups\backup.enc',
+          at: timestamp,
+          sizeBytes: 2048,
+        );
+
+    expect(
+      repository.values[SettingsKeys.lastBackupAt],
+      timestamp.toIso8601String(),
+    );
+    expect(
+      repository.values[SettingsKeys.lastBackupPath],
+      contains('backup.enc'),
+    );
+    expect(repository.values[SettingsKeys.lastBackupSizeBytes], '2048');
+    expect(container.read(settingsProvider).value!.lastBackupAt, timestamp);
+    expect(container.read(settingsProvider).value!.lastBackupSizeBytes, 2048);
   });
 
   test('rejects values outside the supported settings options', () async {

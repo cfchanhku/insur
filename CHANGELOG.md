@@ -9,6 +9,9 @@ All notable changes to Insurance Policy Manager are documented here. This projec
 - Standard Windows desktop runner scaffold for local development and builds.
 - Searchable client list with role filters, responsive client details, and create/edit forms.
 - Bilingual client-management UI and Archive/Settings navigation placeholders.
+- Encrypted backup and restore workflows, including overwrite confirmation and a pre-restore backup.
+- Local PDF exports for selected clients with bilingual labels and bundled fonts.
+- Backup metadata in Settings and audit records for backup, restore, and PDF export events.
 
 ### Changed
 
@@ -19,6 +22,9 @@ All notable changes to Insurance Policy Manager are documented here. This projec
 ### Fixed
 
 ### Security
+
+- PDF exports are not password-encrypted and cannot enforce print/copy restrictions; the export flow requires user acknowledgment before writing the file.
+- Restore audit events are written after the next successful unlock because restoring key material locks the key manager.
 
 ## [0.1.0] - 2026-10-19
 

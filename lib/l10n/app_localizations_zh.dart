@@ -938,6 +938,250 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get key_state_unlocked => 'unlocked';
+
+  @override
+  String get backup_title => 'Backup';
+
+  @override
+  String get backup_subtitle => 'Create an encrypted backup of your data';
+
+  @override
+  String get backup_info_card_title => 'Encrypted backup';
+
+  @override
+  String get backup_info_card_body =>
+      'Backups are encrypted with a passphrase you choose. Store this passphrase securely — without it, the backup cannot be restored.';
+
+  @override
+  String get backup_passphrase => 'Backup passphrase';
+
+  @override
+  String get backup_confirm_passphrase => 'Confirm backup passphrase';
+
+  @override
+  String get backup_passphrase_hint => 'At least 12 characters';
+
+  @override
+  String get backup_choose_destination => 'Choose destination';
+
+  @override
+  String backup_destination_selected(String path) {
+    return 'Destination: $path';
+  }
+
+  @override
+  String get backup_create => 'Create backup';
+
+  @override
+  String get backup_creating => 'Creating backup...';
+
+  @override
+  String get backup_success_title => 'Backup created';
+
+  @override
+  String backup_success_body(String path) {
+    return 'Backup saved to: $path';
+  }
+
+  @override
+  String get backup_error => 'Backup failed. Please try again.';
+
+  @override
+  String get backup_open_folder => 'Show saved location';
+
+  @override
+  String backup_last_backup(String date) {
+    return 'Last backup: $date';
+  }
+
+  @override
+  String backup_last_backup_size(String size) {
+    return 'Backup size: $size bytes';
+  }
+
+  @override
+  String get backup_never => 'No backups yet';
+
+  @override
+  String get backup_password_mismatch => 'Passphrases do not match';
+
+  @override
+  String get backup_destination_required => 'Choose a destination to continue';
+
+  @override
+  String get restore_title => 'Restore';
+
+  @override
+  String get restore_warning =>
+      'Restore will overwrite ALL current data. A pre-restore backup will be created automatically.';
+
+  @override
+  String get restore_select_file => 'Select backup file';
+
+  @override
+  String restore_file_selected(String name) {
+    return 'File: $name';
+  }
+
+  @override
+  String get restore_passphrase => 'Backup passphrase';
+
+  @override
+  String get restore_confirm_checkbox =>
+      'I understand that restoring will overwrite my current data';
+
+  @override
+  String get restore_action => 'Restore now';
+
+  @override
+  String get restore_restoring => 'Restoring...';
+
+  @override
+  String get restore_confirm_title => 'Restore from backup?';
+
+  @override
+  String get restore_confirm_body =>
+      'Your current data will be replaced. A pre-restore backup will be saved first. Continue?';
+
+  @override
+  String get restore_confirm_action => 'Restore';
+
+  @override
+  String get restore_success_title => 'Restore complete';
+
+  @override
+  String get restore_success_body =>
+      'Your data has been restored. Please sign in again.';
+
+  @override
+  String get restore_error =>
+      'Restore failed. Check the backup and passphrase, then try again.';
+
+  @override
+  String get restore_error_closed =>
+      'Please close any other instance of the app before restoring.';
+
+  @override
+  String get restore_file_required => 'Select a backup file to continue';
+
+  @override
+  String get settings_restore_backup => 'Restore from backup';
+
+  @override
+  String get export_pdf_title => 'Export PDF';
+
+  @override
+  String get export_pdf_subtitle => 'Select clients to export';
+
+  @override
+  String get export_pdf_select_all => 'Select all';
+
+  @override
+  String get export_pdf_no_selection => 'Select at least one client';
+
+  @override
+  String get export_pdf_language => 'PDF language';
+
+  @override
+  String get export_pdf_language_follow => 'Follow app';
+
+  @override
+  String get export_pdf_allow_print => 'Allow printing';
+
+  @override
+  String get export_pdf_password => 'PDF password';
+
+  @override
+  String get export_pdf_confirm_password => 'Confirm PDF password';
+
+  @override
+  String get export_pdf_password_hint => 'At least 8 characters';
+
+  @override
+  String get export_pdf_password_policy_note =>
+      'PDF password length is separate from your sign-in passphrase policy.';
+
+  @override
+  String get export_pdf_password_warning_title =>
+      'PDF password protection unavailable';
+
+  @override
+  String get export_pdf_password_warning_body =>
+      'This version cannot encrypt PDF files or restrict copying and printing. The exported file will contain sensitive client information and will NOT be password-protected. Continue only if you can store it securely.';
+
+  @override
+  String get export_pdf_password_warning_continue => 'Export unprotected PDF';
+
+  @override
+  String get export_pdf_export => 'Export PDF';
+
+  @override
+  String get export_pdf_exporting => 'Generating PDF...';
+
+  @override
+  String get export_pdf_success_title => 'PDF exported';
+
+  @override
+  String export_pdf_success_body(String path) {
+    return 'The PDF is not password-protected. Keep the file secure: $path';
+  }
+
+  @override
+  String get export_pdf_error => 'Export failed. Please try again.';
+
+  @override
+  String get export_pdf_open_file => 'Share or open PDF';
+
+  @override
+  String get export_pdf_empty_clients => 'No active clients to export';
+
+  @override
+  String get pdf_doc_title => 'Insurance Policy Overview';
+
+  @override
+  String pdf_generated_on(String date) {
+    return 'Generated on $date';
+  }
+
+  @override
+  String pdf_page(int current, int total) {
+    return 'Page $current of $total';
+  }
+
+  @override
+  String get pdf_section_client => 'Client';
+
+  @override
+  String get pdf_section_policies => 'Policies';
+
+  @override
+  String get pdf_section_plans => 'Plans';
+
+  @override
+  String get pdf_section_riders => 'Riders';
+
+  @override
+  String pdf_policy_title(String number) {
+    return 'Policy: $number';
+  }
+
+  @override
+  String pdf_plan_title(String name) {
+    return 'Plan: $name';
+  }
+
+  @override
+  String pdf_rider_title(String name) {
+    return 'Rider: $name';
+  }
+
+  @override
+  String get pdf_not_available => '—';
+
+  @override
+  String pdf_footer(String date, int current, int total) {
+    return 'Generated on $date · Page $current of $total';
+  }
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -1855,4 +2099,239 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get key_state_unlocked => '已解鎖';
+
+  @override
+  String get backup_title => '備份';
+
+  @override
+  String get backup_subtitle => '建立資料的加密備份';
+
+  @override
+  String get backup_info_card_title => '加密備份';
+
+  @override
+  String get backup_info_card_body => '備份以您選擇的密碼加密。請妥善保存此密碼——沒有它，備份將無法還原。';
+
+  @override
+  String get backup_passphrase => '備份密碼';
+
+  @override
+  String get backup_confirm_passphrase => '確認備份密碼';
+
+  @override
+  String get backup_passphrase_hint => '至少 12 個字元';
+
+  @override
+  String get backup_choose_destination => '選擇目的地';
+
+  @override
+  String backup_destination_selected(String path) {
+    return '目的地：$path';
+  }
+
+  @override
+  String get backup_create => '建立備份';
+
+  @override
+  String get backup_creating => '建立中...';
+
+  @override
+  String get backup_success_title => '備份已建立';
+
+  @override
+  String backup_success_body(String path) {
+    return '備份已儲存至：$path';
+  }
+
+  @override
+  String get backup_error => '備份失敗，請再試一次。';
+
+  @override
+  String get backup_open_folder => '查看儲存位置';
+
+  @override
+  String backup_last_backup(String date) {
+    return '上次備份：$date';
+  }
+
+  @override
+  String backup_last_backup_size(String size) {
+    return '備份大小：$size 位元組';
+  }
+
+  @override
+  String get backup_never => '尚無備份';
+
+  @override
+  String get backup_password_mismatch => '兩次輸入的密碼不一致';
+
+  @override
+  String get backup_destination_required => '請先選擇目的地';
+
+  @override
+  String get restore_title => '還原';
+
+  @override
+  String get restore_warning => '還原將覆寫目前所有資料。系統會先自動建立還原前備份。';
+
+  @override
+  String get restore_select_file => '選擇備份檔案';
+
+  @override
+  String restore_file_selected(String name) {
+    return '檔案：$name';
+  }
+
+  @override
+  String get restore_passphrase => '備份密碼';
+
+  @override
+  String get restore_confirm_checkbox => '我了解還原將覆寫目前資料';
+
+  @override
+  String get restore_action => '立即還原';
+
+  @override
+  String get restore_restoring => '還原中...';
+
+  @override
+  String get restore_confirm_title => '從備份還原？';
+
+  @override
+  String get restore_confirm_body => '目前資料將被取代，系統會先儲存還原前備份。是否繼續？';
+
+  @override
+  String get restore_confirm_action => '還原';
+
+  @override
+  String get restore_success_title => '還原完成';
+
+  @override
+  String get restore_success_body => '資料已還原。請重新登入。';
+
+  @override
+  String get restore_error => '還原失敗。請檢查備份檔案及密碼，然後再試。';
+
+  @override
+  String get restore_error_closed => '請先關閉任何其他應用程式實例。';
+
+  @override
+  String get restore_file_required => '請先選擇備份檔案';
+
+  @override
+  String get settings_restore_backup => '從備份還原';
+
+  @override
+  String get export_pdf_title => '匯出 PDF';
+
+  @override
+  String get export_pdf_subtitle => '選擇要匯出的客戶';
+
+  @override
+  String get export_pdf_select_all => '全選';
+
+  @override
+  String get export_pdf_no_selection => '請至少選擇一位客戶';
+
+  @override
+  String get export_pdf_language => 'PDF 語言';
+
+  @override
+  String get export_pdf_language_follow => '跟隨應用程式';
+
+  @override
+  String get export_pdf_allow_print => '允許列印';
+
+  @override
+  String get export_pdf_password => 'PDF 密碼';
+
+  @override
+  String get export_pdf_confirm_password => '確認 PDF 密碼';
+
+  @override
+  String get export_pdf_password_hint => '至少 8 個字元';
+
+  @override
+  String get export_pdf_password_policy_note => 'PDF 密碼長度與登入密碼政策分開。';
+
+  @override
+  String get export_pdf_password_warning_title => '目前無法提供 PDF 密碼保護';
+
+  @override
+  String get export_pdf_password_warning_body =>
+      '此版本無法加密 PDF，也無法限制複製或列印。匯出檔案將包含敏感客戶資料，且不會受到密碼保護。只有在能安全保存檔案時才繼續。';
+
+  @override
+  String get export_pdf_password_warning_continue => '匯出未加密 PDF';
+
+  @override
+  String get export_pdf_export => '匯出 PDF';
+
+  @override
+  String get export_pdf_exporting => '正在產生 PDF...';
+
+  @override
+  String get export_pdf_success_title => 'PDF 已匯出';
+
+  @override
+  String export_pdf_success_body(String path) {
+    return 'PDF 未受密碼保護。請妥善保管檔案：$path';
+  }
+
+  @override
+  String get export_pdf_error => '匯出失敗，請再試一次。';
+
+  @override
+  String get export_pdf_open_file => '分享或開啟 PDF';
+
+  @override
+  String get export_pdf_empty_clients => '沒有可供匯出的有效客戶';
+
+  @override
+  String get pdf_doc_title => '保險保障總覽';
+
+  @override
+  String pdf_generated_on(String date) {
+    return '產生於 $date';
+  }
+
+  @override
+  String pdf_page(int current, int total) {
+    return '第 $current / $total 頁';
+  }
+
+  @override
+  String get pdf_section_client => '客戶';
+
+  @override
+  String get pdf_section_policies => '保單';
+
+  @override
+  String get pdf_section_plans => '計劃';
+
+  @override
+  String get pdf_section_riders => '附加保障';
+
+  @override
+  String pdf_policy_title(String number) {
+    return '保單：$number';
+  }
+
+  @override
+  String pdf_plan_title(String name) {
+    return '計劃：$name';
+  }
+
+  @override
+  String pdf_rider_title(String name) {
+    return '附加保障：$name';
+  }
+
+  @override
+  String get pdf_not_available => '—';
+
+  @override
+  String pdf_footer(String date, int current, int total) {
+    return '產生於 $date · 第 $current / $total 頁';
+  }
 }

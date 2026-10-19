@@ -13,7 +13,10 @@ abstract class BackupFileService {
   Future<String?> pickDirectory();
 
   /// Prompts for a backup destination, returning null when cancelled.
-  Future<String?> pickSaveLocation({required String suggestedName});
+  Future<String?> pickSaveLocation({
+    required String suggestedName,
+    String extension = 'enc',
+  });
 
   /// Prompts for a backup file, returning null when cancelled.
   Future<String?> pickOpenFile();
@@ -49,12 +52,15 @@ class PlatformBackupFileService implements BackupFileService {
   }
 
   @override
-  Future<String?> pickSaveLocation({required String suggestedName}) async {
+  Future<String?> pickSaveLocation({
+    required String suggestedName,
+    String extension = 'enc',
+  }) async {
     try {
       return await FilePicker.platform.saveFile(
         fileName: suggestedName,
         type: FileType.custom,
-        allowedExtensions: <String>['enc'],
+        allowedExtensions: <String>[extension],
       );
     } on PlatformException {
       throw const BackupIoException('Unable to choose backup destination');

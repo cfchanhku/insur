@@ -105,6 +105,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }) async {
     ref.read(keyManagerStateProvider.notifier).state = keyManager.state;
     final audit = await ref.read(auditRepositoryProvider.future);
+    final restoredSchema = ref.read(pendingRestoreAuditSchemaProvider);
+    if (restoredSchema != null) {
+      await audit.append(
+        eventType: AuditEventType.restoreDb,
+        metadata: <String, Object?>{'schema_version': restoredSchema},
+      );
+      ref.read(pendingRestoreAuditSchemaProvider.notifier).state = null;
+    }
     await audit.append(
       eventType: AuditEventType.loginSuccess,
       metadata: biometric ? <String, Object?>{'method': 'biometric'} : null,
