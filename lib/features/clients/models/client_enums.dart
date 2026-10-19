@@ -8,9 +8,9 @@ enum ClientRole {
 
   /// Returns the localization key used to resolve this role's label.
   String get labelKey => switch (this) {
-        ClientRole.holder => 'client_role_holder',
-        ClientRole.insured => 'client_role_insured',
-      };
+    ClientRole.holder => 'client_role_holder',
+    ClientRole.insured => 'client_role_insured',
+  };
 
   /// Returns the stable lowercase representation used in serialized data.
   String get value => name;
@@ -38,10 +38,10 @@ enum Gender {
 
   /// Returns the localization key used to resolve this gender's label.
   String get labelKey => switch (this) {
-        Gender.male => 'gender_male',
-        Gender.female => 'gender_female',
-        Gender.other => 'gender_other',
-      };
+    Gender.male => 'gender_male',
+    Gender.female => 'gender_female',
+    Gender.other => 'gender_other',
+  };
 
   /// Returns the stable lowercase representation used in serialized data.
   String get value => name;

@@ -13,8 +13,8 @@ class AutoLockTimer {
   AutoLockTimer({
     required void Function() onLock,
     Duration duration = const Duration(minutes: 15),
-  })  : _onLock = onLock,
-        _duration = duration;
+  }) : _onLock = onLock,
+       _duration = duration;
 
   final void Function() _onLock;
   final Duration _duration;

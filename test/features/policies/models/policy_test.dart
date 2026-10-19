@@ -42,10 +42,7 @@ void main() {
     });
 
     test('rejects an unknown serialized status', () {
-      expect(
-        () => PolicyStatus.fromString('unknown'),
-        throwsArgumentError,
-      );
+      expect(() => PolicyStatus.fromString('unknown'), throwsArgumentError);
     });
   });
 
@@ -94,9 +91,7 @@ void main() {
 
     test('rejects an effective date after the first premium date', () {
       expect(
-        () => samplePolicy.copyWith(
-          effectiveDate: DateTime.utc(2026, 9, 3),
-        ),
+        () => samplePolicy.copyWith(effectiveDate: DateTime.utc(2026, 9, 3)),
         throwsA(isA<AssertionError>()),
       );
     });
@@ -106,10 +101,7 @@ void main() {
 
       expect(
         samplePolicy
-            .copyWith(
-              effectiveDate: date,
-              firstPremiumDate: date,
-            )
+            .copyWith(effectiveDate: date, firstPremiumDate: date)
             .effectiveDate,
         date,
       );
@@ -211,10 +203,11 @@ void main() {
 
       expect(restored.effectiveDate.isAtSameMomentAs(expected), isTrue);
       expect(
-          restored.firstPremiumDate.isAtSameMomentAs(
-            DateTime.utc(2026, 9, 2, 12),
-          ),
-          isTrue);
+        restored.firstPremiumDate.isAtSameMomentAs(
+          DateTime.utc(2026, 9, 2, 12),
+        ),
+        isTrue,
+      );
       expect(restored.effectiveDate.isUtc, isFalse);
     });
 

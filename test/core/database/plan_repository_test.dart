@@ -96,14 +96,19 @@ void main() {
     });
 
     test('encrypts sensitive fields and emits a create audit entry', () async {
-      final saved = await repository.save(_plan(firstPolicyId));
+      final saved = await repository.save(
+        _plan(firstPolicyId).copyWith(deductible: 500),
+      );
       final row = await rawPlan(saved.id!);
       final encryptedCoverage = row[Schema.coverageAmount]! as String;
+      final encryptedDeductible = row[Schema.deductible]! as String;
       final encryptedNotes = row[Schema.notes]! as String;
 
       expect(encryptedCoverage, isNot('1000000.0'));
+      expect(encryptedDeductible, isNot('500.0'));
       expect(encryptedNotes, isNot('Synthetic plan note'));
       expect(base64Decode(encryptedCoverage), isA<Uint8List>());
+      expect(base64Decode(encryptedDeductible), isA<Uint8List>());
       expect(base64Decode(encryptedNotes), isA<Uint8List>());
       expect(await findPlanAudit(saved.id!, AuditEventType.create), isNotNull);
     });
@@ -178,6 +183,14 @@ void main() {
 
     test('returns null when the plan does not exist', () async {
       expect(await repository.findById('missing-plan'), isNull);
+    });
+
+    test('round-trips an encrypted plan deductible', () async {
+      final inserted = await repository.save(
+        _plan(firstPolicyId).copyWith(deductible: 500),
+      );
+
+      expect((await repository.findById(inserted.id!))?.deductible, 500);
     });
   });
 

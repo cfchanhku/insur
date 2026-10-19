@@ -21,6 +21,10 @@ import '../core/security/field_crypto.dart';
 import '../core/security/key_manager.dart';
 import '../features/clients/models/client.dart';
 import '../features/clients/models/client_enums.dart';
+import '../features/plans/models/plan.dart';
+import '../features/plans/models/plan_category.dart';
+import '../features/policies/models/policy.dart';
+import '../features/riders/models/rider.dart';
 
 /// Platform-backed encrypted storage for vault key material.
 final secureStorageProvider = Provider<FlutterSecureStorage>(
@@ -202,6 +206,68 @@ final riderRepositoryProvider = FutureProvider<RiderRepository>((
   final fieldCrypto = await ref.watch(fieldCryptoProvider.future);
   final audit = await ref.watch(auditRepositoryProvider.future);
   return RiderRepository(db: database, fieldCrypto: fieldCrypto, audit: audit);
+});
+
+/// Loads active policies belonging to one client.
+final policiesByClientProvider = FutureProvider.family<List<Policy>, String>((
+  Ref ref,
+  String clientId,
+) async {
+  final repository = await ref.watch(policyRepositoryProvider.future);
+  return repository.findByClientId(clientId);
+});
+
+/// Loads one policy by UUID.
+final policyByIdProvider = FutureProvider.family<Policy?, String>((
+  Ref ref,
+  String id,
+) async {
+  final repository = await ref.watch(policyRepositoryProvider.future);
+  return repository.findById(id);
+});
+
+/// Loads active plans belonging to one policy.
+final plansByPolicyProvider = FutureProvider.family<List<Plan>, String>((
+  Ref ref,
+  String policyId,
+) async {
+  final repository = await ref.watch(planRepositoryProvider.future);
+  return repository.findByPolicyId(policyId);
+});
+
+/// Loads one plan by UUID.
+final planByIdProvider = FutureProvider.family<Plan?, String>((
+  Ref ref,
+  String id,
+) async {
+  final repository = await ref.watch(planRepositoryProvider.future);
+  return repository.findById(id);
+});
+
+/// Loads active riders belonging to one plan.
+final ridersByPlanProvider = FutureProvider.family<List<Rider>, String>((
+  Ref ref,
+  String planId,
+) async {
+  final repository = await ref.watch(riderRepositoryProvider.future);
+  return repository.findByPlanId(planId);
+});
+
+/// Loads one rider by UUID.
+final riderByIdProvider = FutureProvider.family<Rider?, String>((
+  Ref ref,
+  String id,
+) async {
+  final repository = await ref.watch(riderRepositoryProvider.future);
+  return repository.findById(id);
+});
+
+/// Category selected by a policy-specific plan browser.
+final planCategoryFilterProvider = StateProvider.family<PlanCategory?, String>((
+  Ref ref,
+  String policyId,
+) {
+  return null;
 });
 
 /// Resolves the platform's application-support directory for the local DB.

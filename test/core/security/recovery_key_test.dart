@@ -19,8 +19,9 @@ void main() {
   late Uint8List differentSaltKek;
 
   setUpAll(() async {
-    salt =
-        Uint8List.fromList(List<int>.filled(RecoveryKey.saltLength, _testByte));
+    salt = Uint8List.fromList(
+      List<int>.filled(RecoveryKey.saltLength, _testByte),
+    );
     differentSalt = Uint8List.fromList(salt)..[0] ^= 0x01;
     masterKey = Uint8List.fromList(List<int>.filled(32, 0x42));
     recoveryKek = await RecoveryKey.deriveRecoveryKek(
@@ -56,10 +57,7 @@ void main() {
     });
 
     test('returns 32 normalized Crockford characters', () {
-      expect(
-        RecoveryKey.normalize(RecoveryKey.generate()),
-        hasLength(32),
-      );
+      expect(RecoveryKey.normalize(RecoveryKey.generate()), hasLength(32));
     });
 
     test('generates different keys on consecutive calls', () {
@@ -104,8 +102,9 @@ void main() {
   group('RecoveryKey.verifyFormat', () {
     test('accepts a valid grouped key', () {
       expect(
-          RecoveryKey.verifyFormat('0123-4567-89AB-CDEF-GHJK-MNPQ-RSTV-WXYZ'),
-          isTrue);
+        RecoveryKey.verifyFormat('0123-4567-89AB-CDEF-GHJK-MNPQ-RSTV-WXYZ'),
+        isTrue,
+      );
     });
 
     test('rejects invalid input without throwing', () {
@@ -286,9 +285,7 @@ void main() {
     });
 
     test('exception text does not contain the recovery key', () {
-      const error = RecoveryKeyException(
-        'Recovery key authentication failed',
-      );
+      const error = RecoveryKeyException('Recovery key authentication failed');
 
       expect(error.toString(), isNot(contains(_recoveryKey)));
     });

@@ -69,6 +69,231 @@ class AppLocalizationsZh extends AppLocalizations {
   String get plan_category_other => 'Other';
 
   @override
+  String get policy_detail_title => 'Policy';
+
+  @override
+  String get policy_info_section => 'Policy information';
+
+  @override
+  String get policy_company => 'Insurer';
+
+  @override
+  String get policy_no => 'Policy number';
+
+  @override
+  String policy_card_summary(
+    String company,
+    String effectiveDate,
+    String status,
+  ) {
+    return '$company · $effectiveDate · $status';
+  }
+
+  @override
+  String get policy_effective_date => 'Effective date';
+
+  @override
+  String get policy_first_premium_date => 'First premium date';
+
+  @override
+  String get policy_currency => 'Currency';
+
+  @override
+  String get policy_status => 'Status';
+
+  @override
+  String get policy_notes => 'Notes';
+
+  @override
+  String get policy_plans_section => 'Plans';
+
+  @override
+  String get policy_add_plan => 'Add plan';
+
+  @override
+  String get policy_no_plans => 'No plans yet';
+
+  @override
+  String get policy_edit => 'Edit';
+
+  @override
+  String get policy_archive => 'Archive';
+
+  @override
+  String get policy_archive_confirm_title => 'Archive policy?';
+
+  @override
+  String get policy_archive_confirm_body =>
+      'The policy will be hidden. You can restore it from the Archive.';
+
+  @override
+  String get policy_archive_confirm_action => 'Archive';
+
+  @override
+  String get policy_form_title_new => 'New policy';
+
+  @override
+  String get policy_form_title_edit => 'Edit policy';
+
+  @override
+  String get policy_form_save => 'Save';
+
+  @override
+  String get policy_form_saving => 'Saving...';
+
+  @override
+  String get policy_form_cancel => 'Cancel';
+
+  @override
+  String get policy_form_saved => 'Policy saved';
+
+  @override
+  String get policy_form_error_company_required => 'Insurer is required';
+
+  @override
+  String get policy_form_error_policy_no_required =>
+      'Policy number is required';
+
+  @override
+  String get policy_form_error_currency_invalid =>
+      'Currency must be 3 uppercase letters';
+
+  @override
+  String get policy_form_error_dates =>
+      'First premium date must be on or after effective date';
+
+  @override
+  String policy_form_error_save(String message) {
+    return 'Failed to save: $message';
+  }
+
+  @override
+  String get policy_not_found => 'Policy not found';
+
+  @override
+  String get plan_detail_title => 'Plan';
+
+  @override
+  String plan_card_summary(String category, String coverage) {
+    return '$category · $coverage';
+  }
+
+  @override
+  String get plan_category => 'Category';
+
+  @override
+  String get plan_name => 'Plan name';
+
+  @override
+  String get plan_coverage_amount => 'Coverage amount';
+
+  @override
+  String get plan_payment_term => 'Payment term';
+
+  @override
+  String get plan_coverage_period => 'Coverage period';
+
+  @override
+  String get plan_deductible => 'Deductible';
+
+  @override
+  String get plan_notes => 'Notes';
+
+  @override
+  String get plan_add_rider => 'Add rider';
+
+  @override
+  String get plan_riders_section => 'Riders';
+
+  @override
+  String get plan_no_riders => 'No riders';
+
+  @override
+  String get plan_remove_rider => 'Remove';
+
+  @override
+  String get plan_form_title_new => 'New plan';
+
+  @override
+  String get plan_form_title_edit => 'Edit plan';
+
+  @override
+  String get plan_form_save => 'Save';
+
+  @override
+  String get plan_form_saving => 'Saving...';
+
+  @override
+  String get plan_form_cancel => 'Cancel';
+
+  @override
+  String get plan_form_saved => 'Plan saved';
+
+  @override
+  String get plan_form_error_category_required => 'Category is required';
+
+  @override
+  String get plan_form_error_coverage_invalid =>
+      'Amount must be zero or greater';
+
+  @override
+  String get plan_form_error_name_required => 'Plan name is required';
+
+  @override
+  String plan_form_error_save(String message) {
+    return 'Failed to save: $message';
+  }
+
+  @override
+  String get plan_form_error_partial_save =>
+      'The plan was saved, but some rider changes may not have been saved. Please review the plan before continuing.';
+
+  @override
+  String get plan_not_found => 'Plan not found';
+
+  @override
+  String get rider_form_title => 'Rider';
+
+  @override
+  String get rider_name => 'Rider name';
+
+  @override
+  String get rider_coverage_amount => 'Coverage amount';
+
+  @override
+  String get rider_payment_term => 'Payment term';
+
+  @override
+  String get rider_deductible => 'Deductible';
+
+  @override
+  String get rider_waiting_period => 'Waiting period';
+
+  @override
+  String get rider_error_name_required => 'Rider name is required';
+
+  @override
+  String get currency_hkd => 'HKD';
+
+  @override
+  String get currency_usd => 'USD';
+
+  @override
+  String get currency_cny => 'CNY';
+
+  @override
+  String get currency_eur => 'EUR';
+
+  @override
+  String get currency_gbp => 'GBP';
+
+  @override
+  String get currency_jpy => 'JPY';
+
+  @override
+  String get currency_sgd => 'SGD';
+
+  @override
   String get splash_loading => 'Loading...';
 
   @override
@@ -416,6 +641,225 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get plan_category_other => '其他';
+
+  @override
+  String get policy_detail_title => '保單';
+
+  @override
+  String get policy_info_section => '保單資料';
+
+  @override
+  String get policy_company => '承保公司';
+
+  @override
+  String get policy_no => '保單編號';
+
+  @override
+  String policy_card_summary(
+    String company,
+    String effectiveDate,
+    String status,
+  ) {
+    return '$company · $effectiveDate · $status';
+  }
+
+  @override
+  String get policy_effective_date => '生效日期';
+
+  @override
+  String get policy_first_premium_date => '首期保費日';
+
+  @override
+  String get policy_currency => '貨幣';
+
+  @override
+  String get policy_status => '狀態';
+
+  @override
+  String get policy_notes => '備註';
+
+  @override
+  String get policy_plans_section => '計劃';
+
+  @override
+  String get policy_add_plan => '新增計劃';
+
+  @override
+  String get policy_no_plans => '尚無計劃';
+
+  @override
+  String get policy_edit => '編輯';
+
+  @override
+  String get policy_archive => '封存';
+
+  @override
+  String get policy_archive_confirm_title => '封存保單？';
+
+  @override
+  String get policy_archive_confirm_body => '此保單將被隱藏。您可從封存區還原。';
+
+  @override
+  String get policy_archive_confirm_action => '封存';
+
+  @override
+  String get policy_form_title_new => '新增保單';
+
+  @override
+  String get policy_form_title_edit => '編輯保單';
+
+  @override
+  String get policy_form_save => '儲存';
+
+  @override
+  String get policy_form_saving => '儲存中...';
+
+  @override
+  String get policy_form_cancel => '取消';
+
+  @override
+  String get policy_form_saved => '保單已儲存';
+
+  @override
+  String get policy_form_error_company_required => '承保公司為必填';
+
+  @override
+  String get policy_form_error_policy_no_required => '保單編號為必填';
+
+  @override
+  String get policy_form_error_currency_invalid => '貨幣須為 3 個大寫字母';
+
+  @override
+  String get policy_form_error_dates => '首期保費日不得早於生效日期';
+
+  @override
+  String policy_form_error_save(String message) {
+    return '儲存失敗：$message';
+  }
+
+  @override
+  String get policy_not_found => '找不到保單';
+
+  @override
+  String get plan_detail_title => '計劃';
+
+  @override
+  String plan_card_summary(String category, String coverage) {
+    return '$category · $coverage';
+  }
+
+  @override
+  String get plan_category => '類別';
+
+  @override
+  String get plan_name => '計劃名稱';
+
+  @override
+  String get plan_coverage_amount => '保障額';
+
+  @override
+  String get plan_payment_term => '供款期';
+
+  @override
+  String get plan_coverage_period => '保障期';
+
+  @override
+  String get plan_deductible => '自負額';
+
+  @override
+  String get plan_notes => '備註';
+
+  @override
+  String get plan_add_rider => '新增附加保障';
+
+  @override
+  String get plan_riders_section => '附加保障';
+
+  @override
+  String get plan_no_riders => '尚無附加保障';
+
+  @override
+  String get plan_remove_rider => '移除';
+
+  @override
+  String get plan_form_title_new => '新增計劃';
+
+  @override
+  String get plan_form_title_edit => '編輯計劃';
+
+  @override
+  String get plan_form_save => '儲存';
+
+  @override
+  String get plan_form_saving => '儲存中...';
+
+  @override
+  String get plan_form_cancel => '取消';
+
+  @override
+  String get plan_form_saved => '計劃已儲存';
+
+  @override
+  String get plan_form_error_category_required => '類別為必填';
+
+  @override
+  String get plan_form_error_coverage_invalid => '金額必須為零或以上';
+
+  @override
+  String get plan_form_error_name_required => '計劃名稱為必填';
+
+  @override
+  String plan_form_error_save(String message) {
+    return '儲存失敗：$message';
+  }
+
+  @override
+  String get plan_form_error_partial_save => '計劃已儲存，但部分附加保障變更可能未儲存。請檢查計劃。';
+
+  @override
+  String get plan_not_found => '找不到計劃';
+
+  @override
+  String get rider_form_title => '附加保障';
+
+  @override
+  String get rider_name => '保障名稱';
+
+  @override
+  String get rider_coverage_amount => '保障額';
+
+  @override
+  String get rider_payment_term => '供款期';
+
+  @override
+  String get rider_deductible => '自負額';
+
+  @override
+  String get rider_waiting_period => '等候期';
+
+  @override
+  String get rider_error_name_required => '保障名稱為必填';
+
+  @override
+  String get currency_hkd => 'HKD';
+
+  @override
+  String get currency_usd => 'USD';
+
+  @override
+  String get currency_cny => 'CNY';
+
+  @override
+  String get currency_eur => 'EUR';
+
+  @override
+  String get currency_gbp => 'GBP';
+
+  @override
+  String get currency_jpy => 'JPY';
+
+  @override
+  String get currency_sgd => 'SGD';
 
   @override
   String get splash_loading => '載入中...';

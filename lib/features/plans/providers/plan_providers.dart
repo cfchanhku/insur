@@ -9,5 +9,5 @@ import '../../../core/database/repositories/plan_repository.dart';
 /// Provides the plan repository.
 final Provider<PlanRepository> planRepositoryProvider =
     Provider<PlanRepository>((ref) {
-  throw UnimplementedError('planRepositoryProvider');
-});
+      throw UnimplementedError('planRepositoryProvider');
+    });

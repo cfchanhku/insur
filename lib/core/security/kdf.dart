@@ -55,9 +55,7 @@ class Kdf {
       );
     }
 
-    final passphraseBytes = Uint8List.fromList(
-      utf8.encode(passphrase),
-    );
+    final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
     try {
       final algorithm = Argon2id(
         memory: memoryKiB,
@@ -97,10 +95,7 @@ class Kdf {
     required Uint8List salt,
     required Uint8List expectedKey,
   }) async {
-    final actualKey = await deriveMasterKey(
-      passphrase: passphrase,
-      salt: salt,
-    );
+    final actualKey = await deriveMasterKey(passphrase: passphrase, salt: salt);
     try {
       return _constantTimeEquals(actualKey, expectedKey);
     } finally {

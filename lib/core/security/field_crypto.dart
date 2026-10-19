@@ -125,11 +125,7 @@ class FieldCrypto {
     late final List<int> plainTextBytes;
     try {
       plainTextBytes = await algorithm.decrypt(
-        SecretBox(
-          cipherText,
-          nonce: nonce,
-          mac: Mac(macBytes),
-        ),
+        SecretBox(cipherText, nonce: nonce, mac: Mac(macBytes)),
         secretKey: SecretKey(_fieldKey),
         aad: aad,
       );

@@ -65,6 +65,12 @@ class PlanRepository {
         fieldName: Schema.coverageAmount,
         recordId: id,
       ),
+      Schema.deductible: await _fieldCrypto.encryptNullable(
+        plaintext: saved.deductible?.toString(),
+        entityType: _entityType,
+        fieldName: Schema.deductible,
+        recordId: id,
+      ),
       Schema.paymentTerm: saved.paymentTerm,
       Schema.coveragePeriod: saved.coveragePeriod,
       Schema.notes: await _fieldCrypto.encryptNullable(
@@ -222,11 +228,16 @@ class PlanRepository {
       Schema.coverageAmount,
       id,
     );
+    final deductible = await _decryptNullable(row, Schema.deductible, id);
     final parsedCoverage = coverageAmount == null
         ? null
         : double.tryParse(coverageAmount);
-    if (coverageAmount != null && parsedCoverage == null) {
-      throw StateError('Stored plan coverage amount is invalid');
+    final parsedDeductible = deductible == null
+        ? null
+        : double.tryParse(deductible);
+    if ((coverageAmount != null && parsedCoverage == null) ||
+        (deductible != null && parsedDeductible == null)) {
+      throw StateError('Stored plan amount is invalid');
     }
     return Plan(
       id: id,
@@ -234,6 +245,7 @@ class PlanRepository {
       category: PlanCategory.fromString(_requiredString(row, Schema.category)),
       planName: _requiredString(row, Schema.planName),
       coverageAmount: parsedCoverage,
+      deductible: parsedDeductible,
       paymentTerm: _optionalString(row, Schema.paymentTerm),
       coveragePeriod: _optionalString(row, Schema.coveragePeriod),
       notes: await _decryptNullable(row, Schema.notes, id),

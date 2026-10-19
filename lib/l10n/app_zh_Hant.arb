@@ -20,6 +20,112 @@
   "plan_category_accident": "意外",
   "plan_category_savings": "儲蓄",
   "plan_category_other": "其他",
+  "policy_detail_title": "保單",
+  "policy_info_section": "保單資料",
+  "policy_company": "承保公司",
+  "policy_no": "保單編號",
+  "policy_card_summary": "{company} · {effectiveDate} · {status}",
+  "@policy_card_summary": {
+    "placeholders": {
+      "company": {
+        "type": "String"
+      },
+      "effectiveDate": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "policy_effective_date": "生效日期",
+  "policy_first_premium_date": "首期保費日",
+  "policy_currency": "貨幣",
+  "policy_status": "狀態",
+  "policy_notes": "備註",
+  "policy_plans_section": "計劃",
+  "policy_add_plan": "新增計劃",
+  "policy_no_plans": "尚無計劃",
+  "policy_edit": "編輯",
+  "policy_archive": "封存",
+  "policy_archive_confirm_title": "封存保單？",
+  "policy_archive_confirm_body": "此保單將被隱藏。您可從封存區還原。",
+  "policy_archive_confirm_action": "封存",
+  "policy_form_title_new": "新增保單",
+  "policy_form_title_edit": "編輯保單",
+  "policy_form_save": "儲存",
+  "policy_form_saving": "儲存中...",
+  "policy_form_cancel": "取消",
+  "policy_form_saved": "保單已儲存",
+  "policy_form_error_company_required": "承保公司為必填",
+  "policy_form_error_policy_no_required": "保單編號為必填",
+  "policy_form_error_currency_invalid": "貨幣須為 3 個大寫字母",
+  "policy_form_error_dates": "首期保費日不得早於生效日期",
+  "policy_form_error_save": "儲存失敗：{message}",
+  "@policy_form_error_save": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "policy_not_found": "找不到保單",
+  "plan_detail_title": "計劃",
+  "plan_card_summary": "{category} · {coverage}",
+  "@plan_card_summary": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "coverage": {
+        "type": "String"
+      }
+    }
+  },
+  "plan_category": "類別",
+  "plan_name": "計劃名稱",
+  "plan_coverage_amount": "保障額",
+  "plan_payment_term": "供款期",
+  "plan_coverage_period": "保障期",
+  "plan_deductible": "自負額",
+  "plan_notes": "備註",
+  "plan_add_rider": "新增附加保障",
+  "plan_riders_section": "附加保障",
+  "plan_no_riders": "尚無附加保障",
+  "plan_remove_rider": "移除",
+  "plan_form_title_new": "新增計劃",
+  "plan_form_title_edit": "編輯計劃",
+  "plan_form_save": "儲存",
+  "plan_form_saving": "儲存中...",
+  "plan_form_cancel": "取消",
+  "plan_form_saved": "計劃已儲存",
+  "plan_form_error_category_required": "類別為必填",
+  "plan_form_error_coverage_invalid": "金額必須為零或以上",
+  "plan_form_error_name_required": "計劃名稱為必填",
+  "plan_form_error_save": "儲存失敗：{message}",
+  "@plan_form_error_save": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "plan_form_error_partial_save": "計劃已儲存，但部分附加保障變更可能未儲存。請檢查計劃。",
+  "plan_not_found": "找不到計劃",
+  "rider_form_title": "附加保障",
+  "rider_name": "保障名稱",
+  "rider_coverage_amount": "保障額",
+  "rider_payment_term": "供款期",
+  "rider_deductible": "自負額",
+  "rider_waiting_period": "等候期",
+  "rider_error_name_required": "保障名稱為必填",
+  "currency_hkd": "HKD",
+  "currency_usd": "USD",
+  "currency_cny": "CNY",
+  "currency_eur": "EUR",
+  "currency_gbp": "GBP",
+  "currency_jpy": "JPY",
+  "currency_sgd": "SGD",
   "splash_loading": "載入中...",
   "setup_title": "設定",
   "setup_subtitle": "建立密碼以保護您的資料",

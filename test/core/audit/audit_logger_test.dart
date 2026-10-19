@@ -8,21 +8,15 @@ void main() {
   group('AuditLogger — append', () {
     test('first entry uses the genesis hash', () async {
       final logger = AuditLogger();
-      final entry = await logger.append(
-        eventType: AuditEventType.appSetup,
-      );
+      final entry = await logger.append(eventType: AuditEventType.appSetup);
 
       expect(entry.prevHash, HashChain.genesisHash);
     });
 
     test('second entry links to the first entry hash', () async {
       final logger = AuditLogger();
-      final first = await logger.append(
-        eventType: AuditEventType.loginSuccess,
-      );
-      final second = await logger.append(
-        eventType: AuditEventType.logout,
-      );
+      final first = await logger.append(eventType: AuditEventType.loginSuccess);
+      final second = await logger.append(eventType: AuditEventType.logout);
 
       expect(second.prevHash, first.entryHash);
     });
@@ -37,10 +31,13 @@ void main() {
       );
 
       expect(
-          entry.id,
-          matches(RegExp(
+        entry.id,
+        matches(
+          RegExp(
             r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
-          )));
+          ),
+        ),
+      );
       expect(entry.timestamp.isUtc, isTrue);
       expect(entry.eventType, AuditEventType.create);
       expect(entry.entityType, 'client');
@@ -104,39 +101,39 @@ void main() {
 
     test('updates length and lastHash after appends', () async {
       final logger = AuditLogger();
-      final first = await logger.append(
-        eventType: AuditEventType.create,
-      );
+      final first = await logger.append(eventType: AuditEventType.create);
       expect(logger.length, 1);
       expect(logger.lastHash, first.entryHash);
 
-      final second = await logger.append(
-        eventType: AuditEventType.update,
-      );
+      final second = await logger.append(eventType: AuditEventType.update);
       expect(logger.length, 2);
       expect(logger.lastHash, second.entryHash);
     });
   });
 
   group('AuditEntry', () {
-    test('round-trips through JSON without exposing metadata in toString',
-        () async {
-      final logger = AuditLogger();
-      final entry = await logger.append(
-        eventType: AuditEventType.exportPdf,
-        entityType: 'policy',
-        entityId: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
-        metadata: <String, Object?>{'count': 2},
-      );
-      final restored = AuditEntry.fromJson(entry.toJson());
+    test(
+      'round-trips through JSON without exposing metadata in toString',
+      () async {
+        final logger = AuditLogger();
+        final entry = await logger.append(
+          eventType: AuditEventType.exportPdf,
+          entityType: 'policy',
+          entityId: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
+          metadata: <String, Object?>{'count': 2},
+        );
+        final restored = AuditEntry.fromJson(entry.toJson());
 
-      expect(restored, entry);
-      expect(entry.toJson()['timestamp'], endsWith('Z'));
-      expect(entry.toString(),
-          'AuditEntry(${entry.id}, export_pdf, ${entry.timestamp})');
-      expect(entry.toString(), isNot(contains('count')));
-      expect(entry.toString(), isNot(contains('policy')));
-    });
+        expect(restored, entry);
+        expect(entry.toJson()['timestamp'], endsWith('Z'));
+        expect(
+          entry.toString(),
+          'AuditEntry(${entry.id}, export_pdf, ${entry.timestamp})',
+        );
+        expect(entry.toString(), isNot(contains('count')));
+        expect(entry.toString(), isNot(contains('policy')));
+      },
+    );
 
     test('rejects malformed UUIDs while parsing JSON', () async {
       final entry = await AuditLogger().append(

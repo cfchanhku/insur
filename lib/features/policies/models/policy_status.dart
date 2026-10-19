@@ -11,10 +11,10 @@ enum PolicyStatus {
 
   /// Returns the localization key used to resolve this status label.
   String get labelKey => switch (this) {
-        PolicyStatus.active => 'policy_status_active',
-        PolicyStatus.lapsed => 'policy_status_lapsed',
-        PolicyStatus.surrendered => 'policy_status_surrendered',
-      };
+    PolicyStatus.active => 'policy_status_active',
+    PolicyStatus.lapsed => 'policy_status_lapsed',
+    PolicyStatus.surrendered => 'policy_status_surrendered',
+  };
 
   /// Returns the stable lowercase representation used in serialized data.
   String get value => name;

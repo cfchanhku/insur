@@ -75,10 +75,7 @@ class CrockfordBase32 {
   }
 
   /// Inserts a hyphen after each [groupSize] characters.
-  static String groupWithHyphens(
-    String ungrouped, {
-    int groupSize = 4,
-  }) {
+  static String groupWithHyphens(String ungrouped, {int groupSize = 4}) {
     if (groupSize <= 0) {
       throw ArgumentError.value(groupSize, 'groupSize', 'Must be positive');
     }

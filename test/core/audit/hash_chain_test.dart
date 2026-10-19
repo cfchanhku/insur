@@ -210,8 +210,10 @@ void main() {
         metadata: <String, Object?>{'source': 'unit_test', 'count': 2},
       );
 
-      expect(hash,
-          '3af463e809d364fa8664d684dd3da664a948f88b787c6de519d44d4b5a909f80');
+      expect(
+        hash,
+        '3af463e809d364fa8664d684dd3da664a948f88b787c6de519d44d4b5a909f80',
+      );
     });
   });
 

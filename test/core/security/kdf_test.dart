@@ -65,10 +65,7 @@ void main() {
   group('Kdf.deriveMasterKey — input validation', () {
     test('rejects a passphrase shorter than twelve characters', () {
       expect(
-        () => Kdf.deriveMasterKey(
-          passphrase: 'too short',
-          salt: sampleSalt,
-        ),
+        () => Kdf.deriveMasterKey(passphrase: 'too short', salt: sampleSalt),
         throwsArgumentError,
       );
     });
@@ -93,15 +90,17 @@ void main() {
       );
     });
 
-    test('accepts a twelve-character passphrase and exact-length salt',
-        () async {
-      final key = await Kdf.deriveMasterKey(
-        passphrase: '123456789012',
-        salt: sampleSalt,
-      );
+    test(
+      'accepts a twelve-character passphrase and exact-length salt',
+      () async {
+        final key = await Kdf.deriveMasterKey(
+          passphrase: '123456789012',
+          salt: sampleSalt,
+        );
 
-      expect(key, hasLength(Kdf.keyLength));
-    });
+        expect(key, hasLength(Kdf.keyLength));
+      },
+    );
   });
 
   group('Kdf.deriveMasterKey — determinism', () {
@@ -222,10 +221,7 @@ void main() {
 
   group('Kdf — security hygiene', () {
     test('does not include the passphrase in parameter diagnostics', () {
-      expect(
-        Kdf.paramsDescription(),
-        isNot(contains(samplePassphrase)),
-      );
+      expect(Kdf.paramsDescription(), isNot(contains(samplePassphrase)));
     });
 
     test('does not return the passphrase bytes as the derived key', () {

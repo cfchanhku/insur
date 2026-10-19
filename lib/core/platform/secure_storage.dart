@@ -13,10 +13,7 @@ class PlatformSecureStorage {
   }
 
   /// Securely stores [value] under [key].
-  Future<void> write({
-    required String key,
-    required Uint8List value,
-  }) async {
+  Future<void> write({required String key, required Uint8List value}) async {
     throw UnimplementedError('PlatformSecureStorage.write');
   }
 

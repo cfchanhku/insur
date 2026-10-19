@@ -219,6 +219,424 @@ abstract class AppLocalizations {
   /// **'Other'**
   String get plan_category_other;
 
+  /// No description provided for @policy_detail_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy'**
+  String get policy_detail_title;
+
+  /// No description provided for @policy_info_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy information'**
+  String get policy_info_section;
+
+  /// No description provided for @policy_company.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurer'**
+  String get policy_company;
+
+  /// No description provided for @policy_no.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy number'**
+  String get policy_no;
+
+  /// No description provided for @policy_card_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'{company} · {effectiveDate} · {status}'**
+  String policy_card_summary(
+    String company,
+    String effectiveDate,
+    String status,
+  );
+
+  /// No description provided for @policy_effective_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Effective date'**
+  String get policy_effective_date;
+
+  /// No description provided for @policy_first_premium_date.
+  ///
+  /// In en, this message translates to:
+  /// **'First premium date'**
+  String get policy_first_premium_date;
+
+  /// No description provided for @policy_currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get policy_currency;
+
+  /// No description provided for @policy_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get policy_status;
+
+  /// No description provided for @policy_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get policy_notes;
+
+  /// No description provided for @policy_plans_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans'**
+  String get policy_plans_section;
+
+  /// No description provided for @policy_add_plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Add plan'**
+  String get policy_add_plan;
+
+  /// No description provided for @policy_no_plans.
+  ///
+  /// In en, this message translates to:
+  /// **'No plans yet'**
+  String get policy_no_plans;
+
+  /// No description provided for @policy_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get policy_edit;
+
+  /// No description provided for @policy_archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get policy_archive;
+
+  /// No description provided for @policy_archive_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive policy?'**
+  String get policy_archive_confirm_title;
+
+  /// No description provided for @policy_archive_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'The policy will be hidden. You can restore it from the Archive.'**
+  String get policy_archive_confirm_body;
+
+  /// No description provided for @policy_archive_confirm_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get policy_archive_confirm_action;
+
+  /// No description provided for @policy_form_title_new.
+  ///
+  /// In en, this message translates to:
+  /// **'New policy'**
+  String get policy_form_title_new;
+
+  /// No description provided for @policy_form_title_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit policy'**
+  String get policy_form_title_edit;
+
+  /// No description provided for @policy_form_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get policy_form_save;
+
+  /// No description provided for @policy_form_saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get policy_form_saving;
+
+  /// No description provided for @policy_form_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get policy_form_cancel;
+
+  /// No description provided for @policy_form_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy saved'**
+  String get policy_form_saved;
+
+  /// No description provided for @policy_form_error_company_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurer is required'**
+  String get policy_form_error_company_required;
+
+  /// No description provided for @policy_form_error_policy_no_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy number is required'**
+  String get policy_form_error_policy_no_required;
+
+  /// No description provided for @policy_form_error_currency_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency must be 3 uppercase letters'**
+  String get policy_form_error_currency_invalid;
+
+  /// No description provided for @policy_form_error_dates.
+  ///
+  /// In en, this message translates to:
+  /// **'First premium date must be on or after effective date'**
+  String get policy_form_error_dates;
+
+  /// No description provided for @policy_form_error_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save: {message}'**
+  String policy_form_error_save(String message);
+
+  /// No description provided for @policy_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy not found'**
+  String get policy_not_found;
+
+  /// No description provided for @plan_detail_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get plan_detail_title;
+
+  /// No description provided for @plan_card_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'{category} · {coverage}'**
+  String plan_card_summary(String category, String coverage);
+
+  /// No description provided for @plan_category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get plan_category;
+
+  /// No description provided for @plan_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan name'**
+  String get plan_name;
+
+  /// No description provided for @plan_coverage_amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage amount'**
+  String get plan_coverage_amount;
+
+  /// No description provided for @plan_payment_term.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment term'**
+  String get plan_payment_term;
+
+  /// No description provided for @plan_coverage_period.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage period'**
+  String get plan_coverage_period;
+
+  /// No description provided for @plan_deductible.
+  ///
+  /// In en, this message translates to:
+  /// **'Deductible'**
+  String get plan_deductible;
+
+  /// No description provided for @plan_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get plan_notes;
+
+  /// No description provided for @plan_add_rider.
+  ///
+  /// In en, this message translates to:
+  /// **'Add rider'**
+  String get plan_add_rider;
+
+  /// No description provided for @plan_riders_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Riders'**
+  String get plan_riders_section;
+
+  /// No description provided for @plan_no_riders.
+  ///
+  /// In en, this message translates to:
+  /// **'No riders'**
+  String get plan_no_riders;
+
+  /// No description provided for @plan_remove_rider.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get plan_remove_rider;
+
+  /// No description provided for @plan_form_title_new.
+  ///
+  /// In en, this message translates to:
+  /// **'New plan'**
+  String get plan_form_title_new;
+
+  /// No description provided for @plan_form_title_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit plan'**
+  String get plan_form_title_edit;
+
+  /// No description provided for @plan_form_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get plan_form_save;
+
+  /// No description provided for @plan_form_saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get plan_form_saving;
+
+  /// No description provided for @plan_form_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get plan_form_cancel;
+
+  /// No description provided for @plan_form_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan saved'**
+  String get plan_form_saved;
+
+  /// No description provided for @plan_form_error_category_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Category is required'**
+  String get plan_form_error_category_required;
+
+  /// No description provided for @plan_form_error_coverage_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount must be zero or greater'**
+  String get plan_form_error_coverage_invalid;
+
+  /// No description provided for @plan_form_error_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan name is required'**
+  String get plan_form_error_name_required;
+
+  /// No description provided for @plan_form_error_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save: {message}'**
+  String plan_form_error_save(String message);
+
+  /// No description provided for @plan_form_error_partial_save.
+  ///
+  /// In en, this message translates to:
+  /// **'The plan was saved, but some rider changes may not have been saved. Please review the plan before continuing.'**
+  String get plan_form_error_partial_save;
+
+  /// No description provided for @plan_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan not found'**
+  String get plan_not_found;
+
+  /// No description provided for @rider_form_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider'**
+  String get rider_form_title;
+
+  /// No description provided for @rider_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider name'**
+  String get rider_name;
+
+  /// No description provided for @rider_coverage_amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage amount'**
+  String get rider_coverage_amount;
+
+  /// No description provided for @rider_payment_term.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment term'**
+  String get rider_payment_term;
+
+  /// No description provided for @rider_deductible.
+  ///
+  /// In en, this message translates to:
+  /// **'Deductible'**
+  String get rider_deductible;
+
+  /// No description provided for @rider_waiting_period.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting period'**
+  String get rider_waiting_period;
+
+  /// No description provided for @rider_error_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Rider name is required'**
+  String get rider_error_name_required;
+
+  /// No description provided for @currency_hkd.
+  ///
+  /// In en, this message translates to:
+  /// **'HKD'**
+  String get currency_hkd;
+
+  /// No description provided for @currency_usd.
+  ///
+  /// In en, this message translates to:
+  /// **'USD'**
+  String get currency_usd;
+
+  /// No description provided for @currency_cny.
+  ///
+  /// In en, this message translates to:
+  /// **'CNY'**
+  String get currency_cny;
+
+  /// No description provided for @currency_eur.
+  ///
+  /// In en, this message translates to:
+  /// **'EUR'**
+  String get currency_eur;
+
+  /// No description provided for @currency_gbp.
+  ///
+  /// In en, this message translates to:
+  /// **'GBP'**
+  String get currency_gbp;
+
+  /// No description provided for @currency_jpy.
+  ///
+  /// In en, this message translates to:
+  /// **'JPY'**
+  String get currency_jpy;
+
+  /// No description provided for @currency_sgd.
+  ///
+  /// In en, this message translates to:
+  /// **'SGD'**
+  String get currency_sgd;
+
   /// No description provided for @splash_loading.
   ///
   /// In en, this message translates to:

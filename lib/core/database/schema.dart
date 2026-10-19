@@ -140,7 +140,7 @@ class Schema {
   static const String value = 'value';
 
   /// Latest schema version created for new databases.
-  static const int currentSchemaVersion = 2;
+  static const int currentSchemaVersion = 3;
 
   /// SQL statements creating tables in dependency order.
   static const List<String> createStatements = <String>[

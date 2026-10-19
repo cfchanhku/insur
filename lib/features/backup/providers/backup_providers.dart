@@ -9,5 +9,5 @@ import '../../../core/database/repositories/backup_repository.dart';
 /// Provides the backup repository.
 final Provider<BackupRepository> backupRepositoryProvider =
     Provider<BackupRepository>((ref) {
-  throw UnimplementedError('backupRepositoryProvider');
-});
+      throw UnimplementedError('backupRepositoryProvider');
+    });

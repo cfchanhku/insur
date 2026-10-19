@@ -34,6 +34,10 @@ Future<void> runMigrations(Database db, int oldVersion, int newVersion) async {
         for (final trigger in Schema.auditTriggers) {
           await db.execute(trigger);
         }
+      case 3:
+        await db.execute(
+          'ALTER TABLE ${Schema.plans} ADD COLUMN ${Schema.deductible} TEXT',
+        );
       default:
         throw StateError('No migration is defined for schema version $version');
     }

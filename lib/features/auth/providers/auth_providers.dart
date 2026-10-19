@@ -9,5 +9,5 @@ import '../../../core/database/repositories/auth_repository.dart';
 /// Provides the authentication repository.
 final Provider<AuthRepository> authRepositoryProvider =
     Provider<AuthRepository>((ref) {
-  throw UnimplementedError('authRepositoryProvider');
-});
+      throw UnimplementedError('authRepositoryProvider');
+    });

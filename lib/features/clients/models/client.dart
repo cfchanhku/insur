@@ -23,9 +23,9 @@ class Client {
     required this.updatedAt,
     required this.archivedAt,
   }) : assert(
-          id == null || _uuidV4Pattern.hasMatch(id),
-          'id must be a valid UUID v4',
-        );
+         id == null || _uuidV4Pattern.hasMatch(id),
+         'id must be a valid UUID v4',
+       );
 
   static final RegExp _uuidV4Pattern = RegExp(
     r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
@@ -143,18 +143,18 @@ class Client {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        role,
-        name,
-        gender,
-        dob,
-        phone,
-        email,
-        notes,
-        createdAt,
-        updatedAt,
-        archivedAt,
-      );
+    id,
+    role,
+    name,
+    gender,
+    dob,
+    phone,
+    email,
+    notes,
+    createdAt,
+    updatedAt,
+    archivedAt,
+  );
 
   @override
   String toString() =>

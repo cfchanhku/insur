@@ -119,10 +119,7 @@ class RecoveryKey {
         throw const RecoveryKeyException('Invalid recovery key encoding');
       }
       final passphrase = base64Encode(keyBytes);
-      return await Kdf.deriveMasterKey(
-        passphrase: passphrase,
-        salt: salt,
-      );
+      return await Kdf.deriveMasterKey(passphrase: passphrase, salt: salt);
     } finally {
       keyBytes.fillRange(0, keyBytes.length, 0);
     }
@@ -160,7 +157,10 @@ class RecoveryKey {
       );
       var offset = 0;
       wrapped.setRange(
-          offset, offset + secretBox.nonce.length, secretBox.nonce);
+        offset,
+        offset + secretBox.nonce.length,
+        secretBox.nonce,
+      );
       offset += secretBox.nonce.length;
       wrapped.setRange(
         offset,
@@ -197,18 +197,12 @@ class RecoveryKey {
       _nonceLength,
       wrappedMasterKey.length - _tagLength,
     );
-    final tag = wrappedMasterKey.sublist(
-      wrappedMasterKey.length - _tagLength,
-    );
+    final tag = wrappedMasterKey.sublist(wrappedMasterKey.length - _tagLength);
     final algorithm = AesGcm.with256bits();
     late final List<int> plainText;
     try {
       plainText = await algorithm.decrypt(
-        SecretBox(
-          cipherText,
-          nonce: nonce,
-          mac: Mac(tag),
-        ),
+        SecretBox(cipherText, nonce: nonce, mac: Mac(tag)),
         secretKey: SecretKey(recoveryKek),
         aad: utf8.encode(_wrappingAad),
       );

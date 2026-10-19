@@ -185,10 +185,7 @@ void main() {
       final info = Uint8List.fromList(
         List<int>.generate(10, (int index) => 0xf0 + index),
       );
-      final hkdf = Hkdf(
-        hmac: Hmac.sha256(),
-        outputLength: 42,
-      );
+      final hkdf = Hkdf(hmac: Hmac.sha256(), outputLength: 42);
       final derived = await hkdf.deriveKey(
         secretKey: SecretKey(ikm),
         nonce: salt,

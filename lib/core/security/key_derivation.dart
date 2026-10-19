@@ -63,10 +63,7 @@ class SubKeyDeriver {
     required Uint8List masterKey,
     required String info,
   }) async {
-    final hkdf = Hkdf(
-      hmac: Hmac.sha256(),
-      outputLength: subKeyLength,
-    );
+    final hkdf = Hkdf(hmac: Hmac.sha256(), outputLength: subKeyLength);
     final derived = await hkdf.deriveKey(
       secretKey: SecretKey(masterKey),
       // Hkdf defaults nonce to an empty list, the RFC 5869 zero-salt behavior.

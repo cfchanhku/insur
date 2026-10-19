@@ -304,7 +304,9 @@ void main() {
     test('clients with a different field are not equal', () {
       expect(sampleClient.copyWith(id: null), isNot(sampleClient));
       expect(
-          sampleClient.copyWith(role: ClientRole.insured), isNot(sampleClient));
+        sampleClient.copyWith(role: ClientRole.insured),
+        isNot(sampleClient),
+      );
       expect(sampleClient.copyWith(name: 'Different'), isNot(sampleClient));
       expect(sampleClient.copyWith(gender: Gender.female), isNot(sampleClient));
       expect(

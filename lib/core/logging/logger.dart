@@ -11,11 +11,7 @@ class InsurLogger {
   }
 
   /// Records a failure without including personally identifiable information.
-  void error(
-    String eventCode, {
-    Object? error,
-    StackTrace? stackTrace,
-  }) {
+  void error(String eventCode, {Object? error, StackTrace? stackTrace}) {
     throw UnimplementedError('InsurLogger.error');
   }
 }

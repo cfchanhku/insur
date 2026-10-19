@@ -14,6 +14,7 @@ class Plan {
     required this.category,
     required this.planName,
     this.coverageAmount,
+    this.deductible,
     this.paymentTerm,
     this.coveragePeriod,
     this.notes,
@@ -29,6 +30,10 @@ class Plan {
        assert(
          coverageAmount == null || coverageAmount >= 0,
          'coverageAmount must not be negative',
+       ),
+       assert(
+         deductible == null || deductible >= 0,
+         'deductible must not be negative',
        );
 
   static final RegExp _uuidV4Pattern = RegExp(
@@ -49,6 +54,9 @@ class Plan {
 
   /// Optional coverage amount, encrypted before database storage.
   final double? coverageAmount;
+
+  /// Optional deductible, encrypted before database storage.
+  final double? deductible;
 
   /// Optional payment term.
   final String? paymentTerm;
@@ -77,6 +85,7 @@ class Plan {
     PlanCategory? category,
     String? planName,
     Object? coverageAmount = _unset,
+    Object? deductible = _unset,
     Object? paymentTerm = _unset,
     Object? coveragePeriod = _unset,
     Object? notes = _unset,
@@ -90,6 +99,7 @@ class Plan {
       category: category ?? this.category,
       planName: planName ?? this.planName,
       coverageAmount: _copyNullableDouble(coverageAmount, this.coverageAmount),
+      deductible: _copyNullableDouble(deductible, this.deductible),
       paymentTerm: _copyNullable<String>(paymentTerm, this.paymentTerm),
       coveragePeriod: _copyNullable<String>(
         coveragePeriod,
@@ -113,6 +123,7 @@ class Plan {
       'category': category.value,
       'planName': planName,
       'coverageAmount': coverageAmount?.toString(),
+      'deductible': deductible?.toString(),
       'paymentTerm': paymentTerm,
       'coveragePeriod': coveragePeriod,
       'notes': notes,
@@ -130,6 +141,7 @@ class Plan {
       category: PlanCategory.fromString(_requiredString(json, 'category')),
       planName: _requiredString(json, 'planName'),
       coverageAmount: _optionalDoubleString(json, 'coverageAmount'),
+      deductible: _optionalDoubleString(json, 'deductible'),
       paymentTerm: _optionalString(json, 'paymentTerm'),
       coveragePeriod: _optionalString(json, 'coveragePeriod'),
       notes: _optionalString(json, 'notes'),
@@ -147,6 +159,7 @@ class Plan {
         other.category == category &&
         other.planName == planName &&
         other.coverageAmount == coverageAmount &&
+        other.deductible == deductible &&
         other.paymentTerm == paymentTerm &&
         other.coveragePeriod == coveragePeriod &&
         other.notes == notes &&
@@ -162,6 +175,7 @@ class Plan {
     category,
     planName,
     coverageAmount,
+    deductible,
     paymentTerm,
     coveragePeriod,
     notes,

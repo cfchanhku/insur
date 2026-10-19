@@ -34,17 +34,11 @@ void main() {
 
   group('FieldCrypto constructor — validation', () {
     test('rejects a 16-byte key', () {
-      expect(
-        () => FieldCrypto(fieldKey: Uint8List(16)),
-        throwsArgumentError,
-      );
+      expect(() => FieldCrypto(fieldKey: Uint8List(16)), throwsArgumentError);
     });
 
     test('rejects a 64-byte key', () {
-      expect(
-        () => FieldCrypto(fieldKey: Uint8List(64)),
-        throwsArgumentError,
-      );
+      expect(() => FieldCrypto(fieldKey: Uint8List(64)), throwsArgumentError);
     });
 
     test('accepts a 32-byte key', () {
@@ -110,10 +104,13 @@ void main() {
       final bytes = base64Decode(ciphertext);
 
       expect(
-          bytes,
-          hasLength(FieldCrypto.nonceLength +
+        bytes,
+        hasLength(
+          FieldCrypto.nonceLength +
               utf8.encode(plaintext).length +
-              FieldCrypto.tagLength));
+              FieldCrypto.tagLength,
+        ),
+      );
       expect(
         bytes.sublist(0, FieldCrypto.nonceLength),
         hasLength(FieldCrypto.nonceLength),
@@ -173,17 +170,11 @@ void main() {
 
   group('FieldCrypto — AAD binding (critical)', () {
     test('rejects a different entity type', () async {
-      await _expectAadFailure(
-        fieldCrypto,
-        decryptEntityType: 'policy',
-      );
+      await _expectAadFailure(fieldCrypto, decryptEntityType: 'policy');
     });
 
     test('rejects a different field name', () async {
-      await _expectAadFailure(
-        fieldCrypto,
-        decryptFieldName: 'email',
-      );
+      await _expectAadFailure(fieldCrypto, decryptFieldName: 'email');
     });
 
     test('rejects a different record ID', () async {

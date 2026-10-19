@@ -20,6 +20,112 @@
   "plan_category_accident": "Accident",
   "plan_category_savings": "Savings",
   "plan_category_other": "Other",
+  "policy_detail_title": "Policy",
+  "policy_info_section": "Policy information",
+  "policy_company": "Insurer",
+  "policy_no": "Policy number",
+  "policy_card_summary": "{company} · {effectiveDate} · {status}",
+  "@policy_card_summary": {
+    "placeholders": {
+      "company": {
+        "type": "String"
+      },
+      "effectiveDate": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "policy_effective_date": "Effective date",
+  "policy_first_premium_date": "First premium date",
+  "policy_currency": "Currency",
+  "policy_status": "Status",
+  "policy_notes": "Notes",
+  "policy_plans_section": "Plans",
+  "policy_add_plan": "Add plan",
+  "policy_no_plans": "No plans yet",
+  "policy_edit": "Edit",
+  "policy_archive": "Archive",
+  "policy_archive_confirm_title": "Archive policy?",
+  "policy_archive_confirm_body": "The policy will be hidden. You can restore it from the Archive.",
+  "policy_archive_confirm_action": "Archive",
+  "policy_form_title_new": "New policy",
+  "policy_form_title_edit": "Edit policy",
+  "policy_form_save": "Save",
+  "policy_form_saving": "Saving...",
+  "policy_form_cancel": "Cancel",
+  "policy_form_saved": "Policy saved",
+  "policy_form_error_company_required": "Insurer is required",
+  "policy_form_error_policy_no_required": "Policy number is required",
+  "policy_form_error_currency_invalid": "Currency must be 3 uppercase letters",
+  "policy_form_error_dates": "First premium date must be on or after effective date",
+  "policy_form_error_save": "Failed to save: {message}",
+  "@policy_form_error_save": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "policy_not_found": "Policy not found",
+  "plan_detail_title": "Plan",
+  "plan_card_summary": "{category} · {coverage}",
+  "@plan_card_summary": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "coverage": {
+        "type": "String"
+      }
+    }
+  },
+  "plan_category": "Category",
+  "plan_name": "Plan name",
+  "plan_coverage_amount": "Coverage amount",
+  "plan_payment_term": "Payment term",
+  "plan_coverage_period": "Coverage period",
+  "plan_deductible": "Deductible",
+  "plan_notes": "Notes",
+  "plan_add_rider": "Add rider",
+  "plan_riders_section": "Riders",
+  "plan_no_riders": "No riders",
+  "plan_remove_rider": "Remove",
+  "plan_form_title_new": "New plan",
+  "plan_form_title_edit": "Edit plan",
+  "plan_form_save": "Save",
+  "plan_form_saving": "Saving...",
+  "plan_form_cancel": "Cancel",
+  "plan_form_saved": "Plan saved",
+  "plan_form_error_category_required": "Category is required",
+  "plan_form_error_coverage_invalid": "Amount must be zero or greater",
+  "plan_form_error_name_required": "Plan name is required",
+  "plan_form_error_save": "Failed to save: {message}",
+  "@plan_form_error_save": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "plan_form_error_partial_save": "The plan was saved, but some rider changes may not have been saved. Please review the plan before continuing.",
+  "plan_not_found": "Plan not found",
+  "rider_form_title": "Rider",
+  "rider_name": "Rider name",
+  "rider_coverage_amount": "Coverage amount",
+  "rider_payment_term": "Payment term",
+  "rider_deductible": "Deductible",
+  "rider_waiting_period": "Waiting period",
+  "rider_error_name_required": "Rider name is required",
+  "currency_hkd": "HKD",
+  "currency_usd": "USD",
+  "currency_cny": "CNY",
+  "currency_eur": "EUR",
+  "currency_gbp": "GBP",
+  "currency_jpy": "JPY",
+  "currency_sgd": "SGD",
   "splash_loading": "Loading...",
   "setup_title": "Setup",
   "setup_subtitle": "Create a passphrase to protect your data",

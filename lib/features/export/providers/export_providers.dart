@@ -9,5 +9,5 @@ import '../../../core/database/repositories/export_repository.dart';
 /// Provides the export repository.
 final Provider<ExportRepository> exportRepositoryProvider =
     Provider<ExportRepository>((ref) {
-  throw UnimplementedError('exportRepositoryProvider');
-});
+      throw UnimplementedError('exportRepositoryProvider');
+    });

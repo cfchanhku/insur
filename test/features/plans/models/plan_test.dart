@@ -12,6 +12,7 @@ void main() {
       category: PlanCategory.ci,
       planName: 'Synthetic critical illness cover',
       coverageAmount: 125000.5,
+      deductible: 500,
       paymentTerm: '20 years',
       coveragePeriod: 'To age 80',
       notes: 'Synthetic plan note',
@@ -78,6 +79,10 @@ void main() {
     test('asserts on a negative coverage amount', () {
       expect(() => _plan(coverageAmount: -1), throwsA(isA<AssertionError>()));
     });
+
+    test('asserts on a negative deductible', () {
+      expect(() => _plan(deductible: -1), throwsA(isA<AssertionError>()));
+    });
   });
 
   group('Plan.copyWith', () {
@@ -95,12 +100,14 @@ void main() {
     test('clears each nullable business field when explicitly null', () {
       final updated = sample.copyWith(
         coverageAmount: null,
+        deductible: null,
         paymentTerm: null,
         coveragePeriod: null,
         notes: null,
       );
 
       expect(updated.coverageAmount, isNull);
+      expect(updated.deductible, isNull);
       expect(updated.paymentTerm, isNull);
       expect(updated.coveragePeriod, isNull);
       expect(updated.notes, isNull);
@@ -133,6 +140,7 @@ void main() {
         'category': 'ci',
         'planName': sample.planName,
         'coverageAmount': '125000.5',
+        'deductible': '500.0',
         'paymentTerm': '20 years',
         'coveragePeriod': 'To age 80',
         'notes': 'Synthetic plan note',
@@ -194,6 +202,7 @@ Plan _plan({
   String policyId = 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
   String planName = 'Synthetic plan',
   double? coverageAmount,
+  double? deductible,
 }) {
   return Plan(
     id: id,
@@ -201,5 +210,6 @@ Plan _plan({
     category: PlanCategory.life,
     planName: planName,
     coverageAmount: coverageAmount,
+    deductible: deductible,
   );
 }

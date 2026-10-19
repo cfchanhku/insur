@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 
 import '../../../features/clients/models/client.dart';
 import '../../../features/clients/models/client_enums.dart';
+import '../../../features/policies/models/policy.dart';
+import '../../../features/policies/widgets/policy_card.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/app_providers.dart';
 import '../../../shared/widgets/app_scaffold.dart';
@@ -133,9 +135,9 @@ class _ClientDetails extends ConsumerWidget {
     final initials = client.name.trim().isEmpty
         ? ''
         : client.name.trim().substring(0, 1).toUpperCase();
-    final policyCount = client.id == null
-        ? const AsyncValue<int>.data(0)
-        : ref.watch(clientPolicyCountProvider(client.id!));
+    final policies = client.id == null
+        ? const AsyncValue<List<Policy>>.data(<Policy>[])
+        : ref.watch(policiesByClientProvider(client.id!));
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.s6),
@@ -220,24 +222,44 @@ class _ClientDetails extends ConsumerWidget {
                             ),
                           ),
                           TextButton.icon(
-                            onPressed: () => context.push(
-                              '/policies/new?clientId=${client.id}',
-                            ),
+                            onPressed: client.id == null
+                                ? null
+                                : () => context.push(
+                                    '/clients/${client.id}/policies/new',
+                                  ),
                             icon: const Icon(Icons.add),
                             label: Text(l10n.client_add_policy),
                           ),
                         ],
                       ),
-                      policyCount.when(
-                        loading: () => const LinearProgressIndicator(),
-                        error: (Object error, StackTrace stackTrace) =>
-                            Text(l10n.error_generic),
-                        data: (int count) => Text(
-                          count == 0
-                              ? l10n.client_no_policies
-                              : l10n.home_policy_count(count),
-                          style: theme.textTheme.bodyMedium,
+                      policies.when(
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
+                        error: (Object error, StackTrace stackTrace) => Text(
+                          l10n.error_generic,
+                          style: TextStyle(color: theme.colorScheme.error),
                         ),
+                        data: (List<Policy> policies) => policies.isEmpty
+                            ? Text(
+                                l10n.client_no_policies,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              )
+                            : Column(
+                                children: policies
+                                    .map<Widget>(
+                                      (Policy policy) => PolicyCard(
+                                        policy: policy,
+                                        onTap: policy.id == null
+                                            ? null
+                                            : () => context.push(
+                                                '/policies/${policy.id}',
+                                              ),
+                                      ),
+                                    )
+                                    .toList(growable: false),
+                              ),
                       ),
                     ],
                   ),

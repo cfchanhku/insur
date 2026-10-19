@@ -9,5 +9,5 @@ import '../../../core/database/repositories/policy_repository.dart';
 /// Provides the policy repository.
 final Provider<PolicyRepository> policyRepositoryProvider =
     Provider<PolicyRepository>((ref) {
-  throw UnimplementedError('policyRepositoryProvider');
-});
+      throw UnimplementedError('policyRepositoryProvider');
+    });

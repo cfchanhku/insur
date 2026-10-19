@@ -11,6 +11,9 @@ import '../features/clients/screens/client_form_screen.dart';
 import '../features/common/placeholder_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/lock/screens/lock_screen.dart';
+import '../features/plans/screens/plan_form_screen.dart';
+import '../features/policies/screens/policy_detail_screen.dart';
+import '../features/policies/screens/policy_form_screen.dart';
 import '../features/setup/screens/setup_wizard_screen.dart';
 import '../features/splash/screens/splash_screen.dart';
 import '../l10n/app_localizations.dart';
@@ -52,6 +55,31 @@ final routerProvider = Provider<GoRouter>((Ref ref) {
         path: '/clients/:id/edit',
         builder: (context, state) =>
             ClientFormScreen(id: state.pathParameters['id']),
+      ),
+      GoRoute(
+        path: '/clients/:clientId/policies/new',
+        builder: (context, state) =>
+            PolicyFormScreen(clientId: state.pathParameters['clientId']!),
+      ),
+      GoRoute(
+        path: '/policies/:id',
+        builder: (context, state) =>
+            PolicyDetailScreen(id: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/policies/:id/edit',
+        builder: (context, state) =>
+            PolicyFormScreen(id: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/policies/:policyId/plans/new',
+        builder: (context, state) =>
+            PlanFormScreen(policyId: state.pathParameters['policyId']!),
+      ),
+      GoRoute(
+        path: '/plans/:id/edit',
+        builder: (context, state) =>
+            PlanFormScreen(id: state.pathParameters['id']!),
       ),
       GoRoute(
         path: '/archive',

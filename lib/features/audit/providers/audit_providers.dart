@@ -9,5 +9,5 @@ import '../../../core/database/repositories/audit_repository.dart';
 /// Provides the audit repository.
 final Provider<AuditRepository> auditRepositoryProvider =
     Provider<AuditRepository>((ref) {
-  throw UnimplementedError('auditRepositoryProvider');
-});
+      throw UnimplementedError('auditRepositoryProvider');
+    });

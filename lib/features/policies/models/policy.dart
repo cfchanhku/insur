@@ -24,19 +24,19 @@ class Policy {
     required this.createdAt,
     required this.updatedAt,
     this.archivedAt,
-  })  : assert(
-          id == null || _uuidV4Pattern.hasMatch(id),
-          'id must be a valid UUID v4',
-        ),
-        assert(clientId != '', 'clientId must not be empty'),
-        assert(
-          _currencyPattern.hasMatch(currency),
-          'currency must be a three-letter uppercase ISO 4217 code',
-        ),
-        assert(
-          !effectiveDate.isAfter(firstPremiumDate),
-          'effectiveDate must be on or before firstPremiumDate',
-        );
+  }) : assert(
+         id == null || _uuidV4Pattern.hasMatch(id),
+         'id must be a valid UUID v4',
+       ),
+       assert(clientId != '', 'clientId must not be empty'),
+       assert(
+         _currencyPattern.hasMatch(currency),
+         'currency must be a three-letter uppercase ISO 4217 code',
+       ),
+       assert(
+         !effectiveDate.isAfter(firstPremiumDate),
+         'effectiveDate must be on or before firstPremiumDate',
+       );
 
   static final RegExp _uuidV4Pattern = RegExp(
     r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
@@ -167,19 +167,19 @@ class Policy {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        clientId,
-        policyNo,
-        company,
-        effectiveDate.millisecondsSinceEpoch,
-        firstPremiumDate.millisecondsSinceEpoch,
-        currency,
-        status,
-        notes,
-        createdAt?.millisecondsSinceEpoch,
-        updatedAt?.millisecondsSinceEpoch,
-        archivedAt?.millisecondsSinceEpoch,
-      );
+    id,
+    clientId,
+    policyNo,
+    company,
+    effectiveDate.millisecondsSinceEpoch,
+    firstPremiumDate.millisecondsSinceEpoch,
+    currency,
+    status,
+    notes,
+    createdAt?.millisecondsSinceEpoch,
+    updatedAt?.millisecondsSinceEpoch,
+    archivedAt?.millisecondsSinceEpoch,
+  );
 
   @override
   String toString() =>

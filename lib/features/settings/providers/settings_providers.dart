@@ -9,5 +9,5 @@ import '../../../core/database/repositories/settings_repository.dart';
 /// Provides the settings repository.
 final Provider<SettingsRepository> settingsRepositoryProvider =
     Provider<SettingsRepository>((ref) {
-  throw UnimplementedError('settingsRepositoryProvider');
-});
+      throw UnimplementedError('settingsRepositoryProvider');
+    });

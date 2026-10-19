@@ -71,6 +71,20 @@ void main() {
       );
     });
 
+    test('adds the encrypted plan deductible column', () async {
+      final database = await createTestDatabase();
+      addTearDown(() => tearDownTestDatabase(database));
+
+      final columns = await database.db.rawQuery(
+        'PRAGMA table_info(${Schema.plans})',
+      );
+
+      expect(
+        columns.map((Map<String, Object?> column) => column['name']),
+        contains(Schema.deductible),
+      );
+    });
+
     test('creates required indexes', () async {
       final database = await createTestDatabase();
       addTearDown(() => tearDownTestDatabase(database));

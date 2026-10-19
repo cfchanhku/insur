@@ -9,5 +9,5 @@ import '../../../core/database/repositories/rider_repository.dart';
 /// Provides the rider repository.
 final Provider<RiderRepository> riderRepositoryProvider =
     Provider<RiderRepository>((ref) {
-  throw UnimplementedError('riderRepositoryProvider');
-});
+      throw UnimplementedError('riderRepositoryProvider');
+    });
