@@ -61,6 +61,12 @@ The intended design is local-first: application data is not uploaded to GitHub o
 
 - **Password-based key derivation:** Argon2id.
 - **Authenticated encryption:** AES-256-GCM for protected data and backups.
+- **Field-level encryption:** The `FieldCrypto` primitive encrypts values with
+  AES-256-GCM and binds ciphertext to its entity, field, and record through AAD.
+  Its stored value is base64 of nonce, ciphertext, and tag. The primitive is not
+  yet integrated with client or policy persistence; callers remain responsible
+  for key lifecycle and supplying matching AAD. Its secure-random 96-bit nonces
+  make collisions extremely unlikely, but cannot guarantee absolute uniqueness.
 - **Database encryption:** SQLCipher using AES-256.
 - **Hashing and integrity:** SHA-256/SHA-512 for approved integrity and hash-chain uses; hashes are not substitutes for password hashing or authenticated encryption.
 - **Key hierarchy:** user authentication material derives or unlocks a protected key-encryption key using Argon2id; that key protects randomly generated data-encryption keys, which encrypt database and backup data. Keys must be separated by purpose, never hardcoded, and kept in approved platform secure storage where applicable. Exact parameters and lifecycle must follow the reviewed implementation and must not be inferred from this summary.
