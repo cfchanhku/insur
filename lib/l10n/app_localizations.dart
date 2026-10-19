@@ -164,6 +164,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get gender_other;
+
+  /// No description provided for @policy_status_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get policy_status_active;
+
+  /// No description provided for @policy_status_lapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Lapsed'**
+  String get policy_status_lapsed;
+
+  /// No description provided for @policy_status_surrendered.
+  ///
+  /// In en, this message translates to:
+  /// **'Surrendered'**
+  String get policy_status_surrendered;
 }
 
 class _AppLocalizationsDelegate

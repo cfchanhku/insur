@@ -40,6 +40,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get gender_other => 'Other';
+
+  @override
+  String get policy_status_active => 'Active';
+
+  @override
+  String get policy_status_lapsed => 'Lapsed';
+
+  @override
+  String get policy_status_surrendered => 'Surrendered';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -78,4 +87,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get gender_other => '其他';
+
+  @override
+  String get policy_status_active => '生效中';
+
+  @override
+  String get policy_status_lapsed => '失效';
+
+  @override
+  String get policy_status_surrendered => '退保';
 }

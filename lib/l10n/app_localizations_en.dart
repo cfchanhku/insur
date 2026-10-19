@@ -41,4 +41,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gender_other => 'Other';
+
+  @override
+  String get policy_status_active => 'Active';
+
+  @override
+  String get policy_status_lapsed => 'Lapsed';
+
+  @override
+  String get policy_status_surrendered => 'Surrendered';
 }

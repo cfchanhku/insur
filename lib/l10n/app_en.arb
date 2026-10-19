@@ -10,5 +10,8 @@
   "client_role_insured": "Insured",
   "gender_male": "Male",
   "gender_female": "Female",
-  "gender_other": "Other"
+  "gender_other": "Other",
+  "policy_status_active": "Active",
+  "policy_status_lapsed": "Lapsed",
+  "policy_status_surrendered": "Surrendered"
 }
