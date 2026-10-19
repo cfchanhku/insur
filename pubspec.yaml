@@ -24,6 +24,8 @@ dependencies:
   path_provider: ^2.1.5
   # Cryptographic primitives and authenticated-encryption APIs.
   cryptography: ^2.7.0
+  # SHA-256 digests for the tamper-evident audit chain.
+  crypto: ^3.0.3
   # Access platform secure storage for protected key material.
   flutter_secure_storage: ^9.2.4
   # Platform biometric authentication.
