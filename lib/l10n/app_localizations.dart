@@ -411,6 +411,306 @@ abstract class AppLocalizations {
   /// **'Log out'**
   String get home_logout;
 
+  /// No description provided for @home_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Clients'**
+  String get home_title;
+
+  /// No description provided for @home_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search clients'**
+  String get home_search_hint;
+
+  /// No description provided for @home_filter_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get home_filter_all;
+
+  /// No description provided for @home_filter_holder.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy holder'**
+  String get home_filter_holder;
+
+  /// No description provided for @home_filter_insured.
+  ///
+  /// In en, this message translates to:
+  /// **'Insured'**
+  String get home_filter_insured;
+
+  /// No description provided for @home_add_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Add client'**
+  String get home_add_client;
+
+  /// No description provided for @home_empty_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No clients yet'**
+  String get home_empty_title;
+
+  /// No description provided for @home_empty_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to add your first client'**
+  String get home_empty_subtitle;
+
+  /// No description provided for @home_policy_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No policies} =1{1 policy} other{{count} policies}}'**
+  String home_policy_count(int count);
+
+  /// No description provided for @home_load_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load clients: {message}'**
+  String home_load_error(String message);
+
+  /// No description provided for @home_no_match.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching clients'**
+  String get home_no_match;
+
+  /// No description provided for @home_detail_prompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a client to view their details'**
+  String get home_detail_prompt;
+
+  /// No description provided for @home_open_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Open details'**
+  String get home_open_details;
+
+  /// No description provided for @nav_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get nav_home;
+
+  /// No description provided for @nav_archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get nav_archive;
+
+  /// No description provided for @nav_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get nav_settings;
+
+  /// No description provided for @client_detail_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get client_detail_title;
+
+  /// No description provided for @client_info_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Client information'**
+  String get client_info_section;
+
+  /// No description provided for @client_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get client_name;
+
+  /// No description provided for @client_role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get client_role;
+
+  /// No description provided for @client_gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get client_gender;
+
+  /// No description provided for @client_dob.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get client_dob;
+
+  /// No description provided for @client_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get client_phone;
+
+  /// No description provided for @client_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get client_email;
+
+  /// No description provided for @client_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get client_notes;
+
+  /// No description provided for @client_policies_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Policies'**
+  String get client_policies_section;
+
+  /// No description provided for @client_reviews_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get client_reviews_section;
+
+  /// No description provided for @client_no_reviews.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews yet'**
+  String get client_no_reviews;
+
+  /// No description provided for @client_add_policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Add policy'**
+  String get client_add_policy;
+
+  /// No description provided for @client_no_policies.
+  ///
+  /// In en, this message translates to:
+  /// **'No policies yet'**
+  String get client_no_policies;
+
+  /// No description provided for @client_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get client_edit;
+
+  /// No description provided for @client_archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get client_archive;
+
+  /// No description provided for @client_archive_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive client?'**
+  String get client_archive_confirm_title;
+
+  /// No description provided for @client_archive_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'The client will be hidden from the list. You can restore it from the Archive.'**
+  String get client_archive_confirm_body;
+
+  /// No description provided for @client_archive_confirm_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get client_archive_confirm_action;
+
+  /// No description provided for @client_archive_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get client_archive_cancel;
+
+  /// No description provided for @client_archive_error.
+  ///
+  /// In en, this message translates to:
+  /// **'The client could not be archived. Please try again.'**
+  String get client_archive_error;
+
+  /// No description provided for @client_form_title_new.
+  ///
+  /// In en, this message translates to:
+  /// **'New client'**
+  String get client_form_title_new;
+
+  /// No description provided for @client_form_title_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit client'**
+  String get client_form_title_edit;
+
+  /// No description provided for @client_form_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get client_form_save;
+
+  /// No description provided for @client_form_saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get client_form_saving;
+
+  /// No description provided for @client_form_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get client_form_cancel;
+
+  /// No description provided for @client_form_error_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get client_form_error_name_required;
+
+  /// No description provided for @client_form_error_dob_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth is required'**
+  String get client_form_error_dob_required;
+
+  /// No description provided for @client_form_error_save.
+  ///
+  /// In en, this message translates to:
+  /// **'The client could not be saved. Please try again.'**
+  String get client_form_error_save;
+
+  /// No description provided for @client_form_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Client saved'**
+  String get client_form_saved;
+
+  /// No description provided for @client_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Client not found'**
+  String get client_not_found;
+
+  /// No description provided for @archive_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get archive_title;
+
+  /// No description provided for @settings_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings_title;
+
+  /// No description provided for @action_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get action_retry;
+
   /// No description provided for @error_generic.
   ///
   /// In en, this message translates to:

@@ -19,6 +19,8 @@ import '../core/database/repositories/policy_repository.dart';
 import '../core/database/repositories/rider_repository.dart';
 import '../core/security/field_crypto.dart';
 import '../core/security/key_manager.dart';
+import '../features/clients/models/client.dart';
+import '../features/clients/models/client_enums.dart';
 
 /// Platform-backed encrypted storage for vault key material.
 final secureStorageProvider = Provider<FlutterSecureStorage>(
@@ -44,6 +46,9 @@ final keyManagerProvider = FutureProvider<KeyManager>((Ref ref) async {
 final keyManagerStateProvider = StateProvider<KeyManagerState>(
   (Ref ref) => KeyManagerState.uninitialized,
 );
+
+/// Tracks global pointer activity so active vault timers reset across routes.
+final userActivityProvider = StateProvider<int>((Ref ref) => 0);
 
 /// Opens SQLCipher only while the key manager is unlocked.
 final appDatabaseProvider = FutureProvider<AppDatabase>((Ref ref) async {
@@ -96,6 +101,79 @@ final clientRepositoryProvider = FutureProvider<ClientRepository>((
   final fieldCrypto = await ref.watch(fieldCryptoProvider.future);
   final audit = await ref.watch(auditRepositoryProvider.future);
   return ClientRepository(db: database, fieldCrypto: fieldCrypto, audit: audit);
+});
+
+/// Loads active clients and decrypts their personal fields through the repository.
+final clientListProvider = FutureProvider<List<Client>>((Ref ref) async {
+  final repository = await ref.watch(clientRepositoryProvider.future);
+  return repository.findAll();
+});
+
+/// Loads one client, decrypting personal fields through the repository.
+final clientByIdProvider = FutureProvider.family<Client?, String>((
+  Ref ref,
+  String id,
+) async {
+  final repository = await ref.watch(clientRepositoryProvider.future);
+  return repository.findById(id);
+});
+
+/// Selected role filter; null includes both client roles.
+final clientFilterProvider = StateProvider<ClientRole?>((Ref ref) => null);
+
+/// Search text applied to decrypted client fields in memory.
+final clientSearchQueryProvider = StateProvider<String>((Ref ref) => '');
+
+/// Combines loaded clients with role and in-memory decrypted-field searching.
+final filteredClientsProvider = Provider<AsyncValue<List<Client>>>((Ref ref) {
+  final clients = ref.watch(clientListProvider);
+  final role = ref.watch(clientFilterProvider);
+  final query = ref.watch(clientSearchQueryProvider).trim().toLowerCase();
+
+  return clients.whenData(
+    (List<Client> values) => values
+        .where((Client client) {
+          if (role != null && client.role != role) {
+            return false;
+          }
+          if (query.isEmpty) {
+            return true;
+          }
+          return client.name.toLowerCase().contains(query) ||
+              (client.phone?.toLowerCase().contains(query) ?? false) ||
+              (client.email?.toLowerCase().contains(query) ?? false);
+        })
+        .toList(growable: false),
+  );
+});
+
+/// Counts active policies for one client without querying encrypted columns.
+final clientPolicyCountProvider = FutureProvider.family<int, String>((
+  Ref ref,
+  String clientId,
+) async {
+  final repository = await ref.watch(policyRepositoryProvider.future);
+  final policies = await repository.findByClientId(clientId);
+  return policies.length;
+});
+
+/// Loads active policy counts for the current clients using repository APIs.
+final clientPolicyCountsProvider = FutureProvider<Map<String, int>>((
+  Ref ref,
+) async {
+  final clients = await ref.watch(clientListProvider.future);
+  final repository = await ref.watch(policyRepositoryProvider.future);
+  final counts = await Future.wait(
+    clients.map((Client client) async {
+      final id = client.id;
+      if (id == null) {
+        throw StateError('A persisted client must have an identifier');
+      }
+      final policies = await repository.findByClientId(id);
+      return MapEntry<String, int>(id, policies.length);
+    }),
+  );
+  return Map<String, int>.fromEntries(counts);
 });
 
 /// Provides the policy repository after the vault is unlocked.

@@ -171,6 +171,170 @@ class AppLocalizationsZh extends AppLocalizations {
   String get home_logout => 'Log out';
 
   @override
+  String get home_title => 'Clients';
+
+  @override
+  String get home_search_hint => 'Search clients';
+
+  @override
+  String get home_filter_all => 'All';
+
+  @override
+  String get home_filter_holder => 'Policy holder';
+
+  @override
+  String get home_filter_insured => 'Insured';
+
+  @override
+  String get home_add_client => 'Add client';
+
+  @override
+  String get home_empty_title => 'No clients yet';
+
+  @override
+  String get home_empty_subtitle => 'Tap + to add your first client';
+
+  @override
+  String home_policy_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count policies',
+      one: '1 policy',
+      zero: 'No policies',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String home_load_error(String message) {
+    return 'Failed to load clients: $message';
+  }
+
+  @override
+  String get home_no_match => 'No matching clients';
+
+  @override
+  String get home_detail_prompt => 'Select a client to view their details';
+
+  @override
+  String get home_open_details => 'Open details';
+
+  @override
+  String get nav_home => 'Home';
+
+  @override
+  String get nav_archive => 'Archive';
+
+  @override
+  String get nav_settings => 'Settings';
+
+  @override
+  String get client_detail_title => 'Client';
+
+  @override
+  String get client_info_section => 'Client information';
+
+  @override
+  String get client_name => 'Name';
+
+  @override
+  String get client_role => 'Role';
+
+  @override
+  String get client_gender => 'Gender';
+
+  @override
+  String get client_dob => 'Date of birth';
+
+  @override
+  String get client_phone => 'Phone';
+
+  @override
+  String get client_email => 'Email';
+
+  @override
+  String get client_notes => 'Notes';
+
+  @override
+  String get client_policies_section => 'Policies';
+
+  @override
+  String get client_reviews_section => 'Reviews';
+
+  @override
+  String get client_no_reviews => 'No reviews yet';
+
+  @override
+  String get client_add_policy => 'Add policy';
+
+  @override
+  String get client_no_policies => 'No policies yet';
+
+  @override
+  String get client_edit => 'Edit';
+
+  @override
+  String get client_archive => 'Archive';
+
+  @override
+  String get client_archive_confirm_title => 'Archive client?';
+
+  @override
+  String get client_archive_confirm_body =>
+      'The client will be hidden from the list. You can restore it from the Archive.';
+
+  @override
+  String get client_archive_confirm_action => 'Archive';
+
+  @override
+  String get client_archive_cancel => 'Cancel';
+
+  @override
+  String get client_archive_error =>
+      'The client could not be archived. Please try again.';
+
+  @override
+  String get client_form_title_new => 'New client';
+
+  @override
+  String get client_form_title_edit => 'Edit client';
+
+  @override
+  String get client_form_save => 'Save';
+
+  @override
+  String get client_form_saving => 'Saving...';
+
+  @override
+  String get client_form_cancel => 'Cancel';
+
+  @override
+  String get client_form_error_name_required => 'Name is required';
+
+  @override
+  String get client_form_error_dob_required => 'Date of birth is required';
+
+  @override
+  String get client_form_error_save =>
+      'The client could not be saved. Please try again.';
+
+  @override
+  String get client_form_saved => 'Client saved';
+
+  @override
+  String get client_not_found => 'Client not found';
+
+  @override
+  String get archive_title => 'Archive';
+
+  @override
+  String get settings_title => 'Settings';
+
+  @override
+  String get action_retry => 'Retry';
+
+  @override
   String get error_generic => 'An error occurred. Please try again.';
 
   @override
@@ -353,6 +517,167 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get home_logout => '登出';
+
+  @override
+  String get home_title => '客戶';
+
+  @override
+  String get home_search_hint => '搜尋客戶';
+
+  @override
+  String get home_filter_all => '全部';
+
+  @override
+  String get home_filter_holder => '保單持有人';
+
+  @override
+  String get home_filter_insured => '受保人';
+
+  @override
+  String get home_add_client => '新增客戶';
+
+  @override
+  String get home_empty_title => '尚無客戶';
+
+  @override
+  String get home_empty_subtitle => '點擊 + 新增第一位客戶';
+
+  @override
+  String home_policy_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 張保單',
+      one: '1 張保單',
+      zero: '無保單',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String home_load_error(String message) {
+    return '載入客戶失敗：$message';
+  }
+
+  @override
+  String get home_no_match => '沒有符合的客戶';
+
+  @override
+  String get home_detail_prompt => '選擇客戶以查看資料';
+
+  @override
+  String get home_open_details => '查看資料';
+
+  @override
+  String get nav_home => '首頁';
+
+  @override
+  String get nav_archive => '封存';
+
+  @override
+  String get nav_settings => '設定';
+
+  @override
+  String get client_detail_title => '客戶';
+
+  @override
+  String get client_info_section => '客戶資料';
+
+  @override
+  String get client_name => '姓名';
+
+  @override
+  String get client_role => '身份';
+
+  @override
+  String get client_gender => '性別';
+
+  @override
+  String get client_dob => '出生日期';
+
+  @override
+  String get client_phone => '電話';
+
+  @override
+  String get client_email => '電郵';
+
+  @override
+  String get client_notes => '備註';
+
+  @override
+  String get client_policies_section => '保單';
+
+  @override
+  String get client_reviews_section => '保單檢視';
+
+  @override
+  String get client_no_reviews => '尚無檢視記錄';
+
+  @override
+  String get client_add_policy => '新增保單';
+
+  @override
+  String get client_no_policies => '尚無保單';
+
+  @override
+  String get client_edit => '編輯';
+
+  @override
+  String get client_archive => '封存';
+
+  @override
+  String get client_archive_confirm_title => '封存客戶？';
+
+  @override
+  String get client_archive_confirm_body => '此客戶將從清單中隱藏。您可從封存區還原。';
+
+  @override
+  String get client_archive_confirm_action => '封存';
+
+  @override
+  String get client_archive_cancel => '取消';
+
+  @override
+  String get client_archive_error => '無法封存客戶，請再試一次。';
+
+  @override
+  String get client_form_title_new => '新增客戶';
+
+  @override
+  String get client_form_title_edit => '編輯客戶';
+
+  @override
+  String get client_form_save => '儲存';
+
+  @override
+  String get client_form_saving => '儲存中...';
+
+  @override
+  String get client_form_cancel => '取消';
+
+  @override
+  String get client_form_error_name_required => '姓名為必填';
+
+  @override
+  String get client_form_error_dob_required => '出生日期為必填';
+
+  @override
+  String get client_form_error_save => '無法儲存客戶，請再試一次。';
+
+  @override
+  String get client_form_saved => '客戶已儲存';
+
+  @override
+  String get client_not_found => '找不到客戶';
+
+  @override
+  String get archive_title => '封存';
+
+  @override
+  String get settings_title => '設定';
+
+  @override
+  String get action_retry => '重試';
 
   @override
   String get error_generic => '發生錯誤，請再試一次。';

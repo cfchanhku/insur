@@ -7,6 +7,8 @@ All notable changes to Insurance Policy Manager are documented here. This projec
 ### Added
 
 - Standard Windows desktop runner scaffold for local development and builds.
+- Searchable client list with role filters, responsive client details, and create/edit forms.
+- Bilingual client-management UI and Archive/Settings navigation placeholders.
 
 ### Changed
 

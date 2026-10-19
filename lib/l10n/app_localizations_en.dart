@@ -172,6 +172,170 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_logout => 'Log out';
 
   @override
+  String get home_title => 'Clients';
+
+  @override
+  String get home_search_hint => 'Search clients';
+
+  @override
+  String get home_filter_all => 'All';
+
+  @override
+  String get home_filter_holder => 'Policy holder';
+
+  @override
+  String get home_filter_insured => 'Insured';
+
+  @override
+  String get home_add_client => 'Add client';
+
+  @override
+  String get home_empty_title => 'No clients yet';
+
+  @override
+  String get home_empty_subtitle => 'Tap + to add your first client';
+
+  @override
+  String home_policy_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count policies',
+      one: '1 policy',
+      zero: 'No policies',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String home_load_error(String message) {
+    return 'Failed to load clients: $message';
+  }
+
+  @override
+  String get home_no_match => 'No matching clients';
+
+  @override
+  String get home_detail_prompt => 'Select a client to view their details';
+
+  @override
+  String get home_open_details => 'Open details';
+
+  @override
+  String get nav_home => 'Home';
+
+  @override
+  String get nav_archive => 'Archive';
+
+  @override
+  String get nav_settings => 'Settings';
+
+  @override
+  String get client_detail_title => 'Client';
+
+  @override
+  String get client_info_section => 'Client information';
+
+  @override
+  String get client_name => 'Name';
+
+  @override
+  String get client_role => 'Role';
+
+  @override
+  String get client_gender => 'Gender';
+
+  @override
+  String get client_dob => 'Date of birth';
+
+  @override
+  String get client_phone => 'Phone';
+
+  @override
+  String get client_email => 'Email';
+
+  @override
+  String get client_notes => 'Notes';
+
+  @override
+  String get client_policies_section => 'Policies';
+
+  @override
+  String get client_reviews_section => 'Reviews';
+
+  @override
+  String get client_no_reviews => 'No reviews yet';
+
+  @override
+  String get client_add_policy => 'Add policy';
+
+  @override
+  String get client_no_policies => 'No policies yet';
+
+  @override
+  String get client_edit => 'Edit';
+
+  @override
+  String get client_archive => 'Archive';
+
+  @override
+  String get client_archive_confirm_title => 'Archive client?';
+
+  @override
+  String get client_archive_confirm_body =>
+      'The client will be hidden from the list. You can restore it from the Archive.';
+
+  @override
+  String get client_archive_confirm_action => 'Archive';
+
+  @override
+  String get client_archive_cancel => 'Cancel';
+
+  @override
+  String get client_archive_error =>
+      'The client could not be archived. Please try again.';
+
+  @override
+  String get client_form_title_new => 'New client';
+
+  @override
+  String get client_form_title_edit => 'Edit client';
+
+  @override
+  String get client_form_save => 'Save';
+
+  @override
+  String get client_form_saving => 'Saving...';
+
+  @override
+  String get client_form_cancel => 'Cancel';
+
+  @override
+  String get client_form_error_name_required => 'Name is required';
+
+  @override
+  String get client_form_error_dob_required => 'Date of birth is required';
+
+  @override
+  String get client_form_error_save =>
+      'The client could not be saved. Please try again.';
+
+  @override
+  String get client_form_saved => 'Client saved';
+
+  @override
+  String get client_not_found => 'Client not found';
+
+  @override
+  String get archive_title => 'Archive';
+
+  @override
+  String get settings_title => 'Settings';
+
+  @override
+  String get action_retry => 'Retry';
+
+  @override
   String get error_generic => 'An error occurred. Please try again.';
 
   @override

@@ -3,19 +3,26 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../../l10n/app_localizations.dart';
-
-/// Displays a localized recovery placeholder.
+/// Displays a localized placeholder for an unimplemented feature.
 class PlaceholderScreen extends StatelessWidget {
-  /// Creates the placeholder screen.
-  const PlaceholderScreen({super.key});
+  /// Creates the placeholder screen with a localized [title].
+  const PlaceholderScreen({
+    required this.title,
+    required this.message,
+    super.key,
+  });
+
+  /// Localized title of the placeholder feature.
+  final String title;
+
+  /// Localized placeholder message.
+  final String message;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.recovery_title)),
-      body: Center(child: Text(l10n.coming_soon)),
+      appBar: AppBar(title: Text(title)),
+      body: Center(child: Text(message)),
     );
   }
 }
