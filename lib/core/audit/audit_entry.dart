@@ -23,12 +23,9 @@ class AuditEntry {
     required this.metadata,
     required this.prevHash,
     required this.entryHash,
-  })  : assert(id.length == 36, 'id must be a UUID v4'),
-        assert(prevHash.length == 64, 'prevHash must be a SHA-256 hex digest'),
-        assert(
-          entryHash.length == 64,
-          'entryHash must be a SHA-256 hex digest',
-        );
+  }) : assert(id.length == 36, 'id must be a UUID v4'),
+       assert(prevHash.length == 64, 'prevHash must be a SHA-256 hex digest'),
+       assert(entryHash.length == 64, 'entryHash must be a SHA-256 hex digest');
 
   /// UUID v4 identifying this audit entry.
   final String id;
@@ -127,15 +124,15 @@ class AuditEntry {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        timestamp,
-        eventType,
-        entityType,
-        entityId,
-        _canonicalJson(metadata),
-        prevHash,
-        entryHash,
-      );
+    id,
+    timestamp,
+    eventType,
+    entityType,
+    entityId,
+    _canonicalJson(metadata),
+    prevHash,
+    entryHash,
+  );
 
   @override
   String toString() => 'AuditEntry($id, ${eventType.value}, $timestamp)';

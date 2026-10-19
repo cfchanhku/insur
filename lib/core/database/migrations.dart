@@ -11,11 +11,7 @@ import 'package:sqflite_sqlcipher/sqflite.dart';
 import 'schema.dart';
 
 /// Applies all migrations from [oldVersion] through [newVersion].
-Future<void> runMigrations(
-  Database db,
-  int oldVersion,
-  int newVersion,
-) async {
+Future<void> runMigrations(Database db, int oldVersion, int newVersion) async {
   if (oldVersion < 0 ||
       newVersion < oldVersion ||
       newVersion > Schema.currentSchemaVersion) {
@@ -34,16 +30,17 @@ Future<void> runMigrations(
         for (final index in Schema.indexes) {
           await db.execute(index);
         }
+      case 2:
+        for (final trigger in Schema.auditTriggers) {
+          await db.execute(trigger);
+        }
       default:
         throw StateError('No migration is defined for schema version $version');
     }
 
-    await db.insert(
-      Schema.schemaVersion,
-      <String, Object?>{
-        Schema.version: version,
-        'applied_at': DateTime.now().toUtc().toIso8601String(),
-      },
-    );
+    await db.insert(Schema.schemaVersion, <String, Object?>{
+      Schema.version: version,
+      'applied_at': DateTime.now().toUtc().toIso8601String(),
+    });
   }
 }

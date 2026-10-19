@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:insur/core/database/database.dart';
+import 'package:insur/core/database/repositories/audit_repository.dart';
 import 'package:insur/core/database/repositories/client_repository.dart';
 import 'package:insur/core/database/schema.dart';
 import 'package:insur/core/security/field_crypto.dart';
@@ -15,13 +16,19 @@ void main() {
   late AppDatabase database;
   late ClientRepository repository;
   late FieldCrypto fieldCrypto;
+  late AuditRepository audit;
 
   setUp(() async {
     database = await createTestDatabase();
+    audit = AuditRepository(db: database);
     fieldCrypto = FieldCrypto(
       fieldKey: Uint8List.fromList(List<int>.filled(32, 0x53)),
     );
-    repository = ClientRepository(db: database, fieldCrypto: fieldCrypto);
+    repository = ClientRepository(
+      db: database,
+      fieldCrypto: fieldCrypto,
+      audit: audit,
+    );
   });
 
   tearDown(() async {
@@ -139,10 +146,7 @@ void main() {
       await repository.delete(saved.id!);
 
       expect(await repository.findById(saved.id!), isNotNull);
-      expect(
-        (await repository.findById(saved.id!))!.archivedAt,
-        isNotNull,
-      );
+      expect((await repository.findById(saved.id!))!.archivedAt, isNotNull);
     });
   });
 

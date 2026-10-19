@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:insur/core/database/database.dart';
+import 'package:insur/core/database/repositories/audit_repository.dart';
 import 'package:insur/core/database/repositories/client_repository.dart';
 import 'package:insur/core/database/repositories/policy_repository.dart';
 import 'package:insur/core/database/schema.dart';
@@ -19,15 +20,25 @@ void main() {
   late FieldCrypto fieldCrypto;
   late ClientRepository clientRepository;
   late PolicyRepository repository;
+  late AuditRepository audit;
   late String clientId;
 
   setUp(() async {
     database = await createTestDatabase();
+    audit = AuditRepository(db: database);
     fieldCrypto = FieldCrypto(
       fieldKey: Uint8List.fromList(List<int>.filled(32, 0x53)),
     );
-    clientRepository = ClientRepository(db: database, fieldCrypto: fieldCrypto);
-    repository = PolicyRepository(db: database, fieldCrypto: fieldCrypto);
+    clientRepository = ClientRepository(
+      db: database,
+      fieldCrypto: fieldCrypto,
+      audit: audit,
+    );
+    repository = PolicyRepository(
+      db: database,
+      fieldCrypto: fieldCrypto,
+      audit: audit,
+    );
     final client = await clientRepository.save(_client());
     clientId = client.id!;
   });
@@ -122,10 +133,7 @@ void main() {
       await repository.delete(saved.id!);
 
       expect(await repository.findById(saved.id!), isNotNull);
-      expect(
-        (await repository.findById(saved.id!))!.archivedAt,
-        isNotNull,
-      );
+      expect((await repository.findById(saved.id!))!.archivedAt, isNotNull);
     });
   });
 

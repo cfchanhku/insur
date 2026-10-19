@@ -20,24 +20,24 @@ enum AuditEventType {
 
   /// Returns the stable snake_case identifier serialized in audit entries.
   String get value => switch (this) {
-        AuditEventType.appSetup => 'app_setup',
-        AuditEventType.loginSuccess => 'login_success',
-        AuditEventType.loginFail => 'login_fail',
-        AuditEventType.logout => 'logout',
-        AuditEventType.autoLock => 'auto_lock',
-        AuditEventType.recoveryUsed => 'recovery_used',
-        AuditEventType.recoveryKeyRotated => 'recovery_key_rotated',
-        AuditEventType.create => 'create',
-        AuditEventType.update => 'update',
-        AuditEventType.archive => 'archive',
-        AuditEventType.restore => 'restore',
-        AuditEventType.delete => 'delete',
-        AuditEventType.exportPdf => 'export_pdf',
-        AuditEventType.backup => 'backup',
-        AuditEventType.restoreDb => 'restore_db',
-        AuditEventType.migration => 'migration',
-        AuditEventType.purge => 'purge',
-      };
+    AuditEventType.appSetup => 'app_setup',
+    AuditEventType.loginSuccess => 'login_success',
+    AuditEventType.loginFail => 'login_fail',
+    AuditEventType.logout => 'logout',
+    AuditEventType.autoLock => 'auto_lock',
+    AuditEventType.recoveryUsed => 'recovery_used',
+    AuditEventType.recoveryKeyRotated => 'recovery_key_rotated',
+    AuditEventType.create => 'create',
+    AuditEventType.update => 'update',
+    AuditEventType.archive => 'archive',
+    AuditEventType.restore => 'restore',
+    AuditEventType.delete => 'delete',
+    AuditEventType.exportPdf => 'export_pdf',
+    AuditEventType.backup => 'backup',
+    AuditEventType.restoreDb => 'restore_db',
+    AuditEventType.migration => 'migration',
+    AuditEventType.purge => 'purge',
+  };
 
   /// Parses a stable serialized event identifier.
   static AuditEventType fromString(String value) {

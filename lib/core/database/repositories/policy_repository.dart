@@ -9,9 +9,11 @@ import 'package:uuid/uuid.dart';
 
 import '../../../features/policies/models/policy.dart';
 import '../../../features/policies/models/policy_status.dart';
+import '../../audit/audit_event_type.dart';
 import '../../security/field_crypto.dart';
 import '../database.dart';
 import '../schema.dart';
+import 'audit_repository.dart';
 
 /// Reads and writes policy records through [AppDatabase].
 class PolicyRepository {
@@ -19,14 +21,17 @@ class PolicyRepository {
   PolicyRepository({
     required AppDatabase db,
     required FieldCrypto fieldCrypto,
-  })  : _db = db,
-        _fieldCrypto = fieldCrypto;
+    required AuditRepository audit,
+  }) : _db = db,
+       _fieldCrypto = fieldCrypto,
+       _audit = audit;
 
   static const String _entityType = 'policy';
   static const Uuid _uuid = Uuid();
 
   final AppDatabase _db;
   final FieldCrypto _fieldCrypto;
+  final AuditRepository _audit;
 
   /// Encrypts policy identifiers and notes before inserting or updating.
   Future<Policy> save(Policy policy) async {
@@ -46,11 +51,7 @@ class PolicyRepository {
     final createdAt = existing.isEmpty
         ? policy.createdAt?.toUtc() ?? now
         : _requiredDate(existing.first, Schema.createdAt);
-    final saved = policy.copyWith(
-      id: id,
-      createdAt: createdAt,
-      updatedAt: now,
-    );
+    final saved = policy.copyWith(id: id, createdAt: createdAt, updatedAt: now);
     final row = <String, Object?>{
       Schema.id: id,
       Schema.clientId: saved.clientId,
@@ -76,21 +77,28 @@ class PolicyRepository {
       Schema.archivedAt: saved.archivedAt?.toUtc().toIso8601String(),
     };
 
-    await _db.db.transaction((Transaction transaction) async {
-      if (existing.isEmpty) {
-        await transaction.insert(Schema.policies, row);
-      } else {
-        final changed = await transaction.update(
-          Schema.policies,
-          row,
-          where: '${Schema.id} = ?',
-          whereArgs: <Object?>[id],
-        );
-        if (changed != 1) {
-          throw StateError('Policy update did not affect exactly one row');
+    await _audit.recordMutation(
+      eventType: existing.isEmpty
+          ? AuditEventType.create
+          : AuditEventType.update,
+      entityType: _entityType,
+      entityId: id,
+      mutation: (Transaction transaction) async {
+        if (existing.isEmpty) {
+          await transaction.insert(Schema.policies, row);
+        } else {
+          final changed = await transaction.update(
+            Schema.policies,
+            row,
+            where: '${Schema.id} = ?',
+            whereArgs: <Object?>[id],
+          );
+          if (changed != 1) {
+            throw StateError('Policy update did not affect exactly one row');
+          }
         }
-      }
-    });
+      },
+    );
     return saved;
   }
 
@@ -146,24 +154,41 @@ class PolicyRepository {
 
   /// Archives a policy without physically deleting the business record.
   Future<void> archive(String id) async {
-    await _setArchived(id, DateTime.now().toUtc());
+    await _audit.recordMutation(
+      eventType: AuditEventType.archive,
+      entityType: _entityType,
+      entityId: id,
+      mutation: (Transaction transaction) =>
+          _setArchived(transaction, id, DateTime.now().toUtc()),
+    );
   }
 
   /// Restores an archived policy.
   Future<void> restore(String id) async {
-    await _setArchived(id, null);
+    await _audit.recordMutation(
+      eventType: AuditEventType.restore,
+      entityType: _entityType,
+      entityId: id,
+      mutation: (Transaction transaction) =>
+          _setArchived(transaction, id, null),
+    );
   }
 
-  /// Archives the policy; permanent erasure is not exposed by this repository.
-  Future<void> delete(String id) => archive(id);
+  /// Archives the policy and records the requested deletion event.
+  Future<void> delete(String id) async {
+    await _audit.recordMutation(
+      eventType: AuditEventType.delete,
+      entityType: _entityType,
+      entityId: id,
+      mutation: (Transaction transaction) =>
+          _setArchived(transaction, id, DateTime.now().toUtc()),
+    );
+  }
 
   Future<Policy> _fromRow(Map<String, Object?> row) async {
     final id = _requiredString(row, Schema.id);
     final effectiveDateText = _requiredString(row, Schema.effectiveDate);
-    final firstPremiumDateText = _requiredString(
-      row,
-      Schema.firstPremiumDate,
-    );
+    final firstPremiumDateText = _requiredString(row, Schema.firstPremiumDate);
     final effectiveDate = DateTime.tryParse(effectiveDateText);
     final firstPremiumDate = DateTime.tryParse(firstPremiumDateText);
     if (effectiveDate == null || firstPremiumDate == null) {
@@ -211,8 +236,12 @@ class PolicyRepository {
     );
   }
 
-  Future<void> _setArchived(String id, DateTime? archivedAt) async {
-    final changed = await _db.db.update(
+  Future<void> _setArchived(
+    Transaction transaction,
+    String id,
+    DateTime? archivedAt,
+  ) async {
+    final changed = await transaction.update(
       Schema.policies,
       <String, Object?>{
         Schema.archivedAt: archivedAt?.toUtc().toIso8601String(),

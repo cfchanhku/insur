@@ -22,6 +22,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 
+import '../audit/audit_event_type.dart';
 import 'backoff_policy.dart';
 import 'field_crypto.dart';
 import 'kdf.dart';
@@ -38,8 +39,8 @@ class KeyManager {
   KeyManager({
     required FlutterSecureStorage secureStorage,
     required LocalAuthentication localAuth,
-  })  : _secureStorage = secureStorage,
-        _localAuth = localAuth;
+  }) : _secureStorage = secureStorage,
+       _localAuth = localAuth;
 
   static const String _keyMasterKey = 'insur.master_key.v1';
   static const String _keyMasterSalt = 'insur.master_salt.v1';
@@ -52,6 +53,10 @@ class KeyManager {
 
   final FlutterSecureStorage _secureStorage;
   final LocalAuthentication _localAuth;
+
+  /// Receives lifecycle audit events; handlers must not block key operations.
+  void Function(AuditEventType eventType, {Map<String, Object?>? metadata})?
+  onAudit;
 
   KeyManagerState _state = KeyManagerState.uninitialized;
   int _failedAttempts = 0;
@@ -78,14 +83,13 @@ class KeyManager {
   /// If initialized and not already unlocked, the manager enters the locked
   /// state.
   Future<bool> isInitialized() async {
-    final storedMasterKey = await _secureStorage.read(
-      key: _keyMasterKey,
-    );
+    final storedMasterKey = await _secureStorage.read(key: _keyMasterKey);
     final initialized = storedMasterKey != null && storedMasterKey.isNotEmpty;
 
     if (_state != KeyManagerState.unlocked) {
-      _state =
-          initialized ? KeyManagerState.locked : KeyManagerState.uninitialized;
+      _state = initialized
+          ? KeyManagerState.locked
+          : KeyManagerState.uninitialized;
     }
     return initialized;
   }
@@ -107,16 +111,11 @@ class KeyManager {
       throw StateError('Already initialized');
     }
 
-    final passphraseBytes = Uint8List.fromList(
-      utf8.encode(passphrase),
-    );
+    final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
     final salt = Kdf.generateSalt();
     Uint8List? masterKey;
     try {
-      masterKey = await Kdf.deriveMasterKey(
-        passphrase: passphrase,
-        salt: salt,
-      );
+      masterKey = await Kdf.deriveMasterKey(passphrase: passphrase, salt: salt);
 
       await _secureStorage.write(
         key: _keyMasterSalt,
@@ -136,6 +135,7 @@ class KeyManager {
       _state = KeyManagerState.unlocked;
       _failedAttempts = 0;
       _currentBackoff = Duration.zero;
+      onAudit?.call(AuditEventType.appSetup);
     } finally {
       passphraseBytes.fillRange(0, passphraseBytes.length, 0);
       salt.fillRange(0, salt.length, 0);
@@ -157,13 +157,15 @@ class KeyManager {
       await Future<void>.delayed(_currentBackoff);
     }
     if (BackoffPolicy.shouldRequireRestart(_failedAttempts)) {
+      onAudit?.call(
+        AuditEventType.loginFail,
+        metadata: <String, Object?>{'attempts': _failedAttempts},
+      );
       return false;
     }
 
     final saltValue = await _secureStorage.read(key: _keyMasterSalt);
-    final masterKeyValue = await _secureStorage.read(
-      key: _keyMasterKey,
-    );
+    final masterKeyValue = await _secureStorage.read(key: _keyMasterKey);
     if (saltValue == null ||
         saltValue.isEmpty ||
         masterKeyValue == null ||
@@ -171,9 +173,7 @@ class KeyManager {
       throw StateError('Stored key material is incomplete');
     }
 
-    final passphraseBytes = Uint8List.fromList(
-      utf8.encode(passphrase),
-    );
+    final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
     final Uint8List salt;
     try {
       salt = Uint8List.fromList(base64Decode(saltValue));
@@ -203,6 +203,10 @@ class KeyManager {
       if (!isValid) {
         _failedAttempts++;
         _currentBackoff = BackoffPolicy.forAttempts(_failedAttempts);
+        onAudit?.call(
+          AuditEventType.loginFail,
+          metadata: <String, Object?>{'attempts': _failedAttempts},
+        );
         return false;
       }
 
@@ -210,6 +214,7 @@ class KeyManager {
       _state = KeyManagerState.unlocked;
       _failedAttempts = 0;
       _currentBackoff = Duration.zero;
+      onAudit?.call(AuditEventType.loginSuccess);
       return true;
     } finally {
       passphraseBytes.fillRange(0, passphraseBytes.length, 0);
@@ -270,6 +275,10 @@ class KeyManager {
       _state = KeyManagerState.unlocked;
       _failedAttempts = 0;
       _currentBackoff = Duration.zero;
+      onAudit?.call(
+        AuditEventType.loginSuccess,
+        metadata: <String, Object?>{'method': 'biometric'},
+      );
       return true;
     } finally {
       masterKey.fillRange(0, masterKey.length, 0);
@@ -280,13 +289,18 @@ class KeyManager {
   ///
   /// The securely stored master key remains available for a later unlock.
   Future<void> lock() async {
+    final wasUnlocked = _state == KeyManagerState.unlocked;
     _clearInMemoryKeys();
     _state = KeyManagerState.locked;
+    if (wasUnlocked) {
+      onAudit?.call(AuditEventType.autoLock);
+    }
   }
 
   /// Locks the session and optionally removes all managed secure-storage data.
   Future<void> logout({bool wipe = false}) async {
-    await lock();
+    _clearInMemoryKeys();
+    _state = KeyManagerState.locked;
     if (wipe) {
       await _secureStorage.delete(key: _keyMasterKey);
       await _secureStorage.delete(key: _keyMasterSalt);
@@ -296,6 +310,7 @@ class KeyManager {
     _state = KeyManagerState.uninitialized;
     _failedAttempts = 0;
     _currentBackoff = Duration.zero;
+    onAudit?.call(AuditEventType.logout);
   }
 
   /// Database encryption key; valid only while the manager is unlocked.
@@ -474,6 +489,7 @@ class KeyManager {
       _state = KeyManagerState.unlocked;
       _failedAttempts = 0;
       _currentBackoff = Duration.zero;
+      onAudit?.call(AuditEventType.recoveryUsed);
       return true;
     } on FormatException {
       return false;
@@ -498,8 +514,7 @@ class KeyManager {
   /// Replaces the current recovery key after verifying [passphrase].
   ///
   /// The old wrapped key is deleted before a new one is stored. A recovery
-  /// rotation audit event will be added when the persistent audit service is
-  /// available.
+  /// rotation event is sent to [onAudit] after the replacement is stored.
   Future<String> regenerateRecoveryKey({required String passphrase}) async {
     if (_state != KeyManagerState.unlocked) {
       throw StateError('Not unlocked');
@@ -509,8 +524,9 @@ class KeyManager {
     }
 
     await _deleteRecoveryMaterial();
-    // TODO(insur): Record RECOVERY_KEY_ROTATED with the persistent audit log.
-    return _createRecoveryKey();
+    final recoveryKey = await _createRecoveryKey();
+    onAudit?.call(AuditEventType.recoveryKeyRotated);
+    return recoveryKey;
   }
 
   Uint8List _keyForState(Uint8List? key) {

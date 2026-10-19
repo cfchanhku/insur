@@ -36,7 +36,10 @@ class HashChain {
   }) async {
     if (!_hashPattern.hasMatch(prevHash)) {
       throw ArgumentError.value(
-          prevHash, 'prevHash', 'Must be 64 lowercase hex characters');
+        prevHash,
+        'prevHash',
+        'Must be 64 lowercase hex characters',
+      );
     }
     if (!timestamp.isUtc) {
       throw ArgumentError.value(timestamp, 'timestamp', 'Must be UTC');
@@ -70,8 +73,9 @@ class HashChain {
     }
     for (var index = 0; index < entries.length; index++) {
       final entry = entries[index];
-      final expectedPreviousHash =
-          index == 0 ? genesisHash : entries[index - 1].entryHash;
+      final expectedPreviousHash = index == 0
+          ? genesisHash
+          : entries[index - 1].entryHash;
       if (!_uuidV4Pattern.hasMatch(entry.id) ||
           entry.prevHash != expectedPreviousHash ||
           !_hashPattern.hasMatch(entry.entryHash) ||

@@ -10,9 +10,11 @@ import 'package:uuid/uuid.dart';
 
 import '../../../features/clients/models/client.dart';
 import '../../../features/clients/models/client_enums.dart';
+import '../../audit/audit_event_type.dart';
 import '../../security/field_crypto.dart';
 import '../database.dart';
 import '../schema.dart';
+import 'audit_repository.dart';
 
 /// Reads and writes client records through [AppDatabase].
 class ClientRepository {
@@ -20,14 +22,17 @@ class ClientRepository {
   ClientRepository({
     required AppDatabase db,
     required FieldCrypto fieldCrypto,
-  })  : _db = db,
-        _fieldCrypto = fieldCrypto;
+    required AuditRepository audit,
+  }) : _db = db,
+       _fieldCrypto = fieldCrypto,
+       _audit = audit;
 
   static const String _entityType = 'client';
   static const Uuid _uuid = Uuid();
 
   final AppDatabase _db;
   final FieldCrypto _fieldCrypto;
+  final AuditRepository _audit;
 
   /// Encrypts client PII and inserts or updates the client atomically.
   Future<Client> save(Client client) async {
@@ -47,18 +52,17 @@ class ClientRepository {
     final createdAt = existing.isEmpty
         ? client.createdAt?.toUtc() ?? now
         : _requiredDate(existing.first, Schema.createdAt);
-    final saved = client.copyWith(
-      id: id,
-      createdAt: createdAt,
-      updatedAt: now,
-    );
+    final saved = client.copyWith(id: id, createdAt: createdAt, updatedAt: now);
     final row = <String, Object?>{
       Schema.id: id,
       Schema.role: saved.role.value,
       Schema.name: await _encrypt(saved.name, 'name', id),
       Schema.gender: saved.gender.value,
-      Schema.dob:
-          await _encrypt(saved.dob.toUtc().toIso8601String(), 'dob', id),
+      Schema.dob: await _encrypt(
+        saved.dob.toUtc().toIso8601String(),
+        'dob',
+        id,
+      ),
       Schema.phone: await _fieldCrypto.encryptNullable(
         plaintext: saved.phone,
         entityType: _entityType,
@@ -82,21 +86,28 @@ class ClientRepository {
       Schema.archivedAt: saved.archivedAt?.toUtc().toIso8601String(),
     };
 
-    await _db.db.transaction((Transaction transaction) async {
-      if (existing.isEmpty) {
-        await transaction.insert(Schema.clients, row);
-      } else {
-        final changed = await transaction.update(
-          Schema.clients,
-          row,
-          where: '${Schema.id} = ?',
-          whereArgs: <Object?>[id],
-        );
-        if (changed != 1) {
-          throw StateError('Client update did not affect exactly one row');
+    await _audit.recordMutation(
+      eventType: existing.isEmpty
+          ? AuditEventType.create
+          : AuditEventType.update,
+      entityType: _entityType,
+      entityId: id,
+      mutation: (Transaction transaction) async {
+        if (existing.isEmpty) {
+          await transaction.insert(Schema.clients, row);
+        } else {
+          final changed = await transaction.update(
+            Schema.clients,
+            row,
+            where: '${Schema.id} = ?',
+            whereArgs: <Object?>[id],
+          );
+          if (changed != 1) {
+            throw StateError('Client update did not affect exactly one row');
+          }
         }
-      }
-    });
+      },
+    );
     return saved;
   }
 
@@ -131,16 +142,36 @@ class ClientRepository {
 
   /// Archives a client without physically deleting the business record.
   Future<void> archive(String id) async {
-    await _setArchived(id, DateTime.now().toUtc());
+    await _audit.recordMutation(
+      eventType: AuditEventType.archive,
+      entityType: _entityType,
+      entityId: id,
+      mutation: (Transaction transaction) =>
+          _setArchived(transaction, id, DateTime.now().toUtc()),
+    );
   }
 
   /// Restores an archived client.
   Future<void> restore(String id) async {
-    await _setArchived(id, null);
+    await _audit.recordMutation(
+      eventType: AuditEventType.restore,
+      entityType: _entityType,
+      entityId: id,
+      mutation: (Transaction transaction) =>
+          _setArchived(transaction, id, null),
+    );
   }
 
-  /// Archives the client; permanent erasure is not exposed by this repository.
-  Future<void> delete(String id) => archive(id);
+  /// Archives the client and records the requested deletion event.
+  Future<void> delete(String id) async {
+    await _audit.recordMutation(
+      eventType: AuditEventType.delete,
+      entityType: _entityType,
+      entityId: id,
+      mutation: (Transaction transaction) =>
+          _setArchived(transaction, id, DateTime.now().toUtc()),
+    );
+  }
 
   Future<String> _encrypt(String plaintext, String fieldName, String id) {
     return _fieldCrypto.encrypt(
@@ -208,8 +239,12 @@ class ClientRepository {
     );
   }
 
-  Future<void> _setArchived(String id, DateTime? archivedAt) async {
-    final changed = await _db.db.update(
+  Future<void> _setArchived(
+    Transaction transaction,
+    String id,
+    DateTime? archivedAt,
+  ) async {
+    final changed = await transaction.update(
       Schema.clients,
       <String, Object?>{
         Schema.archivedAt: archivedAt?.toUtc().toIso8601String(),

@@ -48,8 +48,9 @@ class AppDatabase {
       );
     }
 
-    final hexKey =
-        dbKey.map((int byte) => byte.toRadixString(16).padLeft(2, '0')).join();
+    final hexKey = dbKey
+        .map((int byte) => byte.toRadixString(16).padLeft(2, '0'))
+        .join();
     const OnDatabaseCreateFn onCreate = _createInitialSchema;
     const onUpgrade = runMigrations;
 
@@ -112,6 +113,25 @@ class AppDatabase {
   /// Executes a SQL statement.
   Future<void> execute(String sql) => db.execute(sql);
 
+  /// Executes raw SQL, including statements that do not map to a table API.
+  Future<void> executeRaw(String sql) => db.execute(sql);
+
+  /// Temporarily drops append-only audit triggers while [action] runs.
+  ///
+  /// Triggers are recreated even when [action] fails. Trigger recreation
+  /// failures are propagated rather than leaving a success-shaped result.
+  Future<void> withTriggersDropped(Future<void> Function() action) async {
+    try {
+      await executeRaw('DROP TRIGGER IF EXISTS audit_log_no_update');
+      await executeRaw('DROP TRIGGER IF EXISTS audit_log_no_delete');
+      await action();
+    } finally {
+      for (final trigger in Schema.auditTriggers) {
+        await executeRaw(trigger);
+      }
+    }
+  }
+
   /// Queries a table using bound query arguments.
   Future<List<Map<String, Object?>>> query(
     String table, {
@@ -137,25 +157,11 @@ class AppDatabase {
     Database database,
     int version,
   ) async {
-    for (final statement in Schema.createStatements) {
-      await database.execute(statement);
-    }
-    for (final index in Schema.indexes) {
-      await database.execute(index);
-    }
-    await database.insert(
-      Schema.schemaVersion,
-      <String, Object?>{
-        Schema.version: Schema.currentSchemaVersion,
-        'applied_at': DateTime.now().toUtc().toIso8601String(),
-      },
-    );
+    await runMigrations(database, 0, version);
   }
 
   static Future<void> _requireSqlCipher(Database database) async {
-    final rows = await database.rawQuery(
-      'PRAGMA cipher_version',
-    );
+    final rows = await database.rawQuery('PRAGMA cipher_version');
     final cipherVersion = rows.isEmpty ? null : rows.first.values.first;
     if (cipherVersion is! String || cipherVersion.isEmpty) {
       throw StateError('SQLCipher is not available for this database');

@@ -140,7 +140,7 @@ class Schema {
   static const String value = 'value';
 
   /// Latest schema version created for new databases.
-  static const int currentSchemaVersion = 1;
+  static const int currentSchemaVersion = 2;
 
   /// SQL statements creating tables in dependency order.
   static const List<String> createStatements = <String>[
@@ -243,5 +243,26 @@ CREATE TABLE app_config (
     'CREATE INDEX idx_riders_plan ON riders(plan_id)',
     'CREATE INDEX idx_audit_timestamp ON audit_log(timestamp)',
     'CREATE INDEX idx_audit_event ON audit_log(event_type)',
+  ];
+
+  /// Triggers that prevent mutation of persisted audit history.
+  ///
+  /// Retention purges temporarily remove these triggers while deleting expired
+  /// rows, then recreate them before returning.
+  static const List<String> auditTriggers = <String>[
+    '''
+CREATE TRIGGER audit_log_no_update
+BEFORE UPDATE ON audit_log
+BEGIN
+  SELECT RAISE(ABORT, 'audit_log is append-only');
+END
+''',
+    '''
+CREATE TRIGGER audit_log_no_delete
+BEFORE DELETE ON audit_log
+BEGIN
+  SELECT RAISE(ABORT, 'audit_log is append-only');
+END
+''',
   ];
 }
