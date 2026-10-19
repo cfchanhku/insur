@@ -9,6 +9,9 @@ import 'backup_exception.dart';
 /// Abstracts file selection and I/O so backup workflows can be tested without
 /// opening native file-picker dialogs.
 abstract class BackupFileService {
+  /// Prompts the user to choose a directory, returning null when cancelled.
+  Future<String?> pickDirectory();
+
   /// Prompts for a backup destination, returning null when cancelled.
   Future<String?> pickSaveLocation({required String suggestedName});
 
@@ -35,6 +38,15 @@ abstract class BackupFileService {
 class PlatformBackupFileService implements BackupFileService {
   /// Creates the platform implementation.
   const PlatformBackupFileService();
+
+  @override
+  Future<String?> pickDirectory() async {
+    try {
+      return await FilePicker.platform.getDirectoryPath();
+    } on PlatformException {
+      throw const BackupIoException('Unable to choose backup folder');
+    }
+  }
 
   @override
   Future<String?> pickSaveLocation({required String suggestedName}) async {

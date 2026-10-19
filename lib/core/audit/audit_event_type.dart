@@ -39,6 +39,9 @@ enum AuditEventType {
     AuditEventType.purge => 'purge',
   };
 
+  /// Returns the localization key associated with this event type.
+  String get labelKey => 'audit_event_$value';
+
   /// Parses a stable serialized event identifier.
   static AuditEventType fromString(String value) {
     return switch (value) {

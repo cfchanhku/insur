@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/audit/audit_event_type.dart';
-import '../../../core/security/auto_lock_timer.dart';
 import '../../../features/clients/models/client.dart';
 import '../../../features/clients/models/client_enums.dart';
 import '../../../l10n/app_localizations.dart';
@@ -31,14 +30,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  late final AutoLockTimer _timer;
   String? _selectedClientId;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = AutoLockTimer(onLock: () => unawaited(_lock()))..start();
-  }
 
   Future<void> _lock() async {
     final audit = await ref.read(auditRepositoryProvider.future);
@@ -67,16 +59,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   @override
-  void dispose() {
-    _timer.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    ref.listen<int>(userActivityProvider, (int? previous, int next) {
-      _timer.reset();
-    });
     final l10n = AppLocalizations.of(context);
     final isDesktop = MediaQuery.sizeOf(context).width > 1024;
     return AppScaffold(

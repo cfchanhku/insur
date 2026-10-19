@@ -285,6 +285,131 @@
   "settings_logout_confirm_title": "確定登出？",
   "settings_logout_confirm_body": "您將需要密碼才能再次登入。",
   "settings_logout_confirm_action": "登出",
+  "settings_general": "一般",
+  "settings_security": "安全性",
+  "settings_backup": "備份",
+  "settings_audit": "稽核",
+  "settings_about": "關於",
+  "settings_danger": "危險區域",
+  "settings_language": "語言",
+  "settings_language_english": "English",
+  "settings_language_traditional_chinese": "繁體中文",
+  "settings_theme": "主題",
+  "settings_theme_system": "跟隨系統",
+  "settings_theme_light": "淺色",
+  "settings_theme_dark": "深色",
+  "settings_auto_lock": "自動鎖定",
+  "settings_minutes": "{minutes} 分鐘",
+  "@settings_minutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_biometric": "生物辨識解鎖",
+  "settings_biometric_unavailable": "此裝置不支援",
+  "settings_biometric_reason": "請確認使用生物辨識解鎖此應用程式",
+  "settings_change_passphrase": "更改密碼",
+  "settings_change_passphrase_guidance": "此功能將於未來更新推出。請使用復原金鑰重設密碼。",
+  "settings_regenerate_recovery": "重新產生復原金鑰",
+  "settings_max_attempts": "最大失敗次數",
+  "settings_max_attempts_preference_only": "只儲存偏好設定；登入限制維持不變。",
+  "settings_attempts": "{attempts} 次",
+  "@settings_attempts": {
+    "placeholders": {
+      "attempts": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_auto_backup": "自動備份",
+  "settings_auto_backup_note": "已儲存頻率設定；自動排程備份尚未啟用。",
+  "settings_backup_off": "關閉",
+  "settings_backup_daily": "每日",
+  "settings_backup_weekly": "每週",
+  "settings_backup_folder": "備份資料夾",
+  "settings_backup_folder_default": "預設位置",
+  "settings_backup_now": "立即備份",
+  "settings_backup_coming": "備份功能將於下次更新推出",
+  "settings_view_audit": "檢視稽核記錄",
+  "settings_audit_retention": "稽核記錄保留",
+  "settings_audit_retention_value": "2 年",
+  "settings_version": "版本",
+  "settings_privacy_policy": "隱私政策",
+  "settings_privacy_policy_body": "本應用程式將所有資料儲存在您的裝置本機。不會傳送任何資料到伺服器。加密金鑰儲存在裝置的安全儲存區。備份以您選擇的密碼加密。",
+  "settings_reset_app": "重設應用程式",
+  "settings_coming_soon_title": "即將推出",
+  "settings_coming_soon_body": "此功能將於未來更新提供。",
+  "audit_log_title": "稽核記錄",
+  "audit_filter_all": "所有事件",
+  "audit_filter_from": "從",
+  "audit_filter_to": "至",
+  "audit_filter_any_date": "任何日期",
+  "audit_filter_date_range": "{from} — {to}",
+  "@audit_filter_date_range": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "audit_filter_clear": "清除篩選",
+  "audit_verify": "驗證鏈結",
+  "audit_chain_unverified": "尚未驗證 — 點擊 ✓ 驗證",
+  "audit_chain_valid": "鏈結驗證成功（{count} 筆）",
+  "@audit_chain_valid": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "audit_chain_broken": "鏈結於第 {index} 筆中斷：{reason}",
+  "@audit_chain_broken": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "audit_verify_error": "無法驗證稽核鏈結。",
+  "audit_empty": "沒有符合篩選條件的記錄",
+  "audit_load_more": "載入更多",
+  "audit_entry_details": "記錄詳情",
+  "audit_copy_json": "複製 JSON",
+  "audit_copied": "已複製",
+  "audit_event_type": "事件類型",
+  "audit_timestamp": "時間",
+  "audit_entity": "實體",
+  "audit_entity_id": "實體 ID",
+  "audit_entity_none": "無",
+  "audit_metadata": "中繼資料",
+  "audit_prev_hash": "前一雜湊",
+  "audit_entry_hash": "項目雜湊",
+  "audit_event_app_setup": "應用程式設定",
+  "audit_event_login_success": "登入成功",
+  "audit_event_login_fail": "登入失敗",
+  "audit_event_logout": "登出",
+  "audit_event_auto_lock": "自動鎖定",
+  "audit_event_recovery_used": "使用復原金鑰",
+  "audit_event_recovery_key_rotated": "復原金鑰已更新",
+  "audit_event_create": "建立",
+  "audit_event_update": "更新",
+  "audit_event_archive": "封存",
+  "audit_event_restore": "還原",
+  "audit_event_delete": "刪除",
+  "audit_event_export_pdf": "匯出 PDF",
+  "audit_event_backup": "備份",
+  "audit_event_restore_db": "從備份還原",
+  "audit_event_migration": "資料庫遷移",
+  "audit_event_purge": "清理",
   "action_retry": "重試",
   "error_generic": "發生錯誤，請再試一次。",
   "recovery_title": "復原",

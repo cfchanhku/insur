@@ -19,6 +19,13 @@ class FakeBackupFileService implements BackupFileService {
   /// Path at which [writeBytes] should fail, if set.
   String? writeFailurePath;
 
+  /// Optional folder returned by [pickDirectory].
+  String? selectedDirectoryPath;
+
+  @override
+  Future<String?> pickDirectory() async =>
+      selectedDirectoryPath ?? directory.path;
+
   @override
   Future<String?> pickSaveLocation({required String suggestedName}) async =>
       path.join(directory.path, suggestedName);

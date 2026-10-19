@@ -4,16 +4,20 @@ library;
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import '../core/audit/audit_wiring.dart';
+import '../core/backup/backup_file_service.dart';
 import '../core/database/database.dart';
 import '../core/database/repositories/audit_repository.dart';
 import '../core/database/repositories/client_repository.dart';
+import '../core/database/repositories/config_repository.dart';
 import '../core/database/repositories/plan_repository.dart';
 import '../core/database/repositories/policy_repository.dart';
 import '../core/database/repositories/rider_repository.dart';
@@ -38,6 +42,17 @@ final localAuthProvider = Provider<LocalAuthentication>(
   (Ref ref) => LocalAuthentication(),
 );
 
+/// Checks whether this device can perform biometric-only authentication.
+final biometricAvailabilityProvider = FutureProvider<bool>((Ref ref) async {
+  final localAuth = ref.watch(localAuthProvider);
+  try {
+    return await localAuth.canCheckBiometrics &&
+        await localAuth.isDeviceSupported();
+  } on PlatformException {
+    return false;
+  }
+});
+
 /// Creates a KeyManager without automatically unlocking the vault.
 final keyManagerProvider = FutureProvider<KeyManager>((Ref ref) async {
   return KeyManager(
@@ -50,9 +65,6 @@ final keyManagerProvider = FutureProvider<KeyManager>((Ref ref) async {
 final keyManagerStateProvider = StateProvider<KeyManagerState>(
   (Ref ref) => KeyManagerState.uninitialized,
 );
-
-/// Tracks global pointer activity so active vault timers reset across routes.
-final userActivityProvider = StateProvider<int>((Ref ref) => 0);
 
 /// Opens SQLCipher only while the key manager is unlocked.
 final appDatabaseProvider = FutureProvider<AppDatabase>((Ref ref) async {
@@ -71,6 +83,25 @@ final appDatabaseProvider = FutureProvider<AppDatabase>((Ref ref) async {
     unawaited(database.close());
   });
   return database;
+});
+
+/// Provides non-PII preferences stored in the encrypted app configuration table.
+final configRepositoryProvider = FutureProvider<ConfigRepository>((
+  Ref ref,
+) async {
+  final database = await ref.watch(appDatabaseProvider.future);
+  return ConfigRepository(db: database);
+});
+
+/// Provides the local file picker used by backup-related settings.
+final backupFileServiceProvider = Provider<BackupFileService>(
+  (Ref ref) => const PlatformBackupFileService(),
+);
+
+/// Loads the application version from the platform package metadata.
+final appVersionProvider = FutureProvider<String>((Ref ref) async {
+  final packageInfo = await PackageInfo.fromPlatform();
+  return packageInfo.version;
 });
 
 /// Initializes the persistent audit chain and connects KeyManager events.

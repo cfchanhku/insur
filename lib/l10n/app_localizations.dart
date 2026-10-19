@@ -1270,7 +1270,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_coming_soon_body.
   ///
   /// In en, this message translates to:
-  /// **'Language, auto-lock, biometric, backup, and audit log options will be available in a future update.'**
+  /// **'This feature will be available in a future update.'**
   String get settings_coming_soon_body;
 
   /// No description provided for @settings_logout.
@@ -1296,6 +1296,504 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logout'**
   String get settings_logout_confirm_action;
+
+  /// No description provided for @settings_general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get settings_general;
+
+  /// No description provided for @settings_security.
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get settings_security;
+
+  /// No description provided for @settings_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get settings_backup;
+
+  /// No description provided for @settings_audit.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit'**
+  String get settings_audit;
+
+  /// No description provided for @settings_about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settings_about;
+
+  /// No description provided for @settings_danger.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger zone'**
+  String get settings_danger;
+
+  /// No description provided for @settings_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settings_language;
+
+  /// No description provided for @settings_language_english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settings_language_english;
+
+  /// No description provided for @settings_language_traditional_chinese.
+  ///
+  /// In en, this message translates to:
+  /// **'繁體中文'**
+  String get settings_language_traditional_chinese;
+
+  /// No description provided for @settings_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settings_theme;
+
+  /// No description provided for @settings_theme_system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get settings_theme_system;
+
+  /// No description provided for @settings_theme_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get settings_theme_light;
+
+  /// No description provided for @settings_theme_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get settings_theme_dark;
+
+  /// No description provided for @settings_auto_lock.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-lock'**
+  String get settings_auto_lock;
+
+  /// No description provided for @settings_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String settings_minutes(int minutes);
+
+  /// No description provided for @settings_biometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric unlock'**
+  String get settings_biometric;
+
+  /// No description provided for @settings_biometric_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available on this device'**
+  String get settings_biometric_unavailable;
+
+  /// No description provided for @settings_biometric_reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm biometric unlock for this app'**
+  String get settings_biometric_reason;
+
+  /// No description provided for @settings_change_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Change passphrase'**
+  String get settings_change_passphrase;
+
+  /// No description provided for @settings_change_passphrase_guidance.
+  ///
+  /// In en, this message translates to:
+  /// **'This operation is coming in a future update. Use your Recovery Key to reset your passphrase.'**
+  String get settings_change_passphrase_guidance;
+
+  /// No description provided for @settings_regenerate_recovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate recovery key'**
+  String get settings_regenerate_recovery;
+
+  /// No description provided for @settings_max_attempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Max failed attempts'**
+  String get settings_max_attempts;
+
+  /// No description provided for @settings_max_attempts_preference_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved preference only; login enforcement is unchanged.'**
+  String get settings_max_attempts_preference_only;
+
+  /// No description provided for @settings_attempts.
+  ///
+  /// In en, this message translates to:
+  /// **'{attempts} attempts'**
+  String settings_attempts(int attempts);
+
+  /// No description provided for @settings_auto_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-backup'**
+  String get settings_auto_backup;
+
+  /// No description provided for @settings_auto_backup_note.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency is saved; scheduled backups are not active yet.'**
+  String get settings_auto_backup_note;
+
+  /// No description provided for @settings_backup_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get settings_backup_off;
+
+  /// No description provided for @settings_backup_daily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get settings_backup_daily;
+
+  /// No description provided for @settings_backup_weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get settings_backup_weekly;
+
+  /// No description provided for @settings_backup_folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup folder'**
+  String get settings_backup_folder;
+
+  /// No description provided for @settings_backup_folder_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Default location'**
+  String get settings_backup_folder_default;
+
+  /// No description provided for @settings_backup_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup now'**
+  String get settings_backup_now;
+
+  /// No description provided for @settings_backup_coming.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup feature coming in next update'**
+  String get settings_backup_coming;
+
+  /// No description provided for @settings_view_audit.
+  ///
+  /// In en, this message translates to:
+  /// **'View audit log'**
+  String get settings_view_audit;
+
+  /// No description provided for @settings_audit_retention.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit retention'**
+  String get settings_audit_retention;
+
+  /// No description provided for @settings_audit_retention_value.
+  ///
+  /// In en, this message translates to:
+  /// **'2 years'**
+  String get settings_audit_retention_value;
+
+  /// No description provided for @settings_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get settings_version;
+
+  /// No description provided for @settings_privacy_policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get settings_privacy_policy;
+
+  /// No description provided for @settings_privacy_policy_body.
+  ///
+  /// In en, this message translates to:
+  /// **'This application stores all data locally on your device. No data is sent to any server. Encryption keys are stored in your device\'s secure storage. Backups are encrypted with a passphrase you choose.'**
+  String get settings_privacy_policy_body;
+
+  /// No description provided for @settings_reset_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset app'**
+  String get settings_reset_app;
+
+  /// No description provided for @settings_coming_soon_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get settings_coming_soon_title;
+
+  /// No description provided for @audit_log_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit log'**
+  String get audit_log_title;
+
+  /// No description provided for @audit_filter_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All events'**
+  String get audit_filter_all;
+
+  /// No description provided for @audit_filter_from.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get audit_filter_from;
+
+  /// No description provided for @audit_filter_to.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get audit_filter_to;
+
+  /// No description provided for @audit_filter_any_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Any date'**
+  String get audit_filter_any_date;
+
+  /// No description provided for @audit_filter_date_range.
+  ///
+  /// In en, this message translates to:
+  /// **'{from} — {to}'**
+  String audit_filter_date_range(String from, String to);
+
+  /// No description provided for @audit_filter_clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get audit_filter_clear;
+
+  /// No description provided for @audit_verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify chain'**
+  String get audit_verify;
+
+  /// No description provided for @audit_chain_unverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Chain not verified — tap ✓ to verify'**
+  String get audit_chain_unverified;
+
+  /// No description provided for @audit_chain_valid.
+  ///
+  /// In en, this message translates to:
+  /// **'Chain verified ({count} entries)'**
+  String audit_chain_valid(int count);
+
+  /// No description provided for @audit_chain_broken.
+  ///
+  /// In en, this message translates to:
+  /// **'Chain broken at index {index}: {reason}'**
+  String audit_chain_broken(int index, String reason);
+
+  /// No description provided for @audit_verify_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to verify the audit chain.'**
+  String get audit_verify_error;
+
+  /// No description provided for @audit_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No audit entries match the filters'**
+  String get audit_empty;
+
+  /// No description provided for @audit_load_more.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get audit_load_more;
+
+  /// No description provided for @audit_entry_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry details'**
+  String get audit_entry_details;
+
+  /// No description provided for @audit_copy_json.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy JSON'**
+  String get audit_copy_json;
+
+  /// No description provided for @audit_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get audit_copied;
+
+  /// No description provided for @audit_event_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Event type'**
+  String get audit_event_type;
+
+  /// No description provided for @audit_timestamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamp'**
+  String get audit_timestamp;
+
+  /// No description provided for @audit_entity.
+  ///
+  /// In en, this message translates to:
+  /// **'Entity'**
+  String get audit_entity;
+
+  /// No description provided for @audit_entity_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Entity ID'**
+  String get audit_entity_id;
+
+  /// No description provided for @audit_entity_none.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get audit_entity_none;
+
+  /// No description provided for @audit_metadata.
+  ///
+  /// In en, this message translates to:
+  /// **'Metadata'**
+  String get audit_metadata;
+
+  /// No description provided for @audit_prev_hash.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous hash'**
+  String get audit_prev_hash;
+
+  /// No description provided for @audit_entry_hash.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry hash'**
+  String get audit_entry_hash;
+
+  /// No description provided for @audit_event_app_setup.
+  ///
+  /// In en, this message translates to:
+  /// **'App setup'**
+  String get audit_event_app_setup;
+
+  /// No description provided for @audit_event_login_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Login success'**
+  String get audit_event_login_success;
+
+  /// No description provided for @audit_event_login_fail.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failure'**
+  String get audit_event_login_fail;
+
+  /// No description provided for @audit_event_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get audit_event_logout;
+
+  /// No description provided for @audit_event_auto_lock.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-lock'**
+  String get audit_event_auto_lock;
+
+  /// No description provided for @audit_event_recovery_used.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery key used'**
+  String get audit_event_recovery_used;
+
+  /// No description provided for @audit_event_recovery_key_rotated.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery key rotated'**
+  String get audit_event_recovery_key_rotated;
+
+  /// No description provided for @audit_event_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get audit_event_create;
+
+  /// No description provided for @audit_event_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get audit_event_update;
+
+  /// No description provided for @audit_event_archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get audit_event_archive;
+
+  /// No description provided for @audit_event_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get audit_event_restore;
+
+  /// No description provided for @audit_event_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get audit_event_delete;
+
+  /// No description provided for @audit_event_export_pdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get audit_event_export_pdf;
+
+  /// No description provided for @audit_event_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get audit_event_backup;
+
+  /// No description provided for @audit_event_restore_db.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from backup'**
+  String get audit_event_restore_db;
+
+  /// No description provided for @audit_event_migration.
+  ///
+  /// In en, this message translates to:
+  /// **'Migration'**
+  String get audit_event_migration;
+
+  /// No description provided for @audit_event_purge.
+  ///
+  /// In en, this message translates to:
+  /// **'Purge'**
+  String get audit_event_purge;
 
   /// No description provided for @action_retry.
   ///

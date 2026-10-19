@@ -639,7 +639,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings_coming_soon_body =>
-      'Language, auto-lock, biometric, backup, and audit log options will be available in a future update.';
+      'This feature will be available in a future update.';
 
   @override
   String get settings_logout => 'Logout';
@@ -653,6 +653,270 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings_logout_confirm_action => 'Logout';
+
+  @override
+  String get settings_general => 'General';
+
+  @override
+  String get settings_security => 'Security';
+
+  @override
+  String get settings_backup => 'Backup';
+
+  @override
+  String get settings_audit => 'Audit';
+
+  @override
+  String get settings_about => 'About';
+
+  @override
+  String get settings_danger => 'Danger zone';
+
+  @override
+  String get settings_language => 'Language';
+
+  @override
+  String get settings_language_english => 'English';
+
+  @override
+  String get settings_language_traditional_chinese => '繁體中文';
+
+  @override
+  String get settings_theme => 'Theme';
+
+  @override
+  String get settings_theme_system => 'System';
+
+  @override
+  String get settings_theme_light => 'Light';
+
+  @override
+  String get settings_theme_dark => 'Dark';
+
+  @override
+  String get settings_auto_lock => 'Auto-lock';
+
+  @override
+  String settings_minutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get settings_biometric => 'Biometric unlock';
+
+  @override
+  String get settings_biometric_unavailable => 'Not available on this device';
+
+  @override
+  String get settings_biometric_reason =>
+      'Confirm biometric unlock for this app';
+
+  @override
+  String get settings_change_passphrase => 'Change passphrase';
+
+  @override
+  String get settings_change_passphrase_guidance =>
+      'This operation is coming in a future update. Use your Recovery Key to reset your passphrase.';
+
+  @override
+  String get settings_regenerate_recovery => 'Regenerate recovery key';
+
+  @override
+  String get settings_max_attempts => 'Max failed attempts';
+
+  @override
+  String get settings_max_attempts_preference_only =>
+      'Saved preference only; login enforcement is unchanged.';
+
+  @override
+  String settings_attempts(int attempts) {
+    return '$attempts attempts';
+  }
+
+  @override
+  String get settings_auto_backup => 'Auto-backup';
+
+  @override
+  String get settings_auto_backup_note =>
+      'Frequency is saved; scheduled backups are not active yet.';
+
+  @override
+  String get settings_backup_off => 'Off';
+
+  @override
+  String get settings_backup_daily => 'Daily';
+
+  @override
+  String get settings_backup_weekly => 'Weekly';
+
+  @override
+  String get settings_backup_folder => 'Backup folder';
+
+  @override
+  String get settings_backup_folder_default => 'Default location';
+
+  @override
+  String get settings_backup_now => 'Backup now';
+
+  @override
+  String get settings_backup_coming => 'Backup feature coming in next update';
+
+  @override
+  String get settings_view_audit => 'View audit log';
+
+  @override
+  String get settings_audit_retention => 'Audit retention';
+
+  @override
+  String get settings_audit_retention_value => '2 years';
+
+  @override
+  String get settings_version => 'Version';
+
+  @override
+  String get settings_privacy_policy => 'Privacy policy';
+
+  @override
+  String get settings_privacy_policy_body =>
+      'This application stores all data locally on your device. No data is sent to any server. Encryption keys are stored in your device\'s secure storage. Backups are encrypted with a passphrase you choose.';
+
+  @override
+  String get settings_reset_app => 'Reset app';
+
+  @override
+  String get settings_coming_soon_title => 'Coming soon';
+
+  @override
+  String get audit_log_title => 'Audit log';
+
+  @override
+  String get audit_filter_all => 'All events';
+
+  @override
+  String get audit_filter_from => 'From';
+
+  @override
+  String get audit_filter_to => 'To';
+
+  @override
+  String get audit_filter_any_date => 'Any date';
+
+  @override
+  String audit_filter_date_range(String from, String to) {
+    return '$from — $to';
+  }
+
+  @override
+  String get audit_filter_clear => 'Clear filters';
+
+  @override
+  String get audit_verify => 'Verify chain';
+
+  @override
+  String get audit_chain_unverified => 'Chain not verified — tap ✓ to verify';
+
+  @override
+  String audit_chain_valid(int count) {
+    return 'Chain verified ($count entries)';
+  }
+
+  @override
+  String audit_chain_broken(int index, String reason) {
+    return 'Chain broken at index $index: $reason';
+  }
+
+  @override
+  String get audit_verify_error => 'Unable to verify the audit chain.';
+
+  @override
+  String get audit_empty => 'No audit entries match the filters';
+
+  @override
+  String get audit_load_more => 'Load more';
+
+  @override
+  String get audit_entry_details => 'Entry details';
+
+  @override
+  String get audit_copy_json => 'Copy JSON';
+
+  @override
+  String get audit_copied => 'Copied to clipboard';
+
+  @override
+  String get audit_event_type => 'Event type';
+
+  @override
+  String get audit_timestamp => 'Timestamp';
+
+  @override
+  String get audit_entity => 'Entity';
+
+  @override
+  String get audit_entity_id => 'Entity ID';
+
+  @override
+  String get audit_entity_none => 'None';
+
+  @override
+  String get audit_metadata => 'Metadata';
+
+  @override
+  String get audit_prev_hash => 'Previous hash';
+
+  @override
+  String get audit_entry_hash => 'Entry hash';
+
+  @override
+  String get audit_event_app_setup => 'App setup';
+
+  @override
+  String get audit_event_login_success => 'Login success';
+
+  @override
+  String get audit_event_login_fail => 'Login failure';
+
+  @override
+  String get audit_event_logout => 'Logout';
+
+  @override
+  String get audit_event_auto_lock => 'Auto-lock';
+
+  @override
+  String get audit_event_recovery_used => 'Recovery key used';
+
+  @override
+  String get audit_event_recovery_key_rotated => 'Recovery key rotated';
+
+  @override
+  String get audit_event_create => 'Create';
+
+  @override
+  String get audit_event_update => 'Update';
+
+  @override
+  String get audit_event_archive => 'Archive';
+
+  @override
+  String get audit_event_restore => 'Restore';
+
+  @override
+  String get audit_event_delete => 'Delete';
+
+  @override
+  String get audit_event_export_pdf => 'Export PDF';
+
+  @override
+  String get audit_event_backup => 'Backup';
+
+  @override
+  String get audit_event_restore_db => 'Restore from backup';
+
+  @override
+  String get audit_event_migration => 'Migration';
+
+  @override
+  String get audit_event_purge => 'Purge';
 
   @override
   String get action_retry => 'Retry';
@@ -1297,7 +1561,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settings_coming_soon => '設定即將推出';
 
   @override
-  String get settings_coming_soon_body => '語言、自動鎖定、生物辨識、備份及稽核記錄選項將於未來更新提供。';
+  String get settings_coming_soon_body => '此功能將於未來更新提供。';
 
   @override
   String get settings_logout => '登出';
@@ -1310,6 +1574,266 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settings_logout_confirm_action => '登出';
+
+  @override
+  String get settings_general => '一般';
+
+  @override
+  String get settings_security => '安全性';
+
+  @override
+  String get settings_backup => '備份';
+
+  @override
+  String get settings_audit => '稽核';
+
+  @override
+  String get settings_about => '關於';
+
+  @override
+  String get settings_danger => '危險區域';
+
+  @override
+  String get settings_language => '語言';
+
+  @override
+  String get settings_language_english => 'English';
+
+  @override
+  String get settings_language_traditional_chinese => '繁體中文';
+
+  @override
+  String get settings_theme => '主題';
+
+  @override
+  String get settings_theme_system => '跟隨系統';
+
+  @override
+  String get settings_theme_light => '淺色';
+
+  @override
+  String get settings_theme_dark => '深色';
+
+  @override
+  String get settings_auto_lock => '自動鎖定';
+
+  @override
+  String settings_minutes(int minutes) {
+    return '$minutes 分鐘';
+  }
+
+  @override
+  String get settings_biometric => '生物辨識解鎖';
+
+  @override
+  String get settings_biometric_unavailable => '此裝置不支援';
+
+  @override
+  String get settings_biometric_reason => '請確認使用生物辨識解鎖此應用程式';
+
+  @override
+  String get settings_change_passphrase => '更改密碼';
+
+  @override
+  String get settings_change_passphrase_guidance => '此功能將於未來更新推出。請使用復原金鑰重設密碼。';
+
+  @override
+  String get settings_regenerate_recovery => '重新產生復原金鑰';
+
+  @override
+  String get settings_max_attempts => '最大失敗次數';
+
+  @override
+  String get settings_max_attempts_preference_only => '只儲存偏好設定；登入限制維持不變。';
+
+  @override
+  String settings_attempts(int attempts) {
+    return '$attempts 次';
+  }
+
+  @override
+  String get settings_auto_backup => '自動備份';
+
+  @override
+  String get settings_auto_backup_note => '已儲存頻率設定；自動排程備份尚未啟用。';
+
+  @override
+  String get settings_backup_off => '關閉';
+
+  @override
+  String get settings_backup_daily => '每日';
+
+  @override
+  String get settings_backup_weekly => '每週';
+
+  @override
+  String get settings_backup_folder => '備份資料夾';
+
+  @override
+  String get settings_backup_folder_default => '預設位置';
+
+  @override
+  String get settings_backup_now => '立即備份';
+
+  @override
+  String get settings_backup_coming => '備份功能將於下次更新推出';
+
+  @override
+  String get settings_view_audit => '檢視稽核記錄';
+
+  @override
+  String get settings_audit_retention => '稽核記錄保留';
+
+  @override
+  String get settings_audit_retention_value => '2 年';
+
+  @override
+  String get settings_version => '版本';
+
+  @override
+  String get settings_privacy_policy => '隱私政策';
+
+  @override
+  String get settings_privacy_policy_body =>
+      '本應用程式將所有資料儲存在您的裝置本機。不會傳送任何資料到伺服器。加密金鑰儲存在裝置的安全儲存區。備份以您選擇的密碼加密。';
+
+  @override
+  String get settings_reset_app => '重設應用程式';
+
+  @override
+  String get settings_coming_soon_title => '即將推出';
+
+  @override
+  String get audit_log_title => '稽核記錄';
+
+  @override
+  String get audit_filter_all => '所有事件';
+
+  @override
+  String get audit_filter_from => '從';
+
+  @override
+  String get audit_filter_to => '至';
+
+  @override
+  String get audit_filter_any_date => '任何日期';
+
+  @override
+  String audit_filter_date_range(String from, String to) {
+    return '$from — $to';
+  }
+
+  @override
+  String get audit_filter_clear => '清除篩選';
+
+  @override
+  String get audit_verify => '驗證鏈結';
+
+  @override
+  String get audit_chain_unverified => '尚未驗證 — 點擊 ✓ 驗證';
+
+  @override
+  String audit_chain_valid(int count) {
+    return '鏈結驗證成功（$count 筆）';
+  }
+
+  @override
+  String audit_chain_broken(int index, String reason) {
+    return '鏈結於第 $index 筆中斷：$reason';
+  }
+
+  @override
+  String get audit_verify_error => '無法驗證稽核鏈結。';
+
+  @override
+  String get audit_empty => '沒有符合篩選條件的記錄';
+
+  @override
+  String get audit_load_more => '載入更多';
+
+  @override
+  String get audit_entry_details => '記錄詳情';
+
+  @override
+  String get audit_copy_json => '複製 JSON';
+
+  @override
+  String get audit_copied => '已複製';
+
+  @override
+  String get audit_event_type => '事件類型';
+
+  @override
+  String get audit_timestamp => '時間';
+
+  @override
+  String get audit_entity => '實體';
+
+  @override
+  String get audit_entity_id => '實體 ID';
+
+  @override
+  String get audit_entity_none => '無';
+
+  @override
+  String get audit_metadata => '中繼資料';
+
+  @override
+  String get audit_prev_hash => '前一雜湊';
+
+  @override
+  String get audit_entry_hash => '項目雜湊';
+
+  @override
+  String get audit_event_app_setup => '應用程式設定';
+
+  @override
+  String get audit_event_login_success => '登入成功';
+
+  @override
+  String get audit_event_login_fail => '登入失敗';
+
+  @override
+  String get audit_event_logout => '登出';
+
+  @override
+  String get audit_event_auto_lock => '自動鎖定';
+
+  @override
+  String get audit_event_recovery_used => '使用復原金鑰';
+
+  @override
+  String get audit_event_recovery_key_rotated => '復原金鑰已更新';
+
+  @override
+  String get audit_event_create => '建立';
+
+  @override
+  String get audit_event_update => '更新';
+
+  @override
+  String get audit_event_archive => '封存';
+
+  @override
+  String get audit_event_restore => '還原';
+
+  @override
+  String get audit_event_delete => '刪除';
+
+  @override
+  String get audit_event_export_pdf => '匯出 PDF';
+
+  @override
+  String get audit_event_backup => '備份';
+
+  @override
+  String get audit_event_restore_db => '從備份還原';
+
+  @override
+  String get audit_event_migration => '資料庫遷移';
+
+  @override
+  String get audit_event_purge => '清理';
 
   @override
   String get action_retry => '重試';
