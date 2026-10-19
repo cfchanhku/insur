@@ -26,6 +26,8 @@ import 'backoff_policy.dart';
 import 'field_crypto.dart';
 import 'kdf.dart';
 import 'key_derivation.dart';
+import 'recovery_key.dart';
+import 'recovery_key_exception.dart';
 
 /// Current state of master-key setup and session access.
 enum KeyManagerState { uninitialized, locked, unlocked }
@@ -42,6 +44,11 @@ class KeyManager {
   static const String _keyMasterKey = 'insur.master_key.v1';
   static const String _keyMasterSalt = 'insur.master_salt.v1';
   static const String _keyKdfParams = 'insur.kdf_params.v1';
+  static const String _keyRecoveryWrappedMasterKey =
+      'insur.recovery.wrapped_mk.v1';
+  static const String _keyRecoverySalt = 'insur.recovery.salt.v1';
+  static const String _keyRecoveryVerificationHash =
+      'insur.recovery.verification_hash.v1';
 
   final FlutterSecureStorage _secureStorage;
   final LocalAuthentication _localAuth;
@@ -284,6 +291,7 @@ class KeyManager {
       await _secureStorage.delete(key: _keyMasterKey);
       await _secureStorage.delete(key: _keyMasterSalt);
       await _secureStorage.delete(key: _keyKdfParams);
+      await _deleteRecoveryMaterial();
     }
     _state = KeyManagerState.uninitialized;
     _failedAttempts = 0;
@@ -302,6 +310,207 @@ class KeyManager {
   /// Creates a field encryption helper using the in-memory field key.
   FieldCrypto createFieldCrypto() {
     return FieldCrypto(fieldKey: fieldKey);
+  }
+
+  /// Generates and stores a recovery-key-wrapped copy of the current master key.
+  ///
+  /// The passphrase is checked against the current master key before creating
+  /// recovery material. The returned recovery key is the only plaintext copy;
+  /// the caller must display it once and ensure it is recorded offline.
+  Future<String> setupRecoveryKey({required String passphrase}) async {
+    if (_state != KeyManagerState.unlocked || _masterKey == null) {
+      throw StateError('Not unlocked');
+    }
+    if (!await _verifyCurrentPassphrase(passphrase)) {
+      throw StateError('Passphrase verification failed');
+    }
+
+    return _createRecoveryKey();
+  }
+
+  Future<String> _createRecoveryKey() async {
+    final recoveryKey = RecoveryKey.generate();
+    final salt = RecoveryKey.generateSalt();
+    Uint8List? recoveryKek;
+    Uint8List? wrappedMasterKey;
+    Uint8List? verificationHash;
+    try {
+      recoveryKek = await RecoveryKey.deriveRecoveryKek(
+        recoveryKey: recoveryKey,
+        salt: salt,
+      );
+      wrappedMasterKey = await RecoveryKey.wrapMasterKey(
+        masterKey: _masterKey!,
+        recoveryKek: recoveryKek,
+      );
+      verificationHash = RecoveryKey.computeVerificationHash(
+        recoveryKey: recoveryKey,
+        salt: salt,
+      );
+
+      await _secureStorage.write(
+        key: _keyRecoverySalt,
+        value: base64Encode(salt),
+      );
+      await _secureStorage.write(
+        key: _keyRecoveryVerificationHash,
+        value: base64Encode(verificationHash),
+      );
+      // The wrapped key is written last and marks recovery setup as complete.
+      await _secureStorage.write(
+        key: _keyRecoveryWrappedMasterKey,
+        value: base64Encode(wrappedMasterKey),
+      );
+      return recoveryKey;
+    } finally {
+      salt.fillRange(0, salt.length, 0);
+      recoveryKek?.fillRange(0, recoveryKek.length, 0);
+      wrappedMasterKey?.fillRange(0, wrappedMasterKey.length, 0);
+      verificationHash?.fillRange(0, verificationHash.length, 0);
+    }
+  }
+
+  /// Fast-checks a recovery key entered to confirm it was recorded correctly.
+  Future<bool> confirmRecoveryKey({required String recoveryKey}) async {
+    final storedSalt = await _secureStorage.read(key: _keyRecoverySalt);
+    final storedHash = await _secureStorage.read(
+      key: _keyRecoveryVerificationHash,
+    );
+    if (storedSalt == null || storedHash == null) {
+      return false;
+    }
+
+    Uint8List? salt;
+    Uint8List? expectedHash;
+    Uint8List? actualHash;
+    try {
+      salt = Uint8List.fromList(base64Decode(storedSalt));
+      expectedHash = Uint8List.fromList(base64Decode(storedHash));
+      if (salt.length != RecoveryKey.saltLength || expectedHash.length != 32) {
+        return false;
+      }
+      actualHash = RecoveryKey.computeVerificationHash(
+        recoveryKey: recoveryKey,
+        salt: salt,
+      );
+      return _constantTimeEquals(actualHash, expectedHash);
+    } on FormatException {
+      return false;
+    } finally {
+      salt?.fillRange(0, salt.length, 0);
+      expectedHash?.fillRange(0, expectedHash.length, 0);
+      actualHash?.fillRange(0, actualHash.length, 0);
+    }
+  }
+
+  /// Unlocks the vault using the offline [recoveryKey].
+  ///
+  /// On success, the caller must prompt the user to set a new passphrase
+  /// through a future passphrase-change flow. An incorrect key returns false.
+  Future<bool> recoveryKeyLogin({required String recoveryKey}) async {
+    if (_state == KeyManagerState.unlocked) {
+      throw StateError('Already unlocked');
+    }
+
+    final String normalizedKey;
+    try {
+      normalizedKey = RecoveryKey.normalize(recoveryKey);
+    } on FormatException {
+      return false;
+    }
+
+    final storedSalt = await _secureStorage.read(key: _keyRecoverySalt);
+    final storedWrappedMasterKey = await _secureStorage.read(
+      key: _keyRecoveryWrappedMasterKey,
+    );
+    final storedHash = await _secureStorage.read(
+      key: _keyRecoveryVerificationHash,
+    );
+    if (storedSalt == null ||
+        storedWrappedMasterKey == null ||
+        storedHash == null) {
+      return false;
+    }
+
+    Uint8List? salt;
+    Uint8List? wrappedMasterKey;
+    Uint8List? expectedHash;
+    Uint8List? actualHash;
+    Uint8List? recoveryKek;
+    Uint8List? masterKey;
+    try {
+      salt = Uint8List.fromList(base64Decode(storedSalt));
+      wrappedMasterKey = Uint8List.fromList(
+        base64Decode(storedWrappedMasterKey),
+      );
+      expectedHash = Uint8List.fromList(base64Decode(storedHash));
+      if (salt.length != RecoveryKey.saltLength ||
+          wrappedMasterKey.length < 28 ||
+          expectedHash.length != 32) {
+        return false;
+      }
+
+      actualHash = RecoveryKey.computeVerificationHash(
+        recoveryKey: normalizedKey,
+        salt: salt,
+      );
+      if (!_constantTimeEquals(actualHash, expectedHash)) {
+        return false;
+      }
+
+      recoveryKek = await RecoveryKey.deriveRecoveryKek(
+        recoveryKey: normalizedKey,
+        salt: salt,
+      );
+      try {
+        masterKey = await RecoveryKey.unwrapMasterKey(
+          wrappedMasterKey: wrappedMasterKey,
+          recoveryKek: recoveryKek,
+        );
+      } on RecoveryKeyException {
+        return false;
+      }
+      await _deriveAndHoldSubkeys(masterKey);
+      _state = KeyManagerState.unlocked;
+      _failedAttempts = 0;
+      _currentBackoff = Duration.zero;
+      return true;
+    } on FormatException {
+      return false;
+    } finally {
+      salt?.fillRange(0, salt.length, 0);
+      wrappedMasterKey?.fillRange(0, wrappedMasterKey.length, 0);
+      expectedHash?.fillRange(0, expectedHash.length, 0);
+      actualHash?.fillRange(0, actualHash.length, 0);
+      recoveryKek?.fillRange(0, recoveryKek.length, 0);
+      masterKey?.fillRange(0, masterKey.length, 0);
+    }
+  }
+
+  /// Returns whether a wrapped recovery master key is present.
+  Future<bool> hasRecoveryKey() async {
+    final storedKey = await _secureStorage.read(
+      key: _keyRecoveryWrappedMasterKey,
+    );
+    return storedKey != null && storedKey.isNotEmpty;
+  }
+
+  /// Replaces the current recovery key after verifying [passphrase].
+  ///
+  /// The old wrapped key is deleted before a new one is stored. A recovery
+  /// rotation audit event will be added when the persistent audit service is
+  /// available.
+  Future<String> regenerateRecoveryKey({required String passphrase}) async {
+    if (_state != KeyManagerState.unlocked) {
+      throw StateError('Not unlocked');
+    }
+    if (!await _verifyCurrentPassphrase(passphrase)) {
+      throw StateError('Passphrase verification failed');
+    }
+
+    await _deleteRecoveryMaterial();
+    // TODO(insur): Record RECOVERY_KEY_ROTATED with the persistent audit log.
+    return _createRecoveryKey();
   }
 
   Uint8List _keyForState(Uint8List? key) {
@@ -344,5 +553,51 @@ class KeyManager {
     _dbKey = null;
     _fieldKey = null;
     _auditKey = null;
+  }
+
+  Future<bool> _verifyCurrentPassphrase(String passphrase) async {
+    final saltValue = await _secureStorage.read(key: _keyMasterSalt);
+    final masterKeyValue = await _secureStorage.read(key: _keyMasterKey);
+    if (saltValue == null || masterKeyValue == null) {
+      return false;
+    }
+
+    Uint8List? salt;
+    Uint8List? expectedMasterKey;
+    try {
+      salt = Uint8List.fromList(base64Decode(saltValue));
+      expectedMasterKey = Uint8List.fromList(base64Decode(masterKeyValue));
+      if (salt.length != Kdf.saltLength ||
+          expectedMasterKey.length != Kdf.keyLength) {
+        return false;
+      }
+      return await Kdf.verify(
+        passphrase: passphrase,
+        salt: salt,
+        expectedKey: expectedMasterKey,
+      );
+    } on FormatException {
+      return false;
+    } finally {
+      salt?.fillRange(0, salt.length, 0);
+      expectedMasterKey?.fillRange(0, expectedMasterKey.length, 0);
+    }
+  }
+
+  Future<void> _deleteRecoveryMaterial() async {
+    await _secureStorage.delete(key: _keyRecoveryWrappedMasterKey);
+    await _secureStorage.delete(key: _keyRecoverySalt);
+    await _secureStorage.delete(key: _keyRecoveryVerificationHash);
+  }
+
+  static bool _constantTimeEquals(Uint8List left, Uint8List right) {
+    if (left.length != right.length) {
+      return false;
+    }
+    var difference = 0;
+    for (var index = 0; index < left.length; index++) {
+      difference |= left[index] ^ right[index];
+    }
+    return difference == 0;
   }
 }

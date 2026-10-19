@@ -72,6 +72,11 @@ The intended design is local-first: application data is not uploaded to GitHub o
   derives database, field, and audit subkeys in memory. The KeyManager and
   inactivity timer are not yet integrated with the application UI. Wrapping
   the master key with a separate key-encryption key is deferred.
+- **Recovery key:** The implemented recovery primitive generates 160-bit
+  Crockford Base32 keys, derives a recovery KEK with Argon2id, and stores only
+  an AES-256-GCM-wrapped master key, salt, and fast verification hash. The key
+  must be shown once by a future UI and recorded offline. KeyManager recovery
+  plugin tests and the user confirmation/display flow remain deferred.
 - **Database encryption:** SQLCipher using AES-256.
 - **Hashing and integrity:** SHA-256/SHA-512 for approved integrity and hash-chain uses; hashes are not substitutes for password hashing or authenticated encryption.
 - **Key hierarchy:** user authentication material derives or unlocks a protected key-encryption key using Argon2id; that key protects randomly generated data-encryption keys, which encrypt database and backup data. Keys must be separated by purpose, never hardcoded, and kept in approved platform secure storage where applicable. Exact parameters and lifecycle must follow the reviewed implementation and must not be inferred from this summary.
