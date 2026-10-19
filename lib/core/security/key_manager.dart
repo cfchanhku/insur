@@ -26,6 +26,7 @@ import '../audit/audit_event_type.dart';
 import 'backoff_policy.dart';
 import 'field_crypto.dart';
 import 'kdf.dart';
+import 'key_backup_material.dart';
 import 'key_derivation.dart';
 import 'recovery_key.dart';
 import 'recovery_key_exception.dart';
@@ -322,6 +323,151 @@ class KeyManager {
   /// Audit authentication key; valid only while the manager is unlocked.
   Uint8List get auditKey => _keyForState(_auditKey);
 
+  /// Exports disposable key state for inclusion inside an encrypted backup.
+  ///
+  /// The caller must encrypt this state immediately and call [KeyBackupMaterial.clear].
+  /// The master key is never returned while the manager is locked.
+  Future<KeyBackupMaterial> exportBackupMaterial() async {
+    if (_state != KeyManagerState.unlocked || _masterKey == null) {
+      throw StateError('Not unlocked');
+    }
+    final saltValue = await _secureStorage.read(key: _keyMasterSalt);
+    final paramsValue = await _secureStorage.read(key: _keyKdfParams);
+    if (saltValue == null ||
+        paramsValue == null ||
+        paramsValue != Kdf.paramsDescription()) {
+      throw StateError('Stored key metadata is invalid');
+    }
+
+    Uint8List? masterSalt;
+    Uint8List? recoverySalt;
+    Uint8List? recoveryWrappedMasterKey;
+    Uint8List? recoveryVerificationHash;
+    try {
+      masterSalt = Uint8List.fromList(base64Decode(saltValue));
+      if (masterSalt.length != Kdf.saltLength) {
+        throw StateError('Stored key metadata is invalid');
+      }
+      final recoverySaltValue = await _secureStorage.read(
+        key: _keyRecoverySalt,
+      );
+      final wrappedMasterKeyValue = await _secureStorage.read(
+        key: _keyRecoveryWrappedMasterKey,
+      );
+      final verificationHashValue = await _secureStorage.read(
+        key: _keyRecoveryVerificationHash,
+      );
+      final presentCount = <String?>[
+        recoverySaltValue,
+        wrappedMasterKeyValue,
+        verificationHashValue,
+      ].where((String? value) => value != null).length;
+      if (presentCount != 0 && presentCount != 3) {
+        throw StateError('Stored recovery metadata is incomplete');
+      }
+      if (presentCount == 3) {
+        recoverySalt = Uint8List.fromList(base64Decode(recoverySaltValue!));
+        recoveryWrappedMasterKey = Uint8List.fromList(
+          base64Decode(wrappedMasterKeyValue!),
+        );
+        recoveryVerificationHash = Uint8List.fromList(
+          base64Decode(verificationHashValue!),
+        );
+        if (recoverySalt.length != RecoveryKey.saltLength ||
+            recoveryWrappedMasterKey.length != Kdf.keyLength + 28 ||
+            recoveryVerificationHash.length != 32) {
+          throw StateError('Stored recovery metadata is invalid');
+        }
+      }
+      return KeyBackupMaterial(
+        masterKey: _masterKey!,
+        masterSalt: masterSalt,
+        kdfParameters: paramsValue,
+        recoverySalt: recoverySalt,
+        recoveryWrappedMasterKey: recoveryWrappedMasterKey,
+        recoveryVerificationHash: recoveryVerificationHash,
+      );
+    } on FormatException {
+      throw StateError('Stored key metadata is invalid');
+    } finally {
+      masterSalt?.fillRange(0, masterSalt.length, 0);
+      recoverySalt?.fillRange(0, recoverySalt.length, 0);
+      recoveryWrappedMasterKey?.fillRange(
+        0,
+        recoveryWrappedMasterKey.length,
+        0,
+      );
+      recoveryVerificationHash?.fillRange(
+        0,
+        recoveryVerificationHash.length,
+        0,
+      );
+    }
+  }
+
+  /// Installs authenticated backup key state into platform secure storage.
+  ///
+  /// The stored master key is subsequently accepted only with its original
+  /// login passphrase. Existing different vault credentials must be explicitly
+  /// wiped before importing a backup.
+  Future<void> restoreBackupMaterial(
+    KeyBackupMaterial material, {
+    bool replaceExisting = false,
+  }) async {
+    _validateBackupMaterial(material);
+    final currentMasterKey = await _secureStorage.read(key: _keyMasterKey);
+    if (currentMasterKey != null) {
+      Uint8List? decodedMasterKey;
+      try {
+        decodedMasterKey = Uint8List.fromList(base64Decode(currentMasterKey));
+        if (!_constantTimeEquals(decodedMasterKey, material.masterKey) &&
+            !replaceExisting) {
+          throw StateError(
+            'Existing vault credentials differ; wipe the vault before restore',
+          );
+        }
+      } on FormatException {
+        throw StateError('Stored key metadata is invalid');
+      } finally {
+        decodedMasterKey?.fillRange(0, decodedMasterKey.length, 0);
+      }
+    }
+
+    _clearInMemoryKeys();
+    _state = KeyManagerState.uninitialized;
+    _failedAttempts = 0;
+    _currentBackoff = Duration.zero;
+
+    await _secureStorage.write(
+      key: _keyMasterSalt,
+      value: base64Encode(material.masterSalt),
+    );
+    await _secureStorage.write(
+      key: _keyKdfParams,
+      value: material.kdfParameters,
+    );
+    await _deleteRecoveryMaterial();
+    if (material.hasRecoveryKey) {
+      await _secureStorage.write(
+        key: _keyRecoverySalt,
+        value: base64Encode(material.recoverySalt!),
+      );
+      await _secureStorage.write(
+        key: _keyRecoveryVerificationHash,
+        value: base64Encode(material.recoveryVerificationHash!),
+      );
+      await _secureStorage.write(
+        key: _keyRecoveryWrappedMasterKey,
+        value: base64Encode(material.recoveryWrappedMasterKey!),
+      );
+    }
+    await _secureStorage.write(
+      key: _keyMasterKey,
+      value: base64Encode(material.masterKey),
+    );
+    _state = KeyManagerState.locked;
+  }
+
   /// Creates a field encryption helper using the in-memory field key.
   FieldCrypto createFieldCrypto() {
     return FieldCrypto(fieldKey: fieldKey);
@@ -604,6 +750,28 @@ class KeyManager {
     await _secureStorage.delete(key: _keyRecoveryWrappedMasterKey);
     await _secureStorage.delete(key: _keyRecoverySalt);
     await _secureStorage.delete(key: _keyRecoveryVerificationHash);
+  }
+
+  static void _validateBackupMaterial(KeyBackupMaterial material) {
+    if (material.masterKey.length != Kdf.keyLength ||
+        material.masterSalt.length != Kdf.saltLength ||
+        material.kdfParameters != Kdf.paramsDescription()) {
+      throw const FormatException('Backup key material is invalid');
+    }
+    final recoveryValueCount = <Uint8List?>[
+      material.recoverySalt,
+      material.recoveryWrappedMasterKey,
+      material.recoveryVerificationHash,
+    ].where((Uint8List? value) => value != null).length;
+    if (recoveryValueCount != 0 && recoveryValueCount != 3) {
+      throw const FormatException('Backup recovery material is incomplete');
+    }
+    if (material.hasRecoveryKey &&
+        (material.recoverySalt!.length != RecoveryKey.saltLength ||
+            material.recoveryWrappedMasterKey!.length != Kdf.keyLength + 28 ||
+            material.recoveryVerificationHash!.length != 32)) {
+      throw const FormatException('Backup recovery material is invalid');
+    }
   }
 
   static bool _constantTimeEquals(Uint8List left, Uint8List right) {
