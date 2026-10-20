@@ -144,6 +144,16 @@
   "setup_create": "Create",
   "setup_creating": "Creating...",
   "setup_error": "Setup could not be completed. Please try again.",
+  "setupStepPassphrase": "Passphrase",
+  "setupStepRecovery": "Recovery key",
+  "setupStepBiometric": "Biometric enrollment",
+  "setupStepOf": "Step {current} of {total}",
+  "@setupStepOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
   "recovery_key_dialog_title": "Your Recovery Key",
   "recovery_key_dialog_body": "This is the ONLY way to recover your data if you forget your passphrase.\n\nPrint it. Store it offline. Never share it.\n\nWe cannot recover your data without it.",
   "recovery_key_dialog_copy": "Copy",

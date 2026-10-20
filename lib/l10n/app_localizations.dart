@@ -745,6 +745,30 @@ abstract class AppLocalizations {
   /// **'Setup could not be completed. Please try again.'**
   String get setup_error;
 
+  /// No description provided for @setupStepPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase'**
+  String get setupStepPassphrase;
+
+  /// No description provided for @setupStepRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery key'**
+  String get setupStepRecovery;
+
+  /// No description provided for @setupStepBiometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric enrollment'**
+  String get setupStepBiometric;
+
+  /// No description provided for @setupStepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String setupStepOf(int current, int total);
+
   /// No description provided for @recovery_key_dialog_title.
   ///
   /// In en, this message translates to:

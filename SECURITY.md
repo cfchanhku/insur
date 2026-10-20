@@ -69,7 +69,8 @@ The intended design is local-first: application data is not uploaded to GitHub o
   make collisions extremely unlikely, but cannot guarantee absolute uniqueness.
 - **Key management:** A random, stable master key is wrapped with AES-256-GCM
   using a passphrase-derived Argon2id key. Secure storage contains one
-  authenticated credential with the KDF salt and wrapped master key; the
+  authenticated credential (`insur.wrapped_mk.v2`) with the KDF salt and
+  wrapped master key, bound to AAD `insur/mk/wrap/v2`; the
   master key derives database, field, and audit subkeys in memory. Legacy
   direct-key credentials migrate after successful passphrase authentication
   without changing the master key. Changing a passphrase re-wraps that same

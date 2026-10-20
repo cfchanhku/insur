@@ -144,6 +144,16 @@
   "setup_create": "建立",
   "setup_creating": "建立中...",
   "setup_error": "無法完成設定，請再試一次。",
+  "setupStepPassphrase": "密碼",
+  "setupStepRecovery": "復原金鑰",
+  "setupStepBiometric": "生物辨識登記",
+  "setupStepOf": "第 {current} 步，共 {total} 步",
+  "@setupStepOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
   "recovery_key_dialog_title": "您的復原金鑰",
   "recovery_key_dialog_body": "若您忘記密碼，這是唯一能復原資料的方法。\n\n請列印並離線保存。切勿分享。\n\n沒有此金鑰，我們無法為您復原資料。",
   "recovery_key_dialog_copy": "複製",

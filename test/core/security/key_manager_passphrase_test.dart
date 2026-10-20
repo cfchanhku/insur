@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:cryptography/cryptography.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:insur/core/security/kdf.dart';
@@ -60,6 +61,7 @@ void main() {
     expect(material.masterKey, isNot(equals(derivedPassphraseKey)));
     expect(credential.length, 92);
     expect(secureStorage.values.containsKey('insur.master_key.v1'), isFalse);
+    expect(secureStorage.values['insur.wrapped_mk.v2'], isNotNull);
 
     material.clear();
     salt.fillRange(0, salt.length, 0);
@@ -122,10 +124,7 @@ void main() {
         ..['insur.kdf_params.v1'] = Kdf.paramsDescription();
 
       expect(await keyManager.unlock(passphrase: originalPassphrase), isTrue);
-      expect(
-        secureStorage.values.containsKey('insur.master_key_credential.v2'),
-        isTrue,
-      );
+      expect(secureStorage.values.containsKey('insur.wrapped_mk.v2'), isTrue);
       expect(secureStorage.values.containsKey('insur.master_key.v1'), isFalse);
       expect(keyManager.dbKey, databaseKey);
 
@@ -134,6 +133,33 @@ void main() {
       databaseKey.fillRange(0, databaseKey.length, 0);
     },
   );
+
+  test('migration preserves a stable legacy master key and verifier', () async {
+    final legacyMasterKey = Kdf.generateMasterKey();
+    final salt = Kdf.generateSalt();
+    final verifier = await Kdf.derivePassphraseKey(
+      passphrase: originalPassphrase,
+      salt: salt,
+    );
+    final verifierCredential = Uint8List.fromList(<int>[...salt, ...verifier]);
+    final databaseKey = await SubKeyDeriver.deriveDbKey(legacyMasterKey);
+    secureStorage.values
+      ..['insur.master_key.v1'] = base64Encode(legacyMasterKey)
+      ..['insur.master_salt.v1'] = base64Encode(salt)
+      ..['insur.passphrase_credential.v1'] = base64Encode(verifierCredential)
+      ..['insur.kdf_params.v1'] = Kdf.paramsDescription();
+
+    expect(await keyManager.unlock(passphrase: originalPassphrase), isTrue);
+    expect(keyManager.dbKey, databaseKey);
+    expect(secureStorage.values.containsKey('insur.wrapped_mk.v2'), isTrue);
+    expect(secureStorage.values.containsKey('insur.master_key.v1'), isFalse);
+
+    legacyMasterKey.fillRange(0, legacyMasterKey.length, 0);
+    salt.fillRange(0, salt.length, 0);
+    verifier.fillRange(0, verifier.length, 0);
+    verifierCredential.fillRange(0, verifierCredential.length, 0);
+    databaseKey.fillRange(0, databaseKey.length, 0);
+  });
 
   test(
     'preserves legacy key when credential migration cannot be persisted',
@@ -147,21 +173,65 @@ void main() {
         ..['insur.master_key.v1'] = base64Encode(legacyMasterKey)
         ..['insur.master_salt.v1'] = base64Encode(salt)
         ..['insur.kdf_params.v1'] = Kdf.paramsDescription();
-      secureStorage.failWriteKey = 'insur.master_key_credential.v2';
+      secureStorage.failWriteKey = 'insur.wrapped_mk.v2';
 
       await expectLater(
         keyManager.unlock(passphrase: originalPassphrase),
         throwsStateError,
       );
       expect(secureStorage.values['insur.master_key.v1'], isNotNull);
-      expect(
-        secureStorage.values.containsKey('insur.master_key_credential.v2'),
-        isFalse,
-      );
+      expect(secureStorage.values.containsKey('insur.wrapped_mk.v2'), isFalse);
       expect(keyManager.isUnlocked, isFalse);
 
       salt.fillRange(0, salt.length, 0);
       legacyMasterKey.fillRange(0, legacyMasterKey.length, 0);
+    },
+  );
+
+  test(
+    'migrates the prior wrapped credential and AAD without changing MK',
+    () async {
+      await keyManager.setup(passphrase: originalPassphrase);
+      final material = await keyManager.exportBackupMaterial();
+      final databaseKey = Uint8List.fromList(keyManager.dbKey);
+      final currentCredential = material.wrappedPassphraseCredential!;
+      final salt = Uint8List.fromList(currentCredential.sublist(0, 32));
+      final kek = await Kdf.derivePassphraseKey(
+        passphrase: originalPassphrase,
+        salt: salt,
+      );
+      final nonce = List<int>.filled(12, 0x5a);
+      final box = await AesGcm.with256bits().encrypt(
+        material.masterKey,
+        secretKey: SecretKey(kek),
+        nonce: nonce,
+        aad: utf8.encode('insur/master-key/passphrase/v2'),
+      );
+      final previousCredential = Uint8List.fromList(<int>[
+        ...salt,
+        ...box.nonce,
+        ...box.cipherText,
+        ...box.mac.bytes,
+      ]);
+      secureStorage.values
+        ..remove('insur.wrapped_mk.v2')
+        ..['insur.master_key_credential.v2'] = base64Encode(previousCredential)
+        ..['insur.kdf_params.v1'] = Kdf.paramsDescription();
+
+      await keyManager.lock();
+      expect(await keyManager.unlock(passphrase: originalPassphrase), isTrue);
+      expect(secureStorage.values.containsKey('insur.wrapped_mk.v2'), isTrue);
+      expect(
+        secureStorage.values.containsKey('insur.master_key_credential.v2'),
+        isFalse,
+      );
+      expect(keyManager.dbKey, databaseKey);
+
+      material.clear();
+      salt.fillRange(0, salt.length, 0);
+      kek.fillRange(0, kek.length, 0);
+      previousCredential.fillRange(0, previousCredential.length, 0);
+      databaseKey.fillRange(0, databaseKey.length, 0);
     },
   );
 
@@ -185,12 +255,10 @@ void main() {
   test('rejects a tampered wrapped master key', () async {
     await keyManager.setup(passphrase: originalPassphrase);
     final credential = base64Decode(
-      secureStorage.values['insur.master_key_credential.v2']!,
+      secureStorage.values['insur.wrapped_mk.v2']!,
     );
     credential[Kdf.saltLength + 12] ^= 1;
-    secureStorage.values['insur.master_key_credential.v2'] = base64Encode(
-      credential,
-    );
+    secureStorage.values['insur.wrapped_mk.v2'] = base64Encode(credential);
 
     expect(await keyManager.unlock(passphrase: originalPassphrase), isFalse);
     expect(keyManager.isUnlocked, isFalse);

@@ -195,6 +195,11 @@ class _SetupWizardScreenState extends ConsumerState<SetupWizardScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final stepLabels = <String>[
+      l10n.setupStepPassphrase,
+      l10n.setupStepRecovery,
+      l10n.setupStepBiometric,
+    ];
     return Scaffold(
       appBar: AppBar(title: Text(l10n.setup_title)),
       body: Center(
@@ -205,6 +210,12 @@ class _SetupWizardScreenState extends ConsumerState<SetupWizardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                Text(l10n.setupStepOf(_step + 1, 3)),
+                const SizedBox(height: AppSpacing.s2),
+                LinearProgressIndicator(value: (_step + 1) / 3),
+                const SizedBox(height: AppSpacing.s3),
+                Text(stepLabels[_step], style: theme.textTheme.titleMedium),
+                const SizedBox(height: AppSpacing.s3),
                 if (_step == 0) ...<Widget>[
                   Text(l10n.setup_subtitle, style: theme.textTheme.bodyLarge),
                   const SizedBox(height: AppSpacing.s4),

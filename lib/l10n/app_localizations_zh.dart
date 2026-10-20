@@ -350,6 +350,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get setup_error => 'Setup could not be completed. Please try again.';
 
   @override
+  String get setupStepPassphrase => 'Passphrase';
+
+  @override
+  String get setupStepRecovery => 'Recovery key';
+
+  @override
+  String get setupStepBiometric => 'Biometric enrollment';
+
+  @override
+  String setupStepOf(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
   String get recovery_key_dialog_title => 'Your Recovery Key';
 
   @override
@@ -1619,6 +1633,20 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get setup_error => '無法完成設定，請再試一次。';
+
+  @override
+  String get setupStepPassphrase => '密碼';
+
+  @override
+  String get setupStepRecovery => '復原金鑰';
+
+  @override
+  String get setupStepBiometric => '生物辨識登記';
+
+  @override
+  String setupStepOf(int current, int total) {
+    return '第 $current 步，共 $total 步';
+  }
 
   @override
   String get recovery_key_dialog_title => '您的復原金鑰';

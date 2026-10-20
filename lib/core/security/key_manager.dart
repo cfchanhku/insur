@@ -40,12 +40,14 @@ class KeyManager {
   static const String _keyMasterSalt = 'insur.master_salt.v1';
   static const String _keyPassphraseCredential =
       'insur.passphrase_credential.v1';
-  static const String _keyWrappedMasterCredential =
+  static const String _keyWrappedMasterCredential = 'insur.wrapped_mk.v2';
+  static const String _keyPreviousWrappedMasterCredential =
       'insur.master_key_credential.v2';
   static const String _keyPassphraseResetRequired =
       'insur.passphrase_reset_required.v1';
   static const String _keyBiometricEnabled = 'insur.biometric_enabled.v1';
-  static const String _keyKdfParams = 'insur.kdf_params.v1';
+  static const String _keyKdfParams = 'insur.kdf_params.v2';
+  static const String _keyPreviousKdfParams = 'insur.kdf_params.v1';
   static const String _keyRecoveryWrappedMasterKey =
       'insur.recovery.wrapped_mk.v1';
   static const String _keyRecoverySalt = 'insur.recovery.salt.v1';
@@ -53,7 +55,9 @@ class KeyManager {
       'insur.recovery.verification_hash.v1';
   static const int _passphraseNonceLength = 12;
   static const int _passphraseTagLength = 16;
-  static const String _passphraseWrappingAad = 'insur/master-key/passphrase/v2';
+  static const String _passphraseWrappingAad = 'insur/mk/wrap/v2';
+  static const String _previousPassphraseWrappingAad =
+      'insur/master-key/passphrase/v2';
 
   final FlutterSecureStorage _secureStorage;
 
@@ -89,9 +93,14 @@ class KeyManager {
     final wrappedCredential = await _secureStorage.read(
       key: _keyWrappedMasterCredential,
     );
+    final previousWrappedCredential = await _secureStorage.read(
+      key: _keyPreviousWrappedMasterCredential,
+    );
     final legacyMasterKey = await _secureStorage.read(key: _keyMasterKey);
     final initialized =
         (wrappedCredential != null && wrappedCredential.isNotEmpty) ||
+        (previousWrappedCredential != null &&
+            previousWrappedCredential.isNotEmpty) ||
         (legacyMasterKey != null && legacyMasterKey.isNotEmpty);
 
     if (_state != KeyManagerState.unlocked) {
@@ -304,6 +313,8 @@ class KeyManager {
       await _secureStorage.delete(key: _keyMasterSalt);
       await _secureStorage.delete(key: _keyPassphraseCredential);
       await _secureStorage.delete(key: _keyWrappedMasterCredential);
+      await _secureStorage.delete(key: _keyPreviousWrappedMasterCredential);
+      await _secureStorage.delete(key: _keyPreviousKdfParams);
       await _secureStorage.delete(key: _keyPassphraseResetRequired);
       await _secureStorage.delete(key: _keyBiometricEnabled);
       await _secureStorage.delete(key: _keyKdfParams);
@@ -332,7 +343,9 @@ class KeyManager {
     if (_state != KeyManagerState.unlocked || _masterKey == null) {
       throw StateError('Not unlocked');
     }
-    final paramsValue = await _secureStorage.read(key: _keyKdfParams);
+    final paramsValue =
+        await _secureStorage.read(key: _keyKdfParams) ??
+        await _secureStorage.read(key: _keyPreviousKdfParams);
     if (paramsValue == null || paramsValue != Kdf.paramsDescription()) {
       throw StateError('Stored key metadata is invalid');
     }
@@ -345,9 +358,9 @@ class KeyManager {
     Uint8List? recoveryWrappedMasterKey;
     Uint8List? recoveryVerificationHash;
     try {
-      final wrappedCredentialValue = await _secureStorage.read(
-        key: _keyWrappedMasterCredential,
-      );
+      final wrappedCredentialValue =
+          await _secureStorage.read(key: _keyWrappedMasterCredential) ??
+          await _secureStorage.read(key: _keyPreviousWrappedMasterCredential);
       if (wrappedCredentialValue != null) {
         wrappedPassphraseCredential = Uint8List.fromList(
           base64Decode(wrappedCredentialValue),
@@ -475,8 +488,13 @@ class KeyManager {
     final currentWrappedCredential = await _secureStorage.read(
       key: _keyWrappedMasterCredential,
     );
+    final previousWrappedCredential = await _secureStorage.read(
+      key: _keyPreviousWrappedMasterCredential,
+    );
     if (!replaceExisting &&
-        (currentMasterKey != null || currentWrappedCredential != null)) {
+        (currentMasterKey != null ||
+            currentWrappedCredential != null ||
+            previousWrappedCredential != null)) {
       Uint8List? existingCredential;
       try {
         var sameVault = false;
@@ -489,8 +507,18 @@ class KeyManager {
             existingCredential,
             material.wrappedPassphraseCredential!,
           );
+        } else if (previousWrappedCredential != null &&
+            material.wrappedPassphraseCredential != null) {
+          existingCredential = Uint8List.fromList(
+            base64Decode(previousWrappedCredential),
+          );
+          sameVault = _constantTimeEquals(
+            existingCredential,
+            material.wrappedPassphraseCredential!,
+          );
         } else if (currentMasterKey != null &&
-            currentWrappedCredential == null) {
+            currentWrappedCredential == null &&
+            previousWrappedCredential == null) {
           existingCredential = Uint8List.fromList(
             base64Decode(currentMasterKey),
           );
@@ -540,6 +568,7 @@ class KeyManager {
         key: _keyWrappedMasterCredential,
         value: base64Encode(material.wrappedPassphraseCredential!),
       );
+      await _secureStorage.delete(key: _keyPreviousWrappedMasterCredential);
       await _deleteLegacyPassphraseMaterial();
     } else {
       await _secureStorage.write(
@@ -860,12 +889,16 @@ class KeyManager {
     final wrappedValue = await _secureStorage.read(
       key: _keyWrappedMasterCredential,
     );
-    if (wrappedValue != null) {
+    final previousWrappedValue = wrappedValue == null
+        ? await _secureStorage.read(key: _keyPreviousWrappedMasterCredential)
+        : null;
+    final credentialValue = wrappedValue ?? previousWrappedValue;
+    if (credentialValue != null) {
       Uint8List? credential;
       Uint8List? salt;
       Uint8List? kek;
       try {
-        credential = Uint8List.fromList(base64Decode(wrappedValue));
+        credential = Uint8List.fromList(base64Decode(credentialValue));
         const expectedLength =
             Kdf.saltLength +
             _passphraseNonceLength +
@@ -879,28 +912,73 @@ class KeyManager {
         const nonceStart = Kdf.saltLength;
         const ciphertextStart = nonceStart + _passphraseNonceLength;
         const tagStart = ciphertextStart + Kdf.keyLength;
+        var usedPreviousWrappingAad = wrappedValue == null;
+        List<int> plaintext;
         try {
-          final plaintext = await AesGcm.with256bits().decrypt(
+          plaintext = await AesGcm.with256bits().decrypt(
             SecretBox(
               credential.sublist(ciphertextStart, tagStart),
               nonce: credential.sublist(nonceStart, ciphertextStart),
               mac: Mac(credential.sublist(tagStart)),
             ),
             secretKey: SecretKey(kek),
-            aad: utf8.encode(_passphraseWrappingAad),
+            aad: utf8.encode(
+              usedPreviousWrappingAad
+                  ? _previousPassphraseWrappingAad
+                  : _passphraseWrappingAad,
+            ),
           );
-          try {
-            final masterKey = Uint8List.fromList(plaintext);
-            if (masterKey.length != Kdf.keyLength) {
-              masterKey.fillRange(0, masterKey.length, 0);
-              throw StateError('Stored key material is invalid');
-            }
-            return masterKey;
-          } finally {
-            plaintext.fillRange(0, plaintext.length, 0);
-          }
         } on SecretBoxAuthenticationError {
-          return null;
+          if (wrappedValue == null) {
+            return null;
+          }
+          try {
+            plaintext = await AesGcm.with256bits().decrypt(
+              SecretBox(
+                credential.sublist(ciphertextStart, tagStart),
+                nonce: credential.sublist(nonceStart, ciphertextStart),
+                mac: Mac(credential.sublist(tagStart)),
+              ),
+              secretKey: SecretKey(kek),
+              aad: utf8.encode(_previousPassphraseWrappingAad),
+            );
+            usedPreviousWrappingAad = true;
+          } on SecretBoxAuthenticationError {
+            return null;
+          }
+        }
+        try {
+          final masterKey = Uint8List.fromList(plaintext);
+          if (masterKey.length != Kdf.keyLength) {
+            masterKey.fillRange(0, masterKey.length, 0);
+            throw StateError('Stored key material is invalid');
+          }
+          if (usedPreviousWrappingAad) {
+            final migratedCredential = await _wrapMasterKeyCredential(
+              masterKey: masterKey,
+              kek: kek,
+              salt: salt,
+            );
+            try {
+              await _secureStorage.write(
+                key: _keyWrappedMasterCredential,
+                value: base64Encode(migratedCredential),
+              );
+              await _secureStorage.write(
+                key: _keyKdfParams,
+                value: Kdf.paramsDescription(),
+              );
+              await _secureStorage.delete(
+                key: _keyPreviousWrappedMasterCredential,
+              );
+              await _secureStorage.delete(key: _keyPreviousKdfParams);
+            } finally {
+              migratedCredential.fillRange(0, migratedCredential.length, 0);
+            }
+          }
+          return masterKey;
+        } finally {
+          plaintext.fillRange(0, plaintext.length, 0);
         }
       } on FormatException {
         throw StateError('Stored key material is invalid');
@@ -969,6 +1047,10 @@ class KeyManager {
             key: _keyWrappedMasterCredential,
             value: base64Encode(wrappedCredential),
           );
+          await _secureStorage.write(
+            key: _keyKdfParams,
+            value: Kdf.paramsDescription(),
+          );
           await _deleteLegacyPassphraseMaterial();
         } finally {
           wrappedCredential.fillRange(0, wrappedCredential.length, 0);
@@ -1011,6 +1093,7 @@ class KeyManager {
         key: _keyWrappedMasterCredential,
         value: base64Encode(credential),
       );
+      await _secureStorage.delete(key: _keyPreviousWrappedMasterCredential);
       await _deleteLegacyPassphraseMaterial();
     } finally {
       salt.fillRange(0, salt.length, 0);
@@ -1023,6 +1106,7 @@ class KeyManager {
     await _secureStorage.delete(key: _keyMasterKey);
     await _secureStorage.delete(key: _keyMasterSalt);
     await _secureStorage.delete(key: _keyPassphraseCredential);
+    await _secureStorage.delete(key: _keyPreviousKdfParams);
   }
 
   static Future<Uint8List> _wrapMasterKeyCredential({

@@ -351,6 +351,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setup_error => 'Setup could not be completed. Please try again.';
 
   @override
+  String get setupStepPassphrase => 'Passphrase';
+
+  @override
+  String get setupStepRecovery => 'Recovery key';
+
+  @override
+  String get setupStepBiometric => 'Biometric enrollment';
+
+  @override
+  String setupStepOf(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
   String get recovery_key_dialog_title => 'Your Recovery Key';
 
   @override
