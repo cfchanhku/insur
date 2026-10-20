@@ -11,6 +11,7 @@ import 'package:path/path.dart' as path;
 import 'package:printing/printing.dart';
 
 import '../../../core/audit/audit_event_type.dart';
+import '../../../core/security/pdf_encryption_exception.dart';
 import '../../../features/clients/models/client.dart';
 import '../../../features/clients/models/client_enums.dart';
 import '../../../l10n/app_localizations.dart';
@@ -52,27 +53,6 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
     }
     final locale = Localizations.localeOf(context);
     return locale.scriptCode == 'Hant' ? 'zh-Hant' : 'en';
-  }
-
-  Future<bool> _confirmUnprotectedExport(AppLocalizations l10n) async {
-    return await showDialog<bool>(
-          context: context,
-          builder: (BuildContext dialogContext) => AlertDialog(
-            title: Text(l10n.export_pdf_password_warning_title),
-            content: Text(l10n.export_pdf_password_warning_body),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(false),
-                child: Text(l10n.action_cancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(l10n.export_pdf_password_warning_continue),
-              ),
-            ],
-          ),
-        ) ??
-        false;
   }
 
   Future<List<ClientExportBundle>> _loadBundles(
@@ -129,10 +109,6 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
         _isExporting) {
       return;
     }
-    if (!await _confirmUnprotectedExport(l10n) || !mounted) {
-      return;
-    }
-
     final password = _password;
     final selectedIds = Set<String>.of(_selectedClientIds);
     final languageCode = _resolvedLanguage();
@@ -172,10 +148,15 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
         metadata: <String, Object?>{
           'count': bundles.length,
           'language': languageCode,
+          'encrypted': true,
         },
       );
       if (mounted) {
         await _showSuccess(destinationPath, l10n);
+      }
+    } on PdfEncryptionException {
+      if (mounted) {
+        setState(() => _error = l10n.export_pdf_encryption_error);
       }
     } on Exception {
       if (mounted) {
@@ -318,6 +299,8 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
             }),
           ],
           const Divider(),
+          Text(l10n.export_pdf_encryption_info),
+          const SizedBox(height: AppSpacing.s2),
           DropdownButtonFormField<String>(
             key: ValueKey<String>(_pdfLanguage),
             initialValue: _pdfLanguage,

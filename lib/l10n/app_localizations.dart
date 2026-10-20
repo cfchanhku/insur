@@ -2320,7 +2320,7 @@ abstract class AppLocalizations {
   /// No description provided for @export_pdf_password_hint.
   ///
   /// In en, this message translates to:
-  /// **'At least 8 characters'**
+  /// **'At least 8 characters. Required to open the AES-256 encrypted PDF.'**
   String get export_pdf_password_hint;
 
   /// No description provided for @export_pdf_password_policy_note.
@@ -2329,23 +2329,11 @@ abstract class AppLocalizations {
   /// **'PDF password length is separate from your sign-in passphrase policy.'**
   String get export_pdf_password_policy_note;
 
-  /// No description provided for @export_pdf_password_warning_title.
+  /// No description provided for @export_pdf_encryption_info.
   ///
   /// In en, this message translates to:
-  /// **'PDF password protection unavailable'**
-  String get export_pdf_password_warning_title;
-
-  /// No description provided for @export_pdf_password_warning_body.
-  ///
-  /// In en, this message translates to:
-  /// **'This version cannot encrypt PDF files or restrict copying and printing. The exported file will contain sensitive client information and will NOT be password-protected. Continue only if you can store it securely.'**
-  String get export_pdf_password_warning_body;
-
-  /// No description provided for @export_pdf_password_warning_continue.
-  ///
-  /// In en, this message translates to:
-  /// **'Export unprotected PDF'**
-  String get export_pdf_password_warning_continue;
+  /// **'The PDF is encrypted with AES-256 and requires this password to open. Copying and editing are restricted; accessibility access remains enabled. Printing follows the setting below.'**
+  String get export_pdf_encryption_info;
 
   /// No description provided for @export_pdf_export.
   ///
@@ -2368,8 +2356,14 @@ abstract class AppLocalizations {
   /// No description provided for @export_pdf_success_body.
   ///
   /// In en, this message translates to:
-  /// **'The PDF is not password-protected. Keep the file secure: {path}'**
+  /// **'The PDF is password-protected. Keep the password separate from the file. Saved to: {path}'**
   String export_pdf_success_body(String path);
+
+  /// No description provided for @export_pdf_encryption_error.
+  ///
+  /// In en, this message translates to:
+  /// **'The PDF could not be encrypted, so no unprotected PDF was exported.'**
+  String get export_pdf_encryption_error;
 
   /// No description provided for @export_pdf_error.
   ///

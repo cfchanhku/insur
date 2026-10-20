@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../../core/security/pdf_encryption_service.dart';
 import '../../../features/clients/models/client.dart';
 import '../../../features/clients/models/client_enums.dart';
 import '../../../features/plans/models/plan.dart';
@@ -58,10 +59,9 @@ class PdfExporter {
 
   /// Generates an in-memory PDF for [bundles].
   ///
-  /// PDF password encryption and print/copy restrictions are not supported by
-  /// the current `pdf` package. Callers must warn users before exporting
-  /// sensitive content. Password strings are immutable in Dart and can only be
-  /// cleared from the calling UI on a best-effort basis.
+  /// The resulting PDF is AES-256 encrypted. The password is required to open
+  /// it; copying and editing are disabled, while accessibility extraction
+  /// remains enabled.
   static Future<Uint8List> exportBundles({
     required List<ClientExportBundle> bundles,
     required String languageCode,
@@ -272,10 +272,16 @@ class PdfExporter {
       ),
     );
 
-    // The current PDF library has no encryption or permissions implementation;
-    // allowPrint and password are validated inputs only until that is added.
-    // allowPrint cannot restrict the PDF with the current generator.
-    return document.save();
+    final rawPdfBytes = await document.save();
+    try {
+      return await PdfEncryptionService.encrypt(
+        rawPdfBytes: rawPdfBytes,
+        userPassword: password,
+        allowPrint: allowPrint,
+      );
+    } finally {
+      rawPdfBytes.fillRange(0, rawPdfBytes.length, 0);
+    }
   }
 
   static pw.Widget _sectionTitle(String value) => pw.Padding(

@@ -36,6 +36,9 @@ dependencies:
   local_auth: ^2.3.0
   # Generate PDF documents for user-requested exports.
   pdf: ^3.11.3
+  # Encrypt generated PDFs with AES-256 and enforce document permissions.
+  # Syncfusion Community License eligibility and terms are documented in LICENSE-SYNCFUSION.md.
+  syncfusion_flutter_pdf: ^33.2.13
   # Preview, print, and share generated PDF documents through platform APIs.
   printing: ^5.14.2
   # Let users choose backup and export destinations using native pickers.

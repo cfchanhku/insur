@@ -25,6 +25,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('No active clients to export'), findsOneWidget);
+    expect(find.textContaining('The PDF is encrypted'), findsOneWidget);
     expect(find.byType(TextField), findsNWidgets(2));
     expect(
       tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,

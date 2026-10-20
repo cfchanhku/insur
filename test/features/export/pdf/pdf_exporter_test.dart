@@ -4,6 +4,7 @@ import 'package:insur/features/clients/models/client.dart';
 import 'package:insur/features/clients/models/client_enums.dart';
 import 'package:insur/features/export/pdf/pdf_exporter.dart';
 import 'package:insur/l10n/app_localizations.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +45,83 @@ void main() {
 
         expect(bytes.length, greaterThan(5));
         expect(String.fromCharCodes(bytes.take(5)), '%PDF-');
+
+        expect(
+          () => PdfDocument(inputBytes: bytes),
+          throwsA(anything),
+          reason: 'The PDF must require a password to open.',
+        );
+        expect(
+          () => PdfDocument(inputBytes: bytes, password: 'wrong-passphrase'),
+          throwsA(anything),
+          reason: 'The PDF must reject an incorrect password.',
+        );
+
+        final encryptedDocument = PdfDocument(
+          inputBytes: bytes,
+          password: 'synthetic-passphrase',
+        );
+        try {
+          expect(
+            encryptedDocument.security.algorithm,
+            PdfEncryptionAlgorithm.aesx256Bit,
+          );
+          final permissions = <PdfPermissionsFlags>[];
+          encryptedDocument.security.permissions.forEach(permissions.add);
+          expect(
+            permissions,
+            contains(PdfPermissionsFlags.accessibilityCopyContent),
+          );
+          expect(permissions, contains(PdfPermissionsFlags.print));
+          expect(permissions, isNot(contains(PdfPermissionsFlags.copyContent)));
+          expect(permissions, isNot(contains(PdfPermissionsFlags.editContent)));
+          expect(
+            permissions,
+            isNot(contains(PdfPermissionsFlags.editAnnotations)),
+          );
+        } finally {
+          encryptedDocument.dispose();
+        }
       },
     );
   }
+
+  test('does not grant print permission when disabled', () async {
+    final locale = await AppLocalizations.delegate.load(const Locale('en'));
+    final client = Client(
+      role: ClientRole.holder,
+      name: 'Synthetic Client',
+      gender: Gender.other,
+      dob: DateTime.utc(1990),
+      phone: null,
+      email: null,
+      createdAt: DateTime.utc(2026),
+      updatedAt: DateTime.utc(2026),
+      archivedAt: null,
+    );
+    final bytes = await PdfExporter.exportBundles(
+      bundles: <ClientExportBundle>[
+        ClientExportBundle(client: client, policies: const <PolicyWithPlans>[]),
+      ],
+      languageCode: 'en',
+      allowPrint: false,
+      password: 'synthetic-passphrase',
+      l10n: locale,
+    );
+    final encryptedDocument = PdfDocument(
+      inputBytes: bytes,
+      password: 'synthetic-passphrase',
+    );
+    try {
+      final permissions = <PdfPermissionsFlags>[];
+      encryptedDocument.security.permissions.forEach(permissions.add);
+      expect(permissions, isNot(contains(PdfPermissionsFlags.print)));
+      expect(
+        permissions,
+        contains(PdfPermissionsFlags.accessibilityCopyContent),
+      );
+    } finally {
+      encryptedDocument.dispose();
+    }
+  });
 }

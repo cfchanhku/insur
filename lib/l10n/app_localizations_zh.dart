@@ -1208,22 +1208,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get export_pdf_confirm_password => 'Confirm PDF password';
 
   @override
-  String get export_pdf_password_hint => 'At least 8 characters';
+  String get export_pdf_password_hint =>
+      'At least 8 characters. Required to open the AES-256 encrypted PDF.';
 
   @override
   String get export_pdf_password_policy_note =>
       'PDF password length is separate from your sign-in passphrase policy.';
 
   @override
-  String get export_pdf_password_warning_title =>
-      'PDF password protection unavailable';
-
-  @override
-  String get export_pdf_password_warning_body =>
-      'This version cannot encrypt PDF files or restrict copying and printing. The exported file will contain sensitive client information and will NOT be password-protected. Continue only if you can store it securely.';
-
-  @override
-  String get export_pdf_password_warning_continue => 'Export unprotected PDF';
+  String get export_pdf_encryption_info =>
+      'The PDF is encrypted with AES-256 and requires this password to open. Copying and editing are restricted; accessibility access remains enabled. Printing follows the setting below.';
 
   @override
   String get export_pdf_export => 'Export PDF';
@@ -1236,8 +1230,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String export_pdf_success_body(String path) {
-    return 'The PDF is not password-protected. Keep the file secure: $path';
+    return 'The PDF is password-protected. Keep the password separate from the file. Saved to: $path';
   }
+
+  @override
+  String get export_pdf_encryption_error =>
+      'The PDF could not be encrypted, so no unprotected PDF was exported.';
 
   @override
   String get export_pdf_error => 'Export failed. Please try again.';
@@ -2467,20 +2465,14 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get export_pdf_confirm_password => '確認 PDF 密碼';
 
   @override
-  String get export_pdf_password_hint => '至少 8 個字元';
+  String get export_pdf_password_hint => '至少 8 個字元。開啟 AES-256 加密 PDF 時必須輸入此密碼。';
 
   @override
   String get export_pdf_password_policy_note => 'PDF 密碼長度與登入密碼政策分開。';
 
   @override
-  String get export_pdf_password_warning_title => '目前無法提供 PDF 密碼保護';
-
-  @override
-  String get export_pdf_password_warning_body =>
-      '此版本無法加密 PDF，也無法限制複製或列印。匯出檔案將包含敏感客戶資料，且不會受到密碼保護。只有在能安全保存檔案時才繼續。';
-
-  @override
-  String get export_pdf_password_warning_continue => '匯出未加密 PDF';
+  String get export_pdf_encryption_info =>
+      'PDF 使用 AES-256 加密，開啟時必須輸入此密碼。複製及編輯功能受到限制；仍允許輔助工具存取。列印權限依下方設定。';
 
   @override
   String get export_pdf_export => '匯出 PDF';
@@ -2493,8 +2485,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String export_pdf_success_body(String path) {
-    return 'PDF 未受密碼保護。請妥善保管檔案：$path';
+    return 'PDF 已受密碼保護。請將密碼與檔案分開保存。已儲存至：$path';
   }
+
+  @override
+  String get export_pdf_encryption_error => '無法加密 PDF，因此未匯出未受保護的檔案。';
 
   @override
   String get export_pdf_error => '匯出失敗，請再試一次。';
