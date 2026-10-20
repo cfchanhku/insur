@@ -1300,7 +1300,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   AppLocalizationsZhHant() : super('zh_Hant');
 
   @override
-  String get app_title => '保險保單管理';
+  String get app_title => '保單管理系統';
 
   @override
   String get app_tagline => '保險資料安全地儲存於此裝置。';
