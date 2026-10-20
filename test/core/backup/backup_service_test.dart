@@ -16,7 +16,6 @@ import 'package:insur/core/database/database.dart';
 import 'package:insur/core/database/repositories/audit_repository.dart';
 import 'package:insur/core/database/schema.dart';
 import 'package:insur/core/security/key_manager.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as path;
 
@@ -488,14 +487,9 @@ Future<KeyManager> _createKeyManager(String passphrase) async {
     final key = invocation.namedArguments[#key] as String;
     values.remove(key);
   });
-  final manager = KeyManager(
-    secureStorage: secureStorage,
-    localAuth: _MockLocalAuthentication(),
-  );
+  final manager = KeyManager(secureStorage: secureStorage);
   await manager.setup(passphrase: passphrase);
   return manager;
 }
 
 class _MockSecureStorage extends Mock implements FlutterSecureStorage {}
-
-class _MockLocalAuthentication extends Mock implements LocalAuthentication {}

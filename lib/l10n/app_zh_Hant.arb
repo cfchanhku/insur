@@ -151,8 +151,8 @@
   "recovery_key_dialog_confirm": "我已列印並保存",
   "setup_recovery_confirmation": "輸入復原金鑰以確認",
   "setup_recovery_confirm": "確認復原金鑰",
-  "setup_biometric_prompt": "使用生物辨識保護存取權。您也可以稍後在設定中啟用。",
-  "setup_enable_biometric": "啟用生物辨識解鎖",
+  "setup_biometric_prompt": "登記生物辨識以供日後使用。目前尚未提供生物辨識解鎖；您也可以稍後在設定中管理登記。",
+  "setup_enable_biometric": "登記生物辨識",
   "setup_skip_biometric": "暫時略過",
   "recovery_invalid_key": "復原金鑰無效。請檢查後再試。",
   "recovery_set_new_passphrase": "設定新密碼以完成資料庫復原。",
@@ -167,7 +167,6 @@
   "login_passphrase": "密碼",
   "login_sign_in": "登入",
   "login_signing_in": "登入中...",
-  "login_biometric": "使用生物辨識解鎖",
   "login_error": "密碼錯誤。剩餘 {attempts} 次嘗試。",
   "@login_error": {
     "placeholders": {
@@ -330,9 +329,10 @@
       }
     }
   },
-  "settings_biometric": "生物辨識解鎖",
+  "settings_biometric": "生物辨識登記",
   "settings_biometric_unavailable": "此裝置不支援",
-  "settings_biometric_reason": "請確認使用生物辨識解鎖此應用程式",
+  "settings_biometric_reason": "請確認為此應用程式登記生物辨識",
+  "biometricUnlockDeferred": "已儲存登記狀態，但目前尚未提供生物辨識解鎖。",
   "settings_change_passphrase": "更改密碼",
   "settings_regenerate_recovery": "重新產生復原金鑰",
   "settings_current_passphrase": "目前密碼",

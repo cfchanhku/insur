@@ -790,13 +790,13 @@ abstract class AppLocalizations {
   /// No description provided for @setup_biometric_prompt.
   ///
   /// In en, this message translates to:
-  /// **'Protect access with biometric authentication. You can also enable it later in Settings.'**
+  /// **'Enroll biometrics for future use. Biometric unlock is not available yet; you can manage enrollment later in Settings.'**
   String get setup_biometric_prompt;
 
   /// No description provided for @setup_enable_biometric.
   ///
   /// In en, this message translates to:
-  /// **'Enable biometric unlock'**
+  /// **'Enroll biometrics'**
   String get setup_enable_biometric;
 
   /// No description provided for @setup_skip_biometric.
@@ -882,12 +882,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Signing in...'**
   String get login_signing_in;
-
-  /// No description provided for @login_biometric.
-  ///
-  /// In en, this message translates to:
-  /// **'Unlock with biometric'**
-  String get login_biometric;
 
   /// No description provided for @login_error.
   ///
@@ -1528,7 +1522,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_biometric.
   ///
   /// In en, this message translates to:
-  /// **'Biometric unlock'**
+  /// **'Biometric enrollment'**
   String get settings_biometric;
 
   /// No description provided for @settings_biometric_unavailable.
@@ -1540,8 +1534,14 @@ abstract class AppLocalizations {
   /// No description provided for @settings_biometric_reason.
   ///
   /// In en, this message translates to:
-  /// **'Confirm biometric unlock for this app'**
+  /// **'Confirm biometric enrollment for this app'**
   String get settings_biometric_reason;
+
+  /// No description provided for @biometricUnlockDeferred.
+  ///
+  /// In en, this message translates to:
+  /// **'Enrollment is saved, but biometric unlock is not available yet.'**
+  String get biometricUnlockDeferred;
 
   /// No description provided for @settings_change_passphrase.
   ///

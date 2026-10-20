@@ -67,11 +67,17 @@ The intended design is local-first: application data is not uploaded to GitHub o
   yet integrated with client or policy persistence; callers remain responsible
   for key lifecycle and supplying matching AAD. Its secure-random 96-bit nonces
   make collisions extremely unlikely, but cannot guarantee absolute uniqueness.
-- **Key management:** The MVP stores the passphrase-derived master key
-  directly in `FlutterSecureStorage`, separately from its Argon2id salt, and
-  derives database, field, and audit subkeys in memory. The KeyManager and
-  inactivity timer are not yet integrated with the application UI. Wrapping
-  the master key with a separate key-encryption key is deferred.
+- **Key management:** A random, stable master key is wrapped with AES-256-GCM
+  using a passphrase-derived Argon2id key. Secure storage contains one
+  authenticated credential with the KDF salt and wrapped master key; the
+  master key derives database, field, and audit subkeys in memory. Legacy
+  direct-key credentials migrate after successful passphrase authentication
+  without changing the master key. Changing a passphrase re-wraps that same
+  key, so the database is not re-encrypted.
+- **Biometrics:** Enrollment preference is available, but biometric unlock is
+  deferred. The current secure-storage abstraction cannot enforce
+  platform-protected access to the wrapped master key, so biometrics do not
+  unlock the vault.
 - **Recovery key:** The implemented recovery primitive generates 160-bit
   Crockford Base32 keys, derives a recovery KEK with Argon2id, and stores only
   an AES-256-GCM-wrapped master key, salt, and fast verification hash. The key

@@ -528,9 +528,11 @@ class SettingsScreen extends ConsumerWidget {
             ),
             data: (bool supported) => SwitchListTile(
               title: Text(l10n.settings_biometric),
-              subtitle: supported
-                  ? null
-                  : Text(l10n.settings_biometric_unavailable),
+              subtitle: Text(
+                supported
+                    ? l10n.biometricUnlockDeferred
+                    : l10n.settings_biometric_unavailable,
+              ),
               value: settings.biometricEnabled,
               onChanged: supported && !settingsAsync.isLoading
                   ? (bool value) =>

@@ -374,10 +374,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get setup_biometric_prompt =>
-      'Protect access with biometric authentication. You can also enable it later in Settings.';
+      'Enroll biometrics for future use. Biometric unlock is not available yet; you can manage enrollment later in Settings.';
 
   @override
-  String get setup_enable_biometric => 'Enable biometric unlock';
+  String get setup_enable_biometric => 'Enroll biometrics';
 
   @override
   String get setup_skip_biometric => 'Skip for now';
@@ -424,9 +424,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get login_signing_in => 'Signing in...';
-
-  @override
-  String get login_biometric => 'Unlock with biometric';
 
   @override
   String login_error(int attempts) {
@@ -778,14 +775,18 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get settings_biometric => 'Biometric unlock';
+  String get settings_biometric => 'Biometric enrollment';
 
   @override
   String get settings_biometric_unavailable => 'Not available on this device';
 
   @override
   String get settings_biometric_reason =>
-      'Confirm biometric unlock for this app';
+      'Confirm biometric enrollment for this app';
+
+  @override
+  String get biometricUnlockDeferred =>
+      'Enrollment is saved, but biometric unlock is not available yet.';
 
   @override
   String get settings_change_passphrase => 'Change passphrase';
@@ -1642,10 +1643,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get setup_recovery_confirm => '確認復原金鑰';
 
   @override
-  String get setup_biometric_prompt => '使用生物辨識保護存取權。您也可以稍後在設定中啟用。';
+  String get setup_biometric_prompt =>
+      '登記生物辨識以供日後使用。目前尚未提供生物辨識解鎖；您也可以稍後在設定中管理登記。';
 
   @override
-  String get setup_enable_biometric => '啟用生物辨識解鎖';
+  String get setup_enable_biometric => '登記生物辨識';
 
   @override
   String get setup_skip_biometric => '暫時略過';
@@ -1688,9 +1690,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get login_signing_in => '登入中...';
-
-  @override
-  String get login_biometric => '使用生物辨識解鎖';
 
   @override
   String login_error(int attempts) {
@@ -2034,13 +2033,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
-  String get settings_biometric => '生物辨識解鎖';
+  String get settings_biometric => '生物辨識登記';
 
   @override
   String get settings_biometric_unavailable => '此裝置不支援';
 
   @override
-  String get settings_biometric_reason => '請確認使用生物辨識解鎖此應用程式';
+  String get settings_biometric_reason => '請確認為此應用程式登記生物辨識';
+
+  @override
+  String get biometricUnlockDeferred => '已儲存登記狀態，但目前尚未提供生物辨識解鎖。';
 
   @override
   String get settings_change_passphrase => '更改密碼';

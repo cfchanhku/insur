@@ -56,10 +56,7 @@ final biometricAvailabilityProvider = FutureProvider<bool>((Ref ref) async {
 
 /// Creates a KeyManager without automatically unlocking the vault.
 final keyManagerProvider = FutureProvider<KeyManager>((Ref ref) async {
-  return KeyManager(
-    secureStorage: ref.watch(secureStorageProvider),
-    localAuth: ref.watch(localAuthProvider),
-  );
+  return KeyManager(secureStorage: ref.watch(secureStorageProvider));
 });
 
 /// Mirrors mutable KeyManager state so key-dependent providers are refreshed.

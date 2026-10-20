@@ -11,7 +11,7 @@ import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
 
-/// Derives master keys using the application's fixed Argon2id parameters.
+/// Derives passphrase keys using the application's fixed Argon2id parameters.
 class Kdf {
   const Kdf._();
 
@@ -30,12 +30,12 @@ class Kdf {
   /// Argon2 parallelism degree.
   static const int parallelism = 4;
 
-  /// Derives a 32-byte master key from [passphrase] and a 32-byte [salt].
+  /// Derives a 32-byte passphrase key from [passphrase] and [salt].
   ///
   /// The temporary UTF-8 passphrase buffer is overwritten after derivation.
   /// Dart and native implementations may make internal copies that the
   /// garbage collector does not let this method explicitly erase.
-  static Future<Uint8List> deriveMasterKey({
+  static Future<Uint8List> derivePassphraseKey({
     required String passphrase,
     required Uint8List salt,
   }) async {
@@ -75,6 +75,20 @@ class Kdf {
     }
   }
 
+  /// Generates a random 32-byte master key.
+  static Uint8List generateMasterKey() {
+    final random = Random.secure();
+    return Uint8List.fromList(
+      List<int>.generate(keyLength, (_) => random.nextInt(256)),
+    );
+  }
+
+  /// Compatibility alias for existing recovery-key callers.
+  static Future<Uint8List> deriveMasterKey({
+    required String passphrase,
+    required Uint8List salt,
+  }) => derivePassphraseKey(passphrase: passphrase, salt: salt);
+
   /// Generates a fresh cryptographically secure salt for key derivation.
   ///
   /// [Random.secure] uses the platform's secure random source; [Random] alone
@@ -95,7 +109,10 @@ class Kdf {
     required Uint8List salt,
     required Uint8List expectedKey,
   }) async {
-    final actualKey = await deriveMasterKey(passphrase: passphrase, salt: salt);
+    final actualKey = await derivePassphraseKey(
+      passphrase: passphrase,
+      salt: salt,
+    );
     try {
       return _constantTimeEquals(actualKey, expectedKey);
     } finally {

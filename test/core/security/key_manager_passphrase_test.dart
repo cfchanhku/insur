@@ -1,13 +1,16 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:insur/core/security/kdf.dart';
+import 'package:insur/core/security/key_derivation.dart';
 import 'package:insur/core/security/key_manager.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockSecureStorage extends Mock implements FlutterSecureStorage {
   final Map<String, String> values = <String, String>{};
+  String? failWriteKey;
 
   void configure() {
     when(() => read(key: any(named: 'key'))).thenAnswer((invocation) async {
@@ -19,16 +22,17 @@ class _MockSecureStorage extends Mock implements FlutterSecureStorage {
         value: any(named: 'value'),
       ),
     ).thenAnswer((invocation) async {
-      values[invocation.namedArguments[#key] as String] =
-          invocation.namedArguments[#value] as String;
+      final key = invocation.namedArguments[#key] as String;
+      if (key == failWriteKey) {
+        throw StateError('Synthetic secure-storage write failure');
+      }
+      values[key] = invocation.namedArguments[#value] as String;
     });
     when(() => delete(key: any(named: 'key'))).thenAnswer((invocation) async {
       values.remove(invocation.namedArguments[#key] as String);
     });
   }
 }
-
-class _MockLocalAuthentication extends Mock implements LocalAuthentication {}
 
 void main() {
   const originalPassphrase = 'synthetic original passphrase';
@@ -39,10 +43,27 @@ void main() {
 
   setUp(() {
     secureStorage = _MockSecureStorage()..configure();
-    keyManager = KeyManager(
-      secureStorage: secureStorage,
-      localAuth: _MockLocalAuthentication(),
+    keyManager = KeyManager(secureStorage: secureStorage);
+  });
+
+  test('setup creates a random wrapped master key', () async {
+    await keyManager.setup(passphrase: originalPassphrase);
+
+    final material = await keyManager.exportBackupMaterial();
+    final credential = material.wrappedPassphraseCredential!;
+    final salt = Uint8List.fromList(credential.sublist(0, Kdf.saltLength));
+    final derivedPassphraseKey = await Kdf.derivePassphraseKey(
+      passphrase: originalPassphrase,
+      salt: salt,
     );
+
+    expect(material.masterKey, isNot(equals(derivedPassphraseKey)));
+    expect(credential.length, 92);
+    expect(secureStorage.values.containsKey('insur.master_key.v1'), isFalse);
+
+    material.clear();
+    salt.fillRange(0, salt.length, 0);
+    derivedPassphraseKey.fillRange(0, derivedPassphraseKey.length, 0);
   });
 
   test(
@@ -75,11 +96,11 @@ void main() {
       final material = await keyManager.exportBackupMaterial();
       final restored = KeyManager(
         secureStorage: _MockSecureStorage()..configure(),
-        localAuth: _MockLocalAuthentication(),
       );
       await restored.restoreBackupMaterial(material);
       expect(await restored.unlock(passphrase: replacementPassphrase), isTrue);
       expect(restored.dbKey, databaseKey);
+      expect(secureStorage.values.containsKey('insur.master_key.v1'), isFalse);
 
       material.clear();
       databaseKey.fillRange(0, databaseKey.length, 0);
@@ -87,29 +108,93 @@ void main() {
   );
 
   test(
-    'migrates a legacy verifier after successful passphrase login',
+    'migrates legacy direct master-key storage after successful login',
     () async {
-      await keyManager.setup(passphrase: originalPassphrase);
-      secureStorage.values.remove('insur.passphrase_credential.v1');
+      final salt = Kdf.generateSalt();
+      final legacyMasterKey = await Kdf.deriveMasterKey(
+        passphrase: originalPassphrase,
+        salt: salt,
+      );
+      final databaseKey = await SubKeyDeriver.deriveDbKey(legacyMasterKey);
+      secureStorage.values
+        ..['insur.master_key.v1'] = base64Encode(legacyMasterKey)
+        ..['insur.master_salt.v1'] = base64Encode(salt)
+        ..['insur.kdf_params.v1'] = Kdf.paramsDescription();
 
-      await keyManager.lock();
       expect(await keyManager.unlock(passphrase: originalPassphrase), isTrue);
       expect(
-        secureStorage.values.containsKey('insur.passphrase_credential.v1'),
+        secureStorage.values.containsKey('insur.master_key_credential.v2'),
         isTrue,
       );
+      expect(secureStorage.values.containsKey('insur.master_key.v1'), isFalse);
+      expect(keyManager.dbKey, databaseKey);
+
+      salt.fillRange(0, salt.length, 0);
+      legacyMasterKey.fillRange(0, legacyMasterKey.length, 0);
+      databaseKey.fillRange(0, databaseKey.length, 0);
     },
   );
 
-  test('biometric unlock requires explicit enrollment on the device', () async {
-    await keyManager.setup(passphrase: originalPassphrase);
-    expect(await keyManager.isBiometricEnabled(), isFalse);
-    expect(await keyManager.unlockWithBiometric(), isFalse);
+  test(
+    'preserves legacy key when credential migration cannot be persisted',
+    () async {
+      final salt = Kdf.generateSalt();
+      final legacyMasterKey = await Kdf.deriveMasterKey(
+        passphrase: originalPassphrase,
+        salt: salt,
+      );
+      secureStorage.values
+        ..['insur.master_key.v1'] = base64Encode(legacyMasterKey)
+        ..['insur.master_salt.v1'] = base64Encode(salt)
+        ..['insur.kdf_params.v1'] = Kdf.paramsDescription();
+      secureStorage.failWriteKey = 'insur.master_key_credential.v2';
 
-    await keyManager.setBiometricEnabled(enabled: true);
-    expect(await keyManager.isBiometricEnabled(), isTrue);
-    await keyManager.setBiometricEnabled(enabled: false);
-    expect(await keyManager.isBiometricEnabled(), isFalse);
+      await expectLater(
+        keyManager.unlock(passphrase: originalPassphrase),
+        throwsStateError,
+      );
+      expect(secureStorage.values['insur.master_key.v1'], isNotNull);
+      expect(
+        secureStorage.values.containsKey('insur.master_key_credential.v2'),
+        isFalse,
+      );
+      expect(keyManager.isUnlocked, isFalse);
+
+      salt.fillRange(0, salt.length, 0);
+      legacyMasterKey.fillRange(0, legacyMasterKey.length, 0);
+    },
+  );
+
+  test(
+    'biometric enrollment is retained but unlock remains deferred',
+    () async {
+      await keyManager.setup(passphrase: originalPassphrase);
+      expect(await keyManager.isBiometricEnabled(), isFalse);
+      await expectLater(
+        keyManager.unlockWithBiometric(),
+        throwsUnsupportedError,
+      );
+
+      await keyManager.setBiometricEnabled(enabled: true);
+      expect(await keyManager.isBiometricEnabled(), isTrue);
+      await keyManager.setBiometricEnabled(enabled: false);
+      expect(await keyManager.isBiometricEnabled(), isFalse);
+    },
+  );
+
+  test('rejects a tampered wrapped master key', () async {
+    await keyManager.setup(passphrase: originalPassphrase);
+    final credential = base64Decode(
+      secureStorage.values['insur.master_key_credential.v2']!,
+    );
+    credential[Kdf.saltLength + 12] ^= 1;
+    secureStorage.values['insur.master_key_credential.v2'] = base64Encode(
+      credential,
+    );
+
+    expect(await keyManager.unlock(passphrase: originalPassphrase), isFalse);
+    expect(keyManager.isUnlocked, isFalse);
+    credential.fillRange(0, credential.length, 0);
   });
 
   test('recovery requires and accepts a replacement passphrase', () async {

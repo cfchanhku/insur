@@ -151,8 +151,8 @@
   "recovery_key_dialog_confirm": "I have printed and stored it",
   "setup_recovery_confirmation": "Enter your recovery key to confirm",
   "setup_recovery_confirm": "Confirm recovery key",
-  "setup_biometric_prompt": "Protect access with biometric authentication. You can also enable it later in Settings.",
-  "setup_enable_biometric": "Enable biometric unlock",
+  "setup_biometric_prompt": "Enroll biometrics for future use. Biometric unlock is not available yet; you can manage enrollment later in Settings.",
+  "setup_enable_biometric": "Enroll biometrics",
   "setup_skip_biometric": "Skip for now",
   "recovery_invalid_key": "That recovery key is invalid. Check it and try again.",
   "recovery_set_new_passphrase": "Set a new passphrase to finish recovering your vault.",
@@ -167,7 +167,6 @@
   "login_passphrase": "Passphrase",
   "login_sign_in": "Sign In",
   "login_signing_in": "Signing in...",
-  "login_biometric": "Unlock with biometric",
   "login_error": "Incorrect passphrase. {attempts} attempts remaining.",
   "@login_error": {
     "placeholders": {
@@ -330,9 +329,10 @@
       }
     }
   },
-  "settings_biometric": "Biometric unlock",
+  "settings_biometric": "Biometric enrollment",
   "settings_biometric_unavailable": "Not available on this device",
-  "settings_biometric_reason": "Confirm biometric unlock for this app",
+  "settings_biometric_reason": "Confirm biometric enrollment for this app",
+  "biometricUnlockDeferred": "Enrollment is saved, but biometric unlock is not available yet.",
   "settings_change_passphrase": "Change passphrase",
   "settings_regenerate_recovery": "Regenerate recovery key",
   "settings_current_passphrase": "Current passphrase",

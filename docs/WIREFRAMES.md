@@ -163,16 +163,16 @@ Button text must describe an action; destructive actions use a distinct Danger s
 ##### S2c — Biometric
 
 - **Frames:** Wizard frame; platform-specific permission/availability states annotated.
-- **Layout:** Biometric illustration/icon, concise explanation, Enable and Skip actions; passphrase remains the fallback.
+- **Layout:** Biometric illustration/icon, concise explanation, Enroll and Skip actions; enrollment is recorded as a preference only and the passphrase remains the only unlock method.
 - **Layers:** `Stepper / BiometricIcon / Explanation / EnableButton / SkipButton / PlatformStatus`.
-- **States:** available, permission prompt, enabled, declined, unavailable, error. Do not claim biometrics encrypt or replace the vault key.
-- **Strings:** `biometricTitle` — 「啟用生物認證」 / “Enable biometric unlock”; `biometricBody` — 「可用指紋或臉部認證快速解鎖。主密碼仍可使用。」 / “Use biometrics for convenient unlocking. Your master passphrase remains available.”; `skip` — 「稍後設定」 / “Set up later”.
+- **States:** available, permission prompt, enrolled, declined, unavailable, error. Unlock remains unavailable until platform-protected key storage is implemented. Do not claim biometrics encrypt or replace the vault key.
+- **Strings:** `biometricTitle` — 「登記生物辨識」 / “Enroll biometrics”; explain that biometric unlock is not yet available; `skip` — 「稍後設定」 / “Set up later”.
 
 #### S3 — Login
 
 - **Frames:** Mobile, tablet, desktop centered dialog/card.
-- **Layout:** App name, passphrase entry, optional biometric action, unlock button, recovery link, lockout/help notice.
-- **Layers:** `Brand / PassphraseField / RevealToggle / BiometricAction / Unlock / RecoveryLink / AttemptStatus`.
+- **Layout:** App name, passphrase entry, unlock button, recovery link, lockout/help notice.
+- **Layers:** `Brand / PassphraseField / RevealToggle / Unlock / RecoveryLink / AttemptStatus`.
 - **States:** locked, validating, incorrect credential (generic message), throttled/temporarily locked, database unavailable, unlocked transition. Never reveal whether a user or vault exists.
 - **Strings:** `loginTitle` — 「解鎖保險資料庫」 / “Unlock your vault”; `unlock` — 「解鎖」 / “Unlock”; `incorrectCredential` — 「無法解鎖。請檢查資料後重試。」 / “Unable to unlock. Check your details and try again.”; `useRecoveryKey` — 「使用復原金鑰」 / “Use recovery key”.
 

@@ -375,10 +375,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setup_biometric_prompt =>
-      'Protect access with biometric authentication. You can also enable it later in Settings.';
+      'Enroll biometrics for future use. Biometric unlock is not available yet; you can manage enrollment later in Settings.';
 
   @override
-  String get setup_enable_biometric => 'Enable biometric unlock';
+  String get setup_enable_biometric => 'Enroll biometrics';
 
   @override
   String get setup_skip_biometric => 'Skip for now';
@@ -425,9 +425,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get login_signing_in => 'Signing in...';
-
-  @override
-  String get login_biometric => 'Unlock with biometric';
 
   @override
   String login_error(int attempts) {
@@ -779,14 +776,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get settings_biometric => 'Biometric unlock';
+  String get settings_biometric => 'Biometric enrollment';
 
   @override
   String get settings_biometric_unavailable => 'Not available on this device';
 
   @override
   String get settings_biometric_reason =>
-      'Confirm biometric unlock for this app';
+      'Confirm biometric enrollment for this app';
+
+  @override
+  String get biometricUnlockDeferred =>
+      'Enrollment is saved, but biometric unlock is not available yet.';
 
   @override
   String get settings_change_passphrase => 'Change passphrase';

@@ -170,11 +170,11 @@ void main() {
     WidgetTester tester,
   ) async {
     await _pumpSettings(tester);
-    await _showText(tester, 'Biometric unlock');
+    await _showText(tester, 'Biometric enrollment');
 
     expect(find.text('Not available on this device'), findsOneWidget);
     final switchTile = tester.widget<SwitchListTile>(
-      find.widgetWithText(SwitchListTile, 'Biometric unlock'),
+      find.widgetWithText(SwitchListTile, 'Biometric enrollment'),
     );
     expect(switchTile.onChanged, isNull);
   });

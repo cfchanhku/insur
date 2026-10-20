@@ -1,7 +1,6 @@
-/// Presents the localized passphrase and biometric login screen.
+/// Presents the localized passphrase login screen.
 library;
 
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -26,15 +25,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   static const int _maximumFailedAttempts = 10;
 
-  late final Future<bool> _biometricAvailability;
   String _passphrase = '';
   bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _biometricAvailability = _biometricAvailable(ref);
-  }
 
   Future<void> _signIn() async {
     if (_isLoading) {
@@ -76,39 +68,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  Future<void> _signInWithBiometric() async {
-    if (_isLoading) {
-      return;
-    }
-    setState(() => _isLoading = true);
-    final l10n = AppLocalizations.of(context);
-    try {
-      final keyManager = await ref.read(keyManagerProvider.future);
-      keyManager.onAudit = null;
-      final success = await keyManager.unlockWithBiometric();
-      if (!mounted) {
-        return;
-      }
-      if (!success) {
-        _showMessage(l10n.error_generic);
-        return;
-      }
-      await _finishUnlock(keyManager, biometric: true);
-    } on Exception {
-      if (mounted) {
-        _showMessage(l10n.error_generic);
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
-  }
-
-  Future<void> _finishUnlock(
-    KeyManager keyManager, {
-    bool biometric = false,
-  }) async {
+  Future<void> _finishUnlock(KeyManager keyManager) async {
     ref.read(keyManagerStateProvider.notifier).state = keyManager.state;
     final audit = await ref.read(auditRepositoryProvider.future);
     final restoredSchema = ref.read(pendingRestoreAuditSchemaProvider);
@@ -119,10 +79,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
       ref.read(pendingRestoreAuditSchemaProvider.notifier).state = null;
     }
-    await audit.append(
-      eventType: AuditEventType.loginSuccess,
-      metadata: biometric ? <String, Object?>{'method': 'biometric'} : null,
-    );
+    await audit.append(eventType: AuditEventType.loginSuccess);
     if (mounted) {
       context.go('/home');
     }
@@ -164,23 +121,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     _isLoading ? l10n.login_signing_in : l10n.login_sign_in,
                   ),
                 ),
-                FutureBuilder<bool>(
-                  future: _biometricAvailability,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                        if (snapshot.data != true) {
-                          return const SizedBox.shrink();
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: AppSpacing.s2),
-                          child: OutlinedButton.icon(
-                            onPressed: _isLoading ? null : _signInWithBiometric,
-                            icon: const Icon(Icons.fingerprint),
-                            label: Text(l10n.login_biometric),
-                          ),
-                        );
-                      },
-                ),
                 Align(
                   alignment: AlignmentDirectional.center,
                   child: TextButton(
@@ -194,18 +134,5 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
       ),
     );
-  }
-}
-
-Future<bool> _biometricAvailable(WidgetRef ref) async {
-  try {
-    final localAuth = ref.read(localAuthProvider);
-    final keyManager = await ref.read(keyManagerProvider.future);
-    return await localAuth.canCheckBiometrics &&
-        await localAuth.isDeviceSupported() &&
-        await keyManager.isBiometricEnabled() &&
-        !await keyManager.isPassphraseResetRequired();
-  } on Exception {
-    return false;
   }
 }

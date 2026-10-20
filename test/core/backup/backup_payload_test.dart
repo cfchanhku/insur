@@ -39,6 +39,40 @@ void main() {
     payload.clear();
     legacy.fillRange(0, legacy.length, 0);
   });
+
+  test('round-trips a wrapped passphrase credential as payload version 3', () {
+    final credential = Uint8List.fromList(List<int>.generate(92, (i) => i));
+    final material = KeyBackupMaterial(
+      masterKey: Uint8List.fromList(List<int>.filled(32, 11)),
+      masterSalt: Uint8List.fromList(credential.sublist(0, 32)),
+      wrappedPassphraseCredential: credential,
+      kdfParameters: 'Argon2id test parameters',
+    );
+    final payload = BackupPayload(
+      databaseBytes: Uint8List.fromList(<int>[12, 13]),
+      keyMaterial: material,
+    );
+    final encoded = payload.toBytes();
+    final decoded = BackupPayload.fromBytes(encoded);
+
+    expect(encoded.sublist(0, 8), <int>[
+      0x53,
+      0x49,
+      0x50,
+      0x4d,
+      0x2d,
+      0x50,
+      0x59,
+      0x33,
+    ]);
+    expect(decoded.keyMaterial.wrappedPassphraseCredential, credential);
+    expect(decoded.keyMaterial.passphraseVerifier, isNull);
+    expect(decoded.databaseBytes, <int>[12, 13]);
+
+    decoded.clear();
+    payload.clear();
+    credential.fillRange(0, credential.length, 0);
+  });
 }
 
 Uint8List _legacyPayload() {
