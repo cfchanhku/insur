@@ -15,6 +15,9 @@ All notable changes to Insurance Policy Manager are documented here. This projec
 
 ### Changed
 
+- Polished existing screens with tablet/desktop master-detail layouts, skeleton loading states, animated transitions, refresh gestures, and confirmed swipe-to-archive actions.
+- Added desktop keyboard shortcuts and a persistent plan-form action bar with asynchronous save progress.
+
 ### Deprecated
 
 ### Removed

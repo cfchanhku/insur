@@ -53,6 +53,10 @@ dependencies:
   # Structured application logging; sensitive values must be redacted.
   logging: ^1.3.0
   package_info_plus: 8.0.2
+  # Lightweight skeleton placeholders for asynchronous list loading.
+  skeletonizer: ^2.0.0
+  # Subtle, composable entrance animations for polished transitions.
+  flutter_animate: ^4.5.0
 
 dependency_overrides:
   # pdf 3.12 constrains archive below 4.1, so keep image on its compatible API.

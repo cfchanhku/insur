@@ -130,6 +130,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get policy_archive_confirm_action => 'Archive';
 
   @override
+  String get policy_archived_snack => 'Policy archived';
+
+  @override
   String get policy_form_title_new => 'New policy';
 
   @override
@@ -210,6 +213,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get plan_remove_rider => 'Remove';
+
+  @override
+  String get plan_archive_confirm_title => 'Archive plan?';
+
+  @override
+  String get plan_archive_confirm_body =>
+      'The plan will be hidden. You can restore it from the Archive.';
+
+  @override
+  String get plan_archive_confirm_action => 'Archive';
+
+  @override
+  String get plan_archived_snack => 'Plan archived';
+
+  @override
+  String get accessibility_delete => 'Delete permanently';
+
+  @override
+  String get accessibility_restore => 'Restore';
 
   @override
   String get plan_form_title_new => 'New plan';
@@ -518,6 +540,15 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get client_archive_error =>
       'The client could not be archived. Please try again.';
+
+  @override
+  String get client_archived_snack => 'Client archived';
+
+  @override
+  String get lock_app => 'Lock app';
+
+  @override
+  String get search_field_label => 'Search clients';
 
   @override
   String get client_form_title_new => 'New client';
@@ -1309,6 +1340,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get policy_archive_confirm_action => '封存';
 
   @override
+  String get policy_archived_snack => '保單已封存';
+
+  @override
   String get policy_form_title_new => '新增保單';
 
   @override
@@ -1386,6 +1420,24 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get plan_remove_rider => '移除';
+
+  @override
+  String get plan_archive_confirm_title => '封存計劃？';
+
+  @override
+  String get plan_archive_confirm_body => '此計劃將被隱藏。您可從封存區還原。';
+
+  @override
+  String get plan_archive_confirm_action => '封存';
+
+  @override
+  String get plan_archived_snack => '計劃已封存';
+
+  @override
+  String get accessibility_delete => '永久刪除';
+
+  @override
+  String get accessibility_restore => '還原';
 
   @override
   String get plan_form_title_new => '新增計劃';
@@ -1689,6 +1741,15 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get client_archive_error => '無法封存客戶，請再試一次。';
+
+  @override
+  String get client_archived_snack => '客戶已封存';
+
+  @override
+  String get lock_app => '鎖定應用程式';
+
+  @override
+  String get search_field_label => '搜尋客戶';
 
   @override
   String get client_form_title_new => '新增客戶';

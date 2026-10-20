@@ -11,6 +11,7 @@ import '../../../features/riders/models/rider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/app_providers.dart';
 import '../../../shared/widgets/app_scaffold.dart';
+import '../../../shared/widgets/async_button.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/loading_indicator.dart';
 import '../../../theme/app_theme.dart';
@@ -302,153 +303,185 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     final theme = Theme.of(context);
     return Form(
       key: _formKey,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.s6),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 700),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                DropdownButtonFormField<PlanCategory>(
-                  initialValue: _category,
-                  decoration: InputDecoration(labelText: l10n.plan_category),
-                  items: PlanCategory.values
-                      .map(
-                        (PlanCategory category) =>
-                            DropdownMenuItem<PlanCategory>(
-                              value: category,
-                              child: Text(_categoryLabel(l10n, category)!),
-                            ),
-                      )
-                      .toList(growable: false),
-                  onChanged: (PlanCategory? value) {
-                    if (value != null) {
-                      setState(() {
-                        _category = value;
-                        _error = null;
-                      });
-                    }
-                  },
-                ),
-                if (_showPlanName()) ...<Widget>[
-                  const SizedBox(height: AppSpacing.s3),
-                  TextFormField(
-                    controller: _planNameController,
-                    decoration: InputDecoration(labelText: l10n.plan_name),
-                    validator: (String? value) =>
-                        _showPlanName() &&
-                            (value == null || value.trim().isEmpty)
-                        ? l10n.plan_form_error_category_required
-                        : null,
-                  ),
-                ],
-                if (_showCoverage()) ...<Widget>[
-                  const SizedBox(height: AppSpacing.s3),
-                  _amountField(
-                    controller: _coverageController,
-                    label: l10n.plan_coverage_amount,
-                    validator: (String? value) =>
-                        _validateOptionalAmount(value, l10n),
-                  ),
-                ],
-                if (_showPaymentTerm()) ...<Widget>[
-                  const SizedBox(height: AppSpacing.s3),
-                  TextFormField(
-                    controller: _paymentTermController,
-                    decoration: InputDecoration(
-                      labelText: l10n.plan_payment_term,
-                    ),
-                  ),
-                ],
-                if (_showCoveragePeriod()) ...<Widget>[
-                  const SizedBox(height: AppSpacing.s3),
-                  TextFormField(
-                    controller: _coveragePeriodController,
-                    decoration: InputDecoration(
-                      labelText: l10n.plan_coverage_period,
-                    ),
-                  ),
-                ],
-                if (_showDeductible()) ...<Widget>[
-                  const SizedBox(height: AppSpacing.s3),
-                  _amountField(
-                    controller: _deductibleController,
-                    label: l10n.plan_deductible,
-                    validator: (String? value) =>
-                        _validateOptionalAmount(value, l10n),
-                  ),
-                ],
-                const SizedBox(height: AppSpacing.s3),
-                TextFormField(
-                  controller: _notesController,
-                  minLines: 3,
-                  maxLines: 5,
-                  decoration: InputDecoration(labelText: l10n.plan_notes),
-                ),
-                if (_showRiders()) ...<Widget>[
-                  const SizedBox(height: AppSpacing.s6),
-                  Row(
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.s6),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          l10n.plan_riders_section,
-                          style: theme.textTheme.titleLarge,
+                      DropdownButtonFormField<PlanCategory>(
+                        initialValue: _category,
+                        decoration: InputDecoration(
+                          labelText: l10n.plan_category,
                         ),
+                        items: PlanCategory.values
+                            .map(
+                              (PlanCategory category) =>
+                                  DropdownMenuItem<PlanCategory>(
+                                    value: category,
+                                    child: Text(
+                                      _categoryLabel(l10n, category)!,
+                                    ),
+                                  ),
+                            )
+                            .toList(growable: false),
+                        onChanged: (PlanCategory? value) {
+                          if (value != null) {
+                            setState(() {
+                              _category = value;
+                              _error = null;
+                            });
+                          }
+                        },
                       ),
-                      TextButton.icon(
-                        onPressed: _isSaving ? null : _addRider,
-                        icon: const Icon(Icons.add),
-                        label: Text(l10n.plan_add_rider),
+                      if (_showPlanName()) ...<Widget>[
+                        const SizedBox(height: AppSpacing.s3),
+                        TextFormField(
+                          controller: _planNameController,
+                          decoration: InputDecoration(
+                            labelText: l10n.plan_name,
+                          ),
+                          textInputAction: TextInputAction.next,
+                          validator: (String? value) =>
+                              _showPlanName() &&
+                                  (value == null || value.trim().isEmpty)
+                              ? l10n.plan_form_error_category_required
+                              : null,
+                        ),
+                      ],
+                      if (_showCoverage()) ...<Widget>[
+                        const SizedBox(height: AppSpacing.s3),
+                        _amountField(
+                          controller: _coverageController,
+                          label: l10n.plan_coverage_amount,
+                          textInputAction: TextInputAction.next,
+                          validator: (String? value) =>
+                              _validateOptionalAmount(value, l10n),
+                        ),
+                      ],
+                      if (_showPaymentTerm()) ...<Widget>[
+                        const SizedBox(height: AppSpacing.s3),
+                        TextFormField(
+                          controller: _paymentTermController,
+                          decoration: InputDecoration(
+                            labelText: l10n.plan_payment_term,
+                          ),
+                          textInputAction: TextInputAction.next,
+                        ),
+                      ],
+                      if (_showCoveragePeriod()) ...<Widget>[
+                        const SizedBox(height: AppSpacing.s3),
+                        TextFormField(
+                          controller: _coveragePeriodController,
+                          decoration: InputDecoration(
+                            labelText: l10n.plan_coverage_period,
+                          ),
+                          textInputAction: TextInputAction.next,
+                        ),
+                      ],
+                      if (_showDeductible()) ...<Widget>[
+                        const SizedBox(height: AppSpacing.s3),
+                        _amountField(
+                          controller: _deductibleController,
+                          label: l10n.plan_deductible,
+                          textInputAction: TextInputAction.next,
+                          validator: (String? value) =>
+                              _validateOptionalAmount(value, l10n),
+                        ),
+                      ],
+                      const SizedBox(height: AppSpacing.s3),
+                      TextFormField(
+                        controller: _notesController,
+                        minLines: 3,
+                        maxLines: 5,
+                        textInputAction: TextInputAction.newline,
+                        decoration: InputDecoration(labelText: l10n.plan_notes),
+                      ),
+                      if (_showRiders()) ...<Widget>[
+                        const SizedBox(height: AppSpacing.s6),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                l10n.plan_riders_section,
+                                style: theme.textTheme.titleLarge,
+                              ),
+                            ),
+                            TextButton.icon(
+                              onPressed: _isSaving ? null : _addRider,
+                              icon: const Icon(Icons.add),
+                              label: Text(l10n.plan_add_rider),
+                            ),
+                          ],
+                        ),
+                        if (_riders.isEmpty)
+                          Text(
+                            l10n.plan_no_riders,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          )
+                        else
+                          ..._riders.asMap().entries.map(
+                            (MapEntry<int, _RiderDraft> entry) => _RiderCard(
+                              draft: entry.value,
+                              index: entry.key,
+                              onRemove: () => _removeRider(entry.key),
+                              l10n: l10n,
+                            ),
+                          ),
+                      ],
+                      if (_error != null) ...<Widget>[
+                        const SizedBox(height: AppSpacing.s3),
+                        Text(
+                          _error!,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.error,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: AppSpacing.s6),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 700),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.s6,
+                    AppSpacing.s2,
+                    AppSpacing.s6,
+                    AppSpacing.s3,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      TextButton(
+                        onPressed: _isSaving ? null : () => context.pop(),
+                        child: Text(l10n.plan_form_cancel),
+                      ),
+                      const Spacer(),
+                      AsyncButton(
+                        onPressed: _isSaving ? null : () => _save(policyId),
+                        label: l10n.plan_form_save,
                       ),
                     ],
                   ),
-                  if (_riders.isEmpty)
-                    Text(
-                      l10n.plan_no_riders,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    )
-                  else
-                    ..._riders.asMap().entries.map(
-                      (MapEntry<int, _RiderDraft> entry) => _RiderCard(
-                        draft: entry.value,
-                        index: entry.key,
-                        onRemove: () => _removeRider(entry.key),
-                        l10n: l10n,
-                      ),
-                    ),
-                ],
-                if (_error != null) ...<Widget>[
-                  const SizedBox(height: AppSpacing.s3),
-                  Text(
-                    _error!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.error,
-                    ),
-                  ),
-                ],
-                const SizedBox(height: AppSpacing.s6),
-                Row(
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: _isSaving ? null : () => context.pop(),
-                      child: Text(l10n.plan_form_cancel),
-                    ),
-                    const Spacer(),
-                    FilledButton(
-                      onPressed: _isSaving ? null : () => _save(policyId),
-                      child: _isSaving
-                          ? Text(l10n.plan_form_saving)
-                          : Text(l10n.plan_form_save),
-                    ),
-                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -524,6 +557,7 @@ class _RiderCard extends StatelessWidget {
                   child: TextFormField(
                     controller: draft.nameController,
                     decoration: InputDecoration(labelText: l10n.rider_name),
+                    textInputAction: TextInputAction.next,
                     validator: (String? value) =>
                         value == null || value.trim().isEmpty
                         ? l10n.rider_error_name_required
@@ -541,23 +575,27 @@ class _RiderCard extends StatelessWidget {
             _amountField(
               controller: draft.coverageController,
               label: l10n.rider_coverage_amount,
+              textInputAction: TextInputAction.next,
               validator: (String? value) => _validateDraftAmount(value, l10n),
             ),
             const SizedBox(height: AppSpacing.s2),
             TextFormField(
               controller: draft.paymentTermController,
               decoration: InputDecoration(labelText: l10n.rider_payment_term),
+              textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: AppSpacing.s2),
             _amountField(
               controller: draft.deductibleController,
               label: l10n.rider_deductible,
+              textInputAction: TextInputAction.next,
               validator: (String? value) => _validateDraftAmount(value, l10n),
             ),
             const SizedBox(height: AppSpacing.s2),
             TextFormField(
               controller: draft.waitingPeriodController,
               decoration: InputDecoration(labelText: l10n.rider_waiting_period),
+              textInputAction: TextInputAction.done,
             ),
           ],
         ),
@@ -569,11 +607,13 @@ class _RiderCard extends StatelessWidget {
 Widget _amountField({
   required TextEditingController controller,
   required String label,
+  TextInputAction? textInputAction,
   FormFieldValidator<String>? validator,
 }) {
   return TextFormField(
     controller: controller,
     keyboardType: const TextInputType.numberWithOptions(decimal: true),
+    textInputAction: textInputAction,
     decoration: InputDecoration(labelText: label),
     validator: validator,
   );

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:insur/features/plans/models/plan_category.dart';
 import 'package:insur/features/plans/screens/plan_form_screen.dart';
 import 'package:insur/l10n/app_localizations.dart';
+import 'package:insur/shared/widgets/async_button.dart';
 
 Widget _app() => const ProviderScope(
   child: MaterialApp(
@@ -21,6 +22,15 @@ Future<void> _selectCategory(WidgetTester tester, String category) async {
 }
 
 void main() {
+  testWidgets('keeps the form save action in its persistent footer', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(_app());
+
+    expect(find.byType(AsyncButton), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
+  });
+
   testWidgets('life displays coverage, term, and period but not deductible', (
     WidgetTester tester,
   ) async {

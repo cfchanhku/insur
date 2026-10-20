@@ -15,10 +15,12 @@ class ConfirmDialog {
     String? confirmLabel,
     String? cancelLabel,
     bool isDestructive = false,
+    IconData? icon,
   }) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
+        icon: icon == null ? null : Icon(icon),
         title: Text(title),
         content: Text(message),
         actions: <Widget>[
@@ -29,11 +31,12 @@ class ConfirmDialog {
                   MaterialLocalizations.of(context).cancelButtonLabel,
             ),
           ),
-          TextButton(
+          FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: isDestructive
-                ? TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.error,
+                ? FilledButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                    foregroundColor: Theme.of(context).colorScheme.onError,
                   )
                 : null,
             child: Text(

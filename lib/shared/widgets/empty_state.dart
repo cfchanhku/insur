@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 /// A reusable empty state for lists and detail panels.
 class EmptyState extends StatelessWidget {
@@ -12,6 +13,7 @@ class EmptyState extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.action,
+    this.iconColor,
   });
 
   /// Icon describing the empty content.
@@ -26,18 +28,31 @@ class EmptyState extends StatelessWidget {
   /// Optional call to action.
   final Widget? action;
 
+  /// Optional semantic color for the icon.
+  final Color? iconColor;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Icon(icon, size: 64, color: theme.colorScheme.onSurfaceVariant),
+            Icon(
+              icon,
+              size: 72,
+              color:
+                  iconColor ??
+                  theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+            ),
             const SizedBox(height: 16),
-            Text(title, style: theme.textTheme.headlineSmall),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 8),
             Text(
               subtitle,
@@ -47,12 +62,12 @@ class EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             if (action != null) ...<Widget>[
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               action!,
             ],
           ],
         ),
       ),
-    );
+    ).animate().fadeIn(duration: 250.ms);
   }
 }

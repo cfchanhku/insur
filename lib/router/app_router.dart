@@ -1,6 +1,7 @@
 /// GoRouter configuration for the app shell.
 library;
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,89 +33,142 @@ final routerProvider = Provider<GoRouter>((Ref ref) {
   final router = GoRouter(
     initialLocation: '/',
     routes: <RouteBase>[
-      GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+      GoRoute(
+        path: '/',
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const SplashScreen()),
+      ),
       GoRoute(
         path: '/setup',
-        builder: (context, state) => const SetupWizardScreen(),
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const SetupWizardScreen()),
       ),
-      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-      GoRoute(path: '/lock', builder: (context, state) => const LockScreen()),
-      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const LoginScreen()),
+      ),
+      GoRoute(
+        path: '/lock',
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const LockScreen()),
+      ),
+      GoRoute(
+        path: '/home',
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const HomeScreen()),
+      ),
       GoRoute(
         path: '/recovery',
-        builder: (context, state) => PlaceholderScreen(
-          title: AppLocalizations.of(context).recovery_title,
-          message: AppLocalizations.of(context).coming_soon,
+        pageBuilder: (context, state) => _fadePage(
+          context,
+          state,
+          PlaceholderScreen(
+            title: AppLocalizations.of(context).recovery_title,
+            message: AppLocalizations.of(context).coming_soon,
+          ),
         ),
       ),
       GoRoute(
         path: '/clients/new',
-        builder: (context, state) => const ClientFormScreen(),
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const ClientFormScreen()),
       ),
       GoRoute(
         path: '/clients/:id',
-        builder: (context, state) =>
-            ClientDetailScreen(id: state.pathParameters['id']!),
+        pageBuilder: (context, state) => _fadePage(
+          context,
+          state,
+          ClientDetailScreen(id: state.pathParameters['id']!),
+        ),
       ),
       GoRoute(
         path: '/clients/:id/edit',
-        builder: (context, state) =>
-            ClientFormScreen(id: state.pathParameters['id']),
+        pageBuilder: (context, state) => _fadePage(
+          context,
+          state,
+          ClientFormScreen(id: state.pathParameters['id']),
+        ),
       ),
       GoRoute(
         path: '/clients/:clientId/policies/new',
-        builder: (context, state) =>
-            PolicyFormScreen(clientId: state.pathParameters['clientId']!),
+        pageBuilder: (context, state) => _fadePage(
+          context,
+          state,
+          PolicyFormScreen(clientId: state.pathParameters['clientId']!),
+        ),
       ),
       GoRoute(
         path: '/policies/:id',
-        builder: (context, state) =>
-            PolicyDetailScreen(id: state.pathParameters['id']!),
+        pageBuilder: (context, state) => _fadePage(
+          context,
+          state,
+          PolicyDetailScreen(id: state.pathParameters['id']!),
+        ),
       ),
       GoRoute(
         path: '/policies/:id/edit',
-        builder: (context, state) =>
-            PolicyFormScreen(id: state.pathParameters['id']!),
+        pageBuilder: (context, state) => _fadePage(
+          context,
+          state,
+          PolicyFormScreen(id: state.pathParameters['id']!),
+        ),
       ),
       GoRoute(
         path: '/policies/:policyId/plans/new',
-        builder: (context, state) =>
-            PlanFormScreen(policyId: state.pathParameters['policyId']!),
+        pageBuilder: (context, state) => _fadePage(
+          context,
+          state,
+          PlanFormScreen(policyId: state.pathParameters['policyId']!),
+        ),
       ),
       GoRoute(
         path: '/plans/:id/edit',
-        builder: (context, state) =>
-            PlanFormScreen(id: state.pathParameters['id']!),
+        pageBuilder: (context, state) => _fadePage(
+          context,
+          state,
+          PlanFormScreen(id: state.pathParameters['id']!),
+        ),
       ),
       GoRoute(
         path: '/archive',
-        builder: (context, state) => const ArchiveScreen(),
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const ArchiveScreen()),
       ),
       GoRoute(
         path: '/settings',
-        builder: (context, state) => const SettingsScreen(),
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const SettingsScreen()),
       ),
       GoRoute(
         path: '/settings/audit',
-        builder: (context, state) => const AuditLogScreen(),
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const AuditLogScreen()),
       ),
       GoRoute(
         path: '/backup',
-        builder: (context, state) => const BackupScreen(),
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const BackupScreen()),
       ),
       GoRoute(
         path: '/restore',
-        builder: (context, state) => const RestoreScreen(),
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const RestoreScreen()),
       ),
       GoRoute(
         path: '/export',
-        builder: (context, state) => const ExportPdfScreen(),
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const ExportPdfScreen()),
       ),
       GoRoute(
         path: '/policies/new',
-        builder: (context, state) => PlaceholderScreen(
-          title: AppLocalizations.of(context).client_add_policy,
-          message: AppLocalizations.of(context).coming_soon,
+        pageBuilder: (context, state) => _fadePage(
+          context,
+          state,
+          PlaceholderScreen(
+            title: AppLocalizations.of(context).client_add_policy,
+            message: AppLocalizations.of(context).coming_soon,
+          ),
         ),
       ),
     ],
@@ -122,3 +176,21 @@ final routerProvider = Provider<GoRouter>((Ref ref) {
   ref.onDispose(router.dispose);
   return router;
 });
+
+CustomTransitionPage<void> _fadePage(
+  BuildContext context,
+  GoRouterState state,
+  Widget child,
+) => CustomTransitionPage<void>(
+  key: state.pageKey,
+  child: child,
+  transitionDuration: const Duration(milliseconds: 200),
+  reverseTransitionDuration: const Duration(milliseconds: 150),
+  transitionsBuilder:
+      (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child,
+      ) => FadeTransition(opacity: animation, child: child),
+);

@@ -331,6 +331,12 @@ abstract class AppLocalizations {
   /// **'Archive'**
   String get policy_archive_confirm_action;
 
+  /// No description provided for @policy_archived_snack.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy archived'**
+  String get policy_archived_snack;
+
   /// No description provided for @policy_form_title_new.
   ///
   /// In en, this message translates to:
@@ -480,6 +486,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove'**
   String get plan_remove_rider;
+
+  /// No description provided for @plan_archive_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive plan?'**
+  String get plan_archive_confirm_title;
+
+  /// No description provided for @plan_archive_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'The plan will be hidden. You can restore it from the Archive.'**
+  String get plan_archive_confirm_body;
+
+  /// No description provided for @plan_archive_confirm_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get plan_archive_confirm_action;
+
+  /// No description provided for @plan_archived_snack.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan archived'**
+  String get plan_archived_snack;
+
+  /// No description provided for @accessibility_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get accessibility_delete;
+
+  /// No description provided for @accessibility_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get accessibility_restore;
 
   /// No description provided for @plan_form_title_new.
   ///
@@ -1050,6 +1092,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The client could not be archived. Please try again.'**
   String get client_archive_error;
+
+  /// No description provided for @client_archived_snack.
+  ///
+  /// In en, this message translates to:
+  /// **'Client archived'**
+  String get client_archived_snack;
+
+  /// No description provided for @lock_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock app'**
+  String get lock_app;
+
+  /// No description provided for @search_field_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Search clients'**
+  String get search_field_label;
 
   /// No description provided for @client_form_title_new.
   ///

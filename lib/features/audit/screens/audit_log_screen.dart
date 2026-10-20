@@ -14,6 +14,9 @@ import '../../../core/audit/audit_event_type.dart';
 import '../../../core/audit/verification_result.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers/app_providers.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/error_state.dart';
+import '../../../shared/widgets/skeletons.dart';
 import '../providers/audit_providers.dart';
 
 /// Read-only audit history and full-chain integrity verification.
@@ -104,6 +107,11 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
       _dateRange = null;
       _limit = _pageSize;
     });
+  }
+
+  Future<void> _refreshEntries() async {
+    ref.invalidate(auditEntriesProvider(_filter));
+    await ref.read(auditEntriesProvider(_filter).future);
   }
 
   Future<void> _showEntryDetails(AuditEntry entry) async {
@@ -252,52 +260,73 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
           ),
           Expanded(
             child: entriesAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (Object error, StackTrace stackTrace) =>
-                  Center(child: Text(l10n.error_generic)),
+              loading: () => const AuditListSkeleton(),
+              error: (Object error, StackTrace stackTrace) => ErrorState(
+                message: l10n.error_generic,
+                onRetry: _refreshEntries,
+              ),
               data: (List<AuditEntry> entries) {
                 if (entries.isEmpty) {
-                  return Center(child: Text(l10n.audit_empty));
-                }
-                return ListView.builder(
-                  itemCount:
-                      entries.length + (entries.length == _limit ? 1 : 0),
-                  itemBuilder: (BuildContext context, int index) {
-                    if (index == entries.length) {
-                      return Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Center(
-                          child: OutlinedButton(
-                            onPressed: () =>
-                                setState(() => _limit += _pageSize),
-                            child: Text(l10n.audit_load_more),
+                  return RefreshIndicator(
+                    onRefresh: _refreshEntries,
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: <Widget>[
+                        SizedBox(
+                          height: MediaQuery.sizeOf(context).height * 0.45,
+                          child: EmptyState(
+                            icon: Icons.receipt_long_outlined,
+                            title: l10n.audit_empty,
+                            subtitle: '',
                           ),
                         ),
-                      );
-                    }
-                    final entry = entries[index];
-                    final entitySubtitle = entry.entityType == null
-                        ? null
-                        : '${entry.entityType}'
-                              '${entry.entityId == null ? '' : ' · ${_shortId(entry.entityId!)}'}';
-                    return ListTile(
-                      leading: Icon(_eventIcon(entry.eventType)),
-                      title: Text(_eventLabel(l10n, entry.eventType)),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            DateFormat.yMMMd(
-                              l10n.localeName,
-                            ).add_jm().format(entry.timestamp.toLocal()),
+                      ],
+                    ),
+                  );
+                }
+                return RefreshIndicator(
+                  onRefresh: _refreshEntries,
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount:
+                        entries.length + (entries.length == _limit ? 1 : 0),
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == entries.length) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Center(
+                            child: OutlinedButton(
+                              onPressed: () =>
+                                  setState(() => _limit += _pageSize),
+                              child: Text(l10n.audit_load_more),
+                            ),
                           ),
-                          if (entitySubtitle != null) Text(entitySubtitle),
-                        ],
-                      ),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => unawaited(_showEntryDetails(entry)),
-                    );
-                  },
+                        );
+                      }
+                      final entry = entries[index];
+                      final entitySubtitle = entry.entityType == null
+                          ? null
+                          : '${entry.entityType}'
+                                '${entry.entityId == null ? '' : ' · ${_shortId(entry.entityId!)}'}';
+                      return ListTile(
+                        leading: Icon(_eventIcon(entry.eventType)),
+                        title: Text(_eventLabel(l10n, entry.eventType)),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              DateFormat.yMMMd(
+                                l10n.localeName,
+                              ).add_jm().format(entry.timestamp.toLocal()),
+                            ),
+                            if (entitySubtitle != null) Text(entitySubtitle),
+                          ],
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => unawaited(_showEntryDetails(entry)),
+                      );
+                    },
+                  ),
                 );
               },
             ),

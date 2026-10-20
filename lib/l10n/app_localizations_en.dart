@@ -131,6 +131,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get policy_archive_confirm_action => 'Archive';
 
   @override
+  String get policy_archived_snack => 'Policy archived';
+
+  @override
   String get policy_form_title_new => 'New policy';
 
   @override
@@ -211,6 +214,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plan_remove_rider => 'Remove';
+
+  @override
+  String get plan_archive_confirm_title => 'Archive plan?';
+
+  @override
+  String get plan_archive_confirm_body =>
+      'The plan will be hidden. You can restore it from the Archive.';
+
+  @override
+  String get plan_archive_confirm_action => 'Archive';
+
+  @override
+  String get plan_archived_snack => 'Plan archived';
+
+  @override
+  String get accessibility_delete => 'Delete permanently';
+
+  @override
+  String get accessibility_restore => 'Restore';
 
   @override
   String get plan_form_title_new => 'New plan';
@@ -519,6 +541,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get client_archive_error =>
       'The client could not be archived. Please try again.';
+
+  @override
+  String get client_archived_snack => 'Client archived';
+
+  @override
+  String get lock_app => 'Lock app';
+
+  @override
+  String get search_field_label => 'Search clients';
 
   @override
   String get client_form_title_new => 'New client';
