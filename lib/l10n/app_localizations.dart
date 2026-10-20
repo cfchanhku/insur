@@ -775,6 +775,84 @@ abstract class AppLocalizations {
   /// **'I have printed and stored it'**
   String get recovery_key_dialog_confirm;
 
+  /// No description provided for @setup_recovery_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your recovery key to confirm'**
+  String get setup_recovery_confirmation;
+
+  /// No description provided for @setup_recovery_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm recovery key'**
+  String get setup_recovery_confirm;
+
+  /// No description provided for @setup_biometric_prompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect access with biometric authentication. You can also enable it later in Settings.'**
+  String get setup_biometric_prompt;
+
+  /// No description provided for @setup_enable_biometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable biometric unlock'**
+  String get setup_enable_biometric;
+
+  /// No description provided for @setup_skip_biometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now'**
+  String get setup_skip_biometric;
+
+  /// No description provided for @recovery_invalid_key.
+  ///
+  /// In en, this message translates to:
+  /// **'That recovery key is invalid. Check it and try again.'**
+  String get recovery_invalid_key;
+
+  /// No description provided for @recovery_set_new_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a new passphrase to finish recovering your vault.'**
+  String get recovery_set_new_passphrase;
+
+  /// No description provided for @recovery_enter_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your offline recovery key to unlock your vault.'**
+  String get recovery_enter_key;
+
+  /// No description provided for @recovery_key_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery key'**
+  String get recovery_key_label;
+
+  /// No description provided for @recovery_working.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait...'**
+  String get recovery_working;
+
+  /// No description provided for @recovery_reset_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Save new passphrase'**
+  String get recovery_reset_passphrase;
+
+  /// No description provided for @recovery_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get recovery_continue;
+
+  /// No description provided for @recovery_reset_required.
+  ///
+  /// In en, this message translates to:
+  /// **'A new passphrase is required after recovery. Use your recovery key to continue.'**
+  String get recovery_reset_required;
+
   /// No description provided for @login_title.
   ///
   /// In en, this message translates to:
@@ -1471,17 +1549,53 @@ abstract class AppLocalizations {
   /// **'Change passphrase'**
   String get settings_change_passphrase;
 
-  /// No description provided for @settings_change_passphrase_guidance.
-  ///
-  /// In en, this message translates to:
-  /// **'This operation is coming in a future update. Use your Recovery Key to reset your passphrase.'**
-  String get settings_change_passphrase_guidance;
-
   /// No description provided for @settings_regenerate_recovery.
   ///
   /// In en, this message translates to:
   /// **'Regenerate recovery key'**
   String get settings_regenerate_recovery;
+
+  /// No description provided for @settings_current_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Current passphrase'**
+  String get settings_current_passphrase;
+
+  /// No description provided for @settings_new_passphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'New passphrase'**
+  String get settings_new_passphrase;
+
+  /// No description provided for @settings_passphrase_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Change passphrase'**
+  String get settings_passphrase_save;
+
+  /// No description provided for @settings_passphrase_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase changed.'**
+  String get settings_passphrase_changed;
+
+  /// No description provided for @settings_passphrase_change_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not change the passphrase. Check your current passphrase and try again.'**
+  String get settings_passphrase_change_failed;
+
+  /// No description provided for @settings_recovery_regenerate_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate'**
+  String get settings_recovery_regenerate_action;
+
+  /// No description provided for @settings_recovery_regenerate_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not regenerate the recovery key. Check your passphrase and try again.'**
+  String get settings_recovery_regenerate_failed;
 
   /// No description provided for @settings_max_attempts.
   ///
@@ -1794,6 +1908,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recovery key rotated'**
   String get audit_event_recovery_key_rotated;
+
+  /// No description provided for @audit_event_passphrase_changed.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase changed'**
+  String get audit_event_passphrase_changed;
 
   /// No description provided for @audit_event_create.
   ///

@@ -10,12 +10,14 @@ class KeyBackupMaterial {
   KeyBackupMaterial({
     required Uint8List masterKey,
     required Uint8List masterSalt,
+    Uint8List? passphraseVerifier,
     required this.kdfParameters,
     Uint8List? recoverySalt,
     Uint8List? recoveryWrappedMasterKey,
     Uint8List? recoveryVerificationHash,
   }) : masterKey = Uint8List.fromList(masterKey),
        masterSalt = Uint8List.fromList(masterSalt),
+       passphraseVerifier = Uint8List.fromList(passphraseVerifier ?? masterKey),
        recoverySalt = recoverySalt == null
            ? null
            : Uint8List.fromList(recoverySalt),
@@ -29,8 +31,14 @@ class KeyBackupMaterial {
   /// Current 32-byte master key.
   final Uint8List masterKey;
 
-  /// Argon2id salt used to verify the existing login passphrase.
+  /// Argon2id salt used to verify the current login passphrase.
   final Uint8List masterSalt;
+
+  /// Argon2id verifier for the current login passphrase.
+  ///
+  /// Older backups do not contain a separate verifier; their master key is
+  /// used as the legacy verifier when parsed.
+  final Uint8List passphraseVerifier;
 
   /// Fixed Argon2id parameter description stored by KeyManager.
   final String kdfParameters;
@@ -54,6 +62,7 @@ class KeyBackupMaterial {
   void clear() {
     masterKey.fillRange(0, masterKey.length, 0);
     masterSalt.fillRange(0, masterSalt.length, 0);
+    passphraseVerifier.fillRange(0, passphraseVerifier.length, 0);
     recoverySalt?.fillRange(0, recoverySalt!.length, 0);
     recoveryWrappedMasterKey?.fillRange(0, recoveryWrappedMasterKey!.length, 0);
     recoveryVerificationHash?.fillRange(0, recoveryVerificationHash!.length, 0);

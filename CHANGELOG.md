@@ -6,6 +6,7 @@ All notable changes to Insurance Policy Manager are documented here. This projec
 
 ### Added
 
+- Recovery-key login with mandatory passphrase replacement, independent passphrase verification, biometric enrollment, and versioned backup verifier compatibility.
 - Standard Windows desktop runner scaffold for local development and builds.
 - Searchable client list with role filters, responsive client details, and create/edit forms.
 - Bilingual client-management UI and Archive/Settings navigation placeholders.

@@ -1,11 +1,9 @@
 /// Manages the master key and purpose-separated session keys.
 ///
-/// The MVP stores the Argon2id-derived master key directly in
-/// `FlutterSecureStorage`, relying on Keychain, Keystore, or the platform's
-/// equivalent protection. A separate passphrase-derived wrapping key would add
-/// complexity for limited benefit here; KEK wrapping may be considered later.
-/// The passphrase is verified against the stored master key at unlock, and
-/// HKDF derives database, field, and audit keys for use only in memory.
+/// The Argon2id-derived master key is stored in `FlutterSecureStorage`; a
+/// separate Argon2id verifier allows passphrase changes without changing the
+/// database encryption key. HKDF derives database, field, and audit keys from
+/// the stable master key for use only in memory.
 ///
 /// The session moves from uninitialized to unlocked after setup, from locked
 /// to unlocked after successful authentication, and back to locked on manual
@@ -45,6 +43,11 @@ class KeyManager {
 
   static const String _keyMasterKey = 'insur.master_key.v1';
   static const String _keyMasterSalt = 'insur.master_salt.v1';
+  static const String _keyPassphraseCredential =
+      'insur.passphrase_credential.v1';
+  static const String _keyPassphraseResetRequired =
+      'insur.passphrase_reset_required.v1';
+  static const String _keyBiometricEnabled = 'insur.biometric_enabled.v1';
   static const String _keyKdfParams = 'insur.kdf_params.v1';
   static const String _keyRecoveryWrappedMasterKey =
       'insur.recovery.wrapped_mk.v1';
@@ -115,8 +118,10 @@ class KeyManager {
     final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
     final salt = Kdf.generateSalt();
     Uint8List? masterKey;
+    Uint8List? credential;
     try {
       masterKey = await Kdf.deriveMasterKey(passphrase: passphrase, salt: salt);
+      credential = _encodeCredential(salt, masterKey);
 
       await _secureStorage.write(
         key: _keyMasterSalt,
@@ -126,6 +131,12 @@ class KeyManager {
         key: _keyKdfParams,
         value: Kdf.paramsDescription(),
       );
+      await _secureStorage.write(
+        key: _keyPassphraseCredential,
+        value: base64Encode(credential),
+      );
+      await _secureStorage.write(key: _keyBiometricEnabled, value: 'false');
+      await _secureStorage.delete(key: _keyPassphraseResetRequired);
       // Write the master key last; its presence marks setup as complete.
       await _secureStorage.write(
         key: _keyMasterKey,
@@ -141,6 +152,7 @@ class KeyManager {
       passphraseBytes.fillRange(0, passphraseBytes.length, 0);
       salt.fillRange(0, salt.length, 0);
       masterKey?.fillRange(0, masterKey.length, 0);
+      credential?.fillRange(0, credential.length, 0);
     }
   }
 
@@ -152,6 +164,9 @@ class KeyManager {
     await lock();
     if (!await isInitialized()) {
       throw StateError('Not initialized');
+    }
+    if (await isPassphraseResetRequired()) {
+      throw StateError('Passphrase reset is required');
     }
 
     if (_currentBackoff > Duration.zero) {
@@ -175,31 +190,54 @@ class KeyManager {
     }
 
     final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
-    final Uint8List salt;
+    Uint8List? legacySalt;
     try {
-      salt = Uint8List.fromList(base64Decode(saltValue));
+      legacySalt = Uint8List.fromList(base64Decode(saltValue));
     } on FormatException {
       passphraseBytes.fillRange(0, passphraseBytes.length, 0);
       throw StateError('Stored key material is invalid');
     }
-    late final Uint8List expectedMasterKey;
+    Uint8List? masterKey;
+    Uint8List? credential;
+    Uint8List? verifierSalt;
+    Uint8List? expectedVerifier;
     try {
-      expectedMasterKey = Uint8List.fromList(base64Decode(masterKeyValue));
+      masterKey = Uint8List.fromList(base64Decode(masterKeyValue));
+      final credentialValue = await _secureStorage.read(
+        key: _keyPassphraseCredential,
+      );
+      if (credentialValue == null) {
+        verifierSalt = Uint8List.fromList(legacySalt);
+        expectedVerifier = Uint8List.fromList(masterKey);
+      } else {
+        credential = Uint8List.fromList(base64Decode(credentialValue));
+        if (credential.length != Kdf.saltLength + Kdf.keyLength) {
+          throw StateError('Stored key material is invalid');
+        }
+        verifierSalt = Uint8List.fromList(
+          credential.sublist(0, Kdf.saltLength),
+        );
+        expectedVerifier = Uint8List.fromList(
+          credential.sublist(Kdf.saltLength),
+        );
+      }
     } on FormatException {
       passphraseBytes.fillRange(0, passphraseBytes.length, 0);
-      salt.fillRange(0, salt.length, 0);
+      legacySalt.fillRange(0, legacySalt.length, 0);
       throw StateError('Stored key material is invalid');
     }
 
     try {
-      if (salt.length != Kdf.saltLength ||
-          expectedMasterKey.length != Kdf.keyLength) {
+      if (legacySalt.length != Kdf.saltLength ||
+          masterKey.length != Kdf.keyLength ||
+          verifierSalt.length != Kdf.saltLength ||
+          expectedVerifier.length != Kdf.keyLength) {
         throw StateError('Stored key material is invalid');
       }
       final isValid = await Kdf.verify(
         passphrase: passphrase,
-        salt: salt,
-        expectedKey: expectedMasterKey,
+        salt: verifierSalt,
+        expectedKey: expectedVerifier,
       );
       if (!isValid) {
         _failedAttempts++;
@@ -211,7 +249,18 @@ class KeyManager {
         return false;
       }
 
-      await _deriveAndHoldSubkeys(expectedMasterKey);
+      if (credential == null) {
+        final migratedCredential = _encodeCredential(legacySalt, masterKey);
+        try {
+          await _secureStorage.write(
+            key: _keyPassphraseCredential,
+            value: base64Encode(migratedCredential),
+          );
+        } finally {
+          migratedCredential.fillRange(0, migratedCredential.length, 0);
+        }
+      }
+      await _deriveAndHoldSubkeys(masterKey);
       _state = KeyManagerState.unlocked;
       _failedAttempts = 0;
       _currentBackoff = Duration.zero;
@@ -219,9 +268,74 @@ class KeyManager {
       return true;
     } finally {
       passphraseBytes.fillRange(0, passphraseBytes.length, 0);
-      salt.fillRange(0, salt.length, 0);
-      expectedMasterKey.fillRange(0, expectedMasterKey.length, 0);
+      legacySalt.fillRange(0, legacySalt.length, 0);
+      masterKey.fillRange(0, masterKey.length, 0);
+      credential?.fillRange(0, credential.length, 0);
+      verifierSalt.fillRange(0, verifierSalt.length, 0);
+      expectedVerifier.fillRange(0, expectedVerifier.length, 0);
     }
+  }
+
+  /// Checks whether [passphrase] matches the current verifier without
+  /// changing the session state or failed-login counter.
+  Future<bool> verifyPassphrase({required String passphrase}) async {
+    return _verifyCurrentPassphrase(passphrase);
+  }
+
+  /// Replaces the login passphrase while preserving the vault master key.
+  ///
+  /// The combined salt and verifier are stored as one secure-storage value so
+  /// an interrupted update cannot leave a mismatched pair.
+  Future<void> changePassphrase({
+    required String currentPassphrase,
+    required String newPassphrase,
+  }) async {
+    if (_state != KeyManagerState.unlocked) {
+      throw StateError('Not unlocked');
+    }
+    if (await isPassphraseResetRequired()) {
+      throw StateError('Passphrase reset is required');
+    }
+    _validatePassphrase(newPassphrase);
+    if (!await _verifyCurrentPassphrase(currentPassphrase)) {
+      throw StateError('Passphrase verification failed');
+    }
+    await _storeNewPassphraseVerifier(newPassphrase);
+    onAudit?.call(AuditEventType.passphraseChanged);
+  }
+
+  /// Sets a replacement passphrase after the vault was unlocked with recovery.
+  ///
+  /// The master key and all database subkeys remain unchanged.
+  Future<void> setPassphraseAfterRecovery({
+    required String newPassphrase,
+  }) async {
+    if (_state != KeyManagerState.unlocked) {
+      throw StateError('Not unlocked');
+    }
+    _validatePassphrase(newPassphrase);
+    await _storeNewPassphraseVerifier(newPassphrase);
+    await _secureStorage.delete(key: _keyPassphraseResetRequired);
+    onAudit?.call(AuditEventType.passphraseChanged);
+  }
+
+  /// Indicates whether recovery authentication still requires a new
+  /// passphrase before ordinary unlock is permitted.
+  Future<bool> isPassphraseResetRequired() async =>
+      await _secureStorage.read(key: _keyPassphraseResetRequired) == 'true';
+
+  /// Persists whether biometric-only unlock was explicitly enabled.
+  Future<void> setBiometricEnabled({required bool enabled}) async {
+    await _secureStorage.write(
+      key: _keyBiometricEnabled,
+      value: enabled ? 'true' : 'false',
+    );
+  }
+
+  /// Returns whether biometric unlock was explicitly enabled on this device.
+  Future<bool> isBiometricEnabled() async {
+    final value = await _secureStorage.read(key: _keyBiometricEnabled);
+    return value == 'true';
   }
 
   /// Authenticates biometrically and loads the stored master key on success.
@@ -233,6 +347,9 @@ class KeyManager {
     await lock();
     if (!await isInitialized()) {
       throw StateError('Not initialized');
+    }
+    if (await isPassphraseResetRequired() || !await isBiometricEnabled()) {
+      return false;
     }
 
     late final bool authenticated;
@@ -305,6 +422,9 @@ class KeyManager {
     if (wipe) {
       await _secureStorage.delete(key: _keyMasterKey);
       await _secureStorage.delete(key: _keyMasterSalt);
+      await _secureStorage.delete(key: _keyPassphraseCredential);
+      await _secureStorage.delete(key: _keyPassphraseResetRequired);
+      await _secureStorage.delete(key: _keyBiometricEnabled);
       await _secureStorage.delete(key: _keyKdfParams);
       await _deleteRecoveryMaterial();
     }
@@ -340,12 +460,30 @@ class KeyManager {
     }
 
     Uint8List? masterSalt;
+    Uint8List? passphraseVerifier;
+    Uint8List? credential;
     Uint8List? recoverySalt;
     Uint8List? recoveryWrappedMasterKey;
     Uint8List? recoveryVerificationHash;
     try {
-      masterSalt = Uint8List.fromList(base64Decode(saltValue));
-      if (masterSalt.length != Kdf.saltLength) {
+      final credentialValue = await _secureStorage.read(
+        key: _keyPassphraseCredential,
+      );
+      if (credentialValue == null) {
+        masterSalt = Uint8List.fromList(base64Decode(saltValue));
+        passphraseVerifier = Uint8List.fromList(_masterKey!);
+      } else {
+        credential = Uint8List.fromList(base64Decode(credentialValue));
+        if (credential.length != Kdf.saltLength + Kdf.keyLength) {
+          throw StateError('Stored key metadata is invalid');
+        }
+        masterSalt = Uint8List.fromList(credential.sublist(0, Kdf.saltLength));
+        passphraseVerifier = Uint8List.fromList(
+          credential.sublist(Kdf.saltLength),
+        );
+      }
+      if (masterSalt.length != Kdf.saltLength ||
+          passphraseVerifier.length != Kdf.keyLength) {
         throw StateError('Stored key metadata is invalid');
       }
       final recoverySaltValue = await _secureStorage.read(
@@ -382,6 +520,7 @@ class KeyManager {
       return KeyBackupMaterial(
         masterKey: _masterKey!,
         masterSalt: masterSalt,
+        passphraseVerifier: passphraseVerifier,
         kdfParameters: paramsValue,
         recoverySalt: recoverySalt,
         recoveryWrappedMasterKey: recoveryWrappedMasterKey,
@@ -391,6 +530,8 @@ class KeyManager {
       throw StateError('Stored key metadata is invalid');
     } finally {
       masterSalt?.fillRange(0, masterSalt.length, 0);
+      passphraseVerifier?.fillRange(0, passphraseVerifier.length, 0);
+      credential?.fillRange(0, credential.length, 0);
       recoverySalt?.fillRange(0, recoverySalt.length, 0);
       recoveryWrappedMasterKey?.fillRange(
         0,
@@ -407,8 +548,8 @@ class KeyManager {
 
   /// Installs authenticated backup key state into platform secure storage.
   ///
-  /// The stored master key is subsequently accepted only with its original
-  /// login passphrase. Existing different vault credentials must be explicitly
+  /// The stable master key and current passphrase verifier are restored
+  /// independently. Existing different vault credentials must be explicitly
   /// wiped before importing a backup.
   Future<void> restoreBackupMaterial(
     KeyBackupMaterial material, {
@@ -442,6 +583,18 @@ class KeyManager {
       key: _keyMasterSalt,
       value: base64Encode(material.masterSalt),
     );
+    final credential = _encodeCredential(
+      material.masterSalt,
+      material.passphraseVerifier,
+    );
+    try {
+      await _secureStorage.write(
+        key: _keyPassphraseCredential,
+        value: base64Encode(credential),
+      );
+    } finally {
+      credential.fillRange(0, credential.length, 0);
+    }
     await _secureStorage.write(
       key: _keyKdfParams,
       value: material.kdfParameters,
@@ -465,6 +618,8 @@ class KeyManager {
       key: _keyMasterKey,
       value: base64Encode(material.masterKey),
     );
+    await _secureStorage.delete(key: _keyPassphraseResetRequired);
+    await _secureStorage.delete(key: _keyBiometricEnabled);
     _state = KeyManagerState.locked;
   }
 
@@ -632,6 +787,10 @@ class KeyManager {
         return false;
       }
       await _deriveAndHoldSubkeys(masterKey);
+      await _secureStorage.write(
+        key: _keyPassphraseResetRequired,
+        value: 'true',
+      );
       _state = KeyManagerState.unlocked;
       _failedAttempts = 0;
       _currentBackoff = Duration.zero;
@@ -659,8 +818,8 @@ class KeyManager {
 
   /// Replaces the current recovery key after verifying [passphrase].
   ///
-  /// The old wrapped key is deleted before a new one is stored. A recovery
-  /// rotation event is sent to [onAudit] after the replacement is stored.
+  /// Existing recovery metadata is restored if writing the replacement fails.
+  /// A rotation event is sent to [onAudit] after the replacement is stored.
   Future<String> regenerateRecoveryKey({required String passphrase}) async {
     if (_state != KeyManagerState.unlocked) {
       throw StateError('Not unlocked');
@@ -669,10 +828,32 @@ class KeyManager {
       throw StateError('Passphrase verification failed');
     }
 
-    await _deleteRecoveryMaterial();
-    final recoveryKey = await _createRecoveryKey();
-    onAudit?.call(AuditEventType.recoveryKeyRotated);
-    return recoveryKey;
+    final oldSalt = await _secureStorage.read(key: _keyRecoverySalt);
+    final oldHash = await _secureStorage.read(
+      key: _keyRecoveryVerificationHash,
+    );
+    final oldWrappedKey = await _secureStorage.read(
+      key: _keyRecoveryWrappedMasterKey,
+    );
+    if (oldSalt == null || oldHash == null || oldWrappedKey == null) {
+      throw StateError('Stored recovery metadata is incomplete');
+    }
+    try {
+      final recoveryKey = await _createRecoveryKey();
+      onAudit?.call(AuditEventType.recoveryKeyRotated);
+      return recoveryKey;
+    } on Exception {
+      await _secureStorage.write(key: _keyRecoverySalt, value: oldSalt);
+      await _secureStorage.write(
+        key: _keyRecoveryVerificationHash,
+        value: oldHash,
+      );
+      await _secureStorage.write(
+        key: _keyRecoveryWrappedMasterKey,
+        value: oldWrappedKey,
+      );
+      rethrow;
+    }
   }
 
   Uint8List _keyForState(Uint8List? key) {
@@ -725,24 +906,40 @@ class KeyManager {
     }
 
     Uint8List? salt;
-    Uint8List? expectedMasterKey;
+    Uint8List? expectedVerifier;
+    Uint8List? credential;
     try {
-      salt = Uint8List.fromList(base64Decode(saltValue));
-      expectedMasterKey = Uint8List.fromList(base64Decode(masterKeyValue));
+      final credentialValue = await _secureStorage.read(
+        key: _keyPassphraseCredential,
+      );
+      if (credentialValue == null) {
+        salt = Uint8List.fromList(base64Decode(saltValue));
+        expectedVerifier = Uint8List.fromList(base64Decode(masterKeyValue));
+      } else {
+        credential = Uint8List.fromList(base64Decode(credentialValue));
+        if (credential.length != Kdf.saltLength + Kdf.keyLength) {
+          return false;
+        }
+        salt = Uint8List.fromList(credential.sublist(0, Kdf.saltLength));
+        expectedVerifier = Uint8List.fromList(
+          credential.sublist(Kdf.saltLength),
+        );
+      }
       if (salt.length != Kdf.saltLength ||
-          expectedMasterKey.length != Kdf.keyLength) {
+          expectedVerifier.length != Kdf.keyLength) {
         return false;
       }
       return await Kdf.verify(
         passphrase: passphrase,
         salt: salt,
-        expectedKey: expectedMasterKey,
+        expectedKey: expectedVerifier,
       );
     } on FormatException {
       return false;
     } finally {
       salt?.fillRange(0, salt.length, 0);
-      expectedMasterKey?.fillRange(0, expectedMasterKey.length, 0);
+      expectedVerifier?.fillRange(0, expectedVerifier.length, 0);
+      credential?.fillRange(0, credential.length, 0);
     }
   }
 
@@ -752,12 +949,49 @@ class KeyManager {
     await _secureStorage.delete(key: _keyRecoveryVerificationHash);
   }
 
+  Future<void> _storeNewPassphraseVerifier(String passphrase) async {
+    final salt = Kdf.generateSalt();
+    Uint8List? verifier;
+    Uint8List? credential;
+    try {
+      verifier = await Kdf.deriveMasterKey(passphrase: passphrase, salt: salt);
+      credential = _encodeCredential(salt, verifier);
+      await _secureStorage.write(
+        key: _keyPassphraseCredential,
+        value: base64Encode(credential),
+      );
+    } finally {
+      salt.fillRange(0, salt.length, 0);
+      verifier?.fillRange(0, verifier.length, 0);
+      credential?.fillRange(0, credential.length, 0);
+    }
+  }
+
+  static Uint8List _encodeCredential(Uint8List salt, Uint8List verifier) {
+    if (salt.length != Kdf.saltLength || verifier.length != Kdf.keyLength) {
+      throw ArgumentError('Passphrase credential has invalid fields');
+    }
+    return Uint8List.fromList(<int>[...salt, ...verifier]);
+  }
+
+  static void _validatePassphrase(String passphrase) {
+    if (passphrase.runes.length < 12) {
+      throw ArgumentError.value(
+        passphrase.runes.length,
+        'passphrase.length',
+        'Must be at least 12 characters',
+      );
+    }
+  }
+
   static void _validateBackupMaterial(KeyBackupMaterial material) {
     if (material.masterKey.length != Kdf.keyLength ||
         material.masterSalt.length != Kdf.saltLength ||
+        material.passphraseVerifier.length != Kdf.keyLength ||
         material.kdfParameters != Kdf.paramsDescription()) {
       throw const FormatException('Backup key material is invalid');
     }
+
     final recoveryValueCount = <Uint8List?>[
       material.recoverySalt,
       material.recoveryWrappedMasterKey,

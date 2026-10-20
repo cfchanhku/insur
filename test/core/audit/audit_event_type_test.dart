@@ -10,6 +10,7 @@ void main() {
     AuditEventType.autoLock: 'auto_lock',
     AuditEventType.recoveryUsed: 'recovery_used',
     AuditEventType.recoveryKeyRotated: 'recovery_key_rotated',
+    AuditEventType.passphraseChanged: 'passphrase_changed',
     AuditEventType.create: 'create',
     AuditEventType.update: 'update',
     AuditEventType.archive: 'archive',

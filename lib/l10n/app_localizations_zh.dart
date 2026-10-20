@@ -366,6 +366,51 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recovery_key_dialog_confirm => 'I have printed and stored it';
 
   @override
+  String get setup_recovery_confirmation =>
+      'Enter your recovery key to confirm';
+
+  @override
+  String get setup_recovery_confirm => 'Confirm recovery key';
+
+  @override
+  String get setup_biometric_prompt =>
+      'Protect access with biometric authentication. You can also enable it later in Settings.';
+
+  @override
+  String get setup_enable_biometric => 'Enable biometric unlock';
+
+  @override
+  String get setup_skip_biometric => 'Skip for now';
+
+  @override
+  String get recovery_invalid_key =>
+      'That recovery key is invalid. Check it and try again.';
+
+  @override
+  String get recovery_set_new_passphrase =>
+      'Set a new passphrase to finish recovering your vault.';
+
+  @override
+  String get recovery_enter_key =>
+      'Enter your offline recovery key to unlock your vault.';
+
+  @override
+  String get recovery_key_label => 'Recovery key';
+
+  @override
+  String get recovery_working => 'Please wait...';
+
+  @override
+  String get recovery_reset_passphrase => 'Save new passphrase';
+
+  @override
+  String get recovery_continue => 'Continue';
+
+  @override
+  String get recovery_reset_required =>
+      'A new passphrase is required after recovery. Use your recovery key to continue.';
+
+  @override
   String get login_title => 'Sign In';
 
   @override
@@ -746,11 +791,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_change_passphrase => 'Change passphrase';
 
   @override
-  String get settings_change_passphrase_guidance =>
-      'This operation is coming in a future update. Use your Recovery Key to reset your passphrase.';
+  String get settings_regenerate_recovery => 'Regenerate recovery key';
 
   @override
-  String get settings_regenerate_recovery => 'Regenerate recovery key';
+  String get settings_current_passphrase => 'Current passphrase';
+
+  @override
+  String get settings_new_passphrase => 'New passphrase';
+
+  @override
+  String get settings_passphrase_save => 'Change passphrase';
+
+  @override
+  String get settings_passphrase_changed => 'Passphrase changed.';
+
+  @override
+  String get settings_passphrase_change_failed =>
+      'Could not change the passphrase. Check your current passphrase and try again.';
+
+  @override
+  String get settings_recovery_regenerate_action => 'Regenerate';
+
+  @override
+  String get settings_recovery_regenerate_failed =>
+      'Could not regenerate the recovery key. Check your passphrase and try again.';
 
   @override
   String get settings_max_attempts => 'Max failed attempts';
@@ -918,6 +982,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get audit_event_recovery_key_rotated => 'Recovery key rotated';
+
+  @override
+  String get audit_event_passphrase_changed => 'Passphrase changed';
 
   @override
   String get audit_event_create => 'Create';
@@ -1569,6 +1636,45 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get recovery_key_dialog_confirm => '我已列印並保存';
 
   @override
+  String get setup_recovery_confirmation => '輸入復原金鑰以確認';
+
+  @override
+  String get setup_recovery_confirm => '確認復原金鑰';
+
+  @override
+  String get setup_biometric_prompt => '使用生物辨識保護存取權。您也可以稍後在設定中啟用。';
+
+  @override
+  String get setup_enable_biometric => '啟用生物辨識解鎖';
+
+  @override
+  String get setup_skip_biometric => '暫時略過';
+
+  @override
+  String get recovery_invalid_key => '復原金鑰無效。請檢查後再試。';
+
+  @override
+  String get recovery_set_new_passphrase => '設定新密碼以完成資料庫復原。';
+
+  @override
+  String get recovery_enter_key => '輸入離線復原金鑰以解鎖資料庫。';
+
+  @override
+  String get recovery_key_label => '復原金鑰';
+
+  @override
+  String get recovery_working => '請稍候...';
+
+  @override
+  String get recovery_reset_passphrase => '儲存新密碼';
+
+  @override
+  String get recovery_continue => '繼續';
+
+  @override
+  String get recovery_reset_required => '復原後必須設定新密碼。請使用復原金鑰繼續。';
+
+  @override
   String get login_title => '登入';
 
   @override
@@ -1940,10 +2046,28 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settings_change_passphrase => '更改密碼';
 
   @override
-  String get settings_change_passphrase_guidance => '此功能將於未來更新推出。請使用復原金鑰重設密碼。';
+  String get settings_regenerate_recovery => '重新產生復原金鑰';
 
   @override
-  String get settings_regenerate_recovery => '重新產生復原金鑰';
+  String get settings_current_passphrase => '目前密碼';
+
+  @override
+  String get settings_new_passphrase => '新密碼';
+
+  @override
+  String get settings_passphrase_save => '更改密碼';
+
+  @override
+  String get settings_passphrase_changed => '密碼已更改。';
+
+  @override
+  String get settings_passphrase_change_failed => '無法更改密碼。請檢查目前密碼後再試。';
+
+  @override
+  String get settings_recovery_regenerate_action => '重新產生';
+
+  @override
+  String get settings_recovery_regenerate_failed => '無法重新產生復原金鑰。請檢查密碼後再試。';
 
   @override
   String get settings_max_attempts => '最大失敗次數';
@@ -2109,6 +2233,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get audit_event_recovery_key_rotated => '復原金鑰已更新';
+
+  @override
+  String get audit_event_passphrase_changed => '密碼已更改';
 
   @override
   String get audit_event_create => '建立';

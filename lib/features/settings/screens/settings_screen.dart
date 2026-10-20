@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 
 import '../../../core/audit/audit_event_type.dart';
+import '../../../core/security/key_manager.dart';
 import '../../../features/settings/settings_notifier.dart';
 import '../../../features/settings/settings_state.dart';
 import '../../../l10n/app_localizations.dart';
@@ -77,33 +78,64 @@ class SettingsScreen extends ConsumerWidget {
     required bool enabled,
   }) async {
     final notifier = ref.read(settingsProvider.notifier);
-    if (!enabled) {
-      await _save(context, () => notifier.updateBiometricEnabled(false));
+    final l10n = AppLocalizations.of(context);
+    late final KeyManager keyManager;
+    late final bool previouslyEnabled;
+    try {
+      keyManager = await ref.read(keyManagerProvider.future);
+      previouslyEnabled = await keyManager.isBiometricEnabled();
+    } on Exception {
+      if (context.mounted) {
+        _showMessage(context, l10n.error_generic);
+      }
       return;
     }
-
-    final l10n = AppLocalizations.of(context);
     final localAuth = ref.read(localAuthProvider);
     var authenticated = false;
-    var authenticationFailed = false;
-    try {
-      authenticated = await localAuth.authenticate(
-        localizedReason: l10n.settings_biometric_reason,
-        options: const AuthenticationOptions(biometricOnly: true),
-      );
-    } on PlatformException {
-      authenticationFailed = true;
+    if (enabled) {
+      try {
+        if (!await localAuth.canCheckBiometrics ||
+            !await localAuth.isDeviceSupported()) {
+          if (context.mounted) {
+            _showMessage(context, l10n.settings_biometric_unavailable);
+          }
+          return;
+        }
+        authenticated = await localAuth.authenticate(
+          localizedReason: l10n.settings_biometric_reason,
+          options: const AuthenticationOptions(biometricOnly: true),
+        );
+      } on PlatformException {
+        authenticated = false;
+      }
+      if (!authenticated) {
+        if (context.mounted) {
+          _showMessage(context, l10n.error_generic);
+        }
+        return;
+      }
     }
     try {
+      await keyManager.setBiometricEnabled(enabled: authenticated);
       await notifier.updateBiometricEnabled(authenticated);
     } on Exception {
-      authenticationFailed = true;
+      try {
+        await keyManager.setBiometricEnabled(enabled: previouslyEnabled);
+      } on Exception {
+        if (context.mounted) {
+          _showMessage(context, l10n.error_generic);
+        }
+      }
+      if (context.mounted) {
+        _showMessage(context, l10n.error_generic);
+      }
     }
-    if (authenticationFailed && context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.error_generic)));
-    }
+  }
+
+  void _showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _chooseBackupFolder(BuildContext context, WidgetRef ref) async {
@@ -141,6 +173,232 @@ class SettingsScreen extends ConsumerWidget {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(l10n.action_cancel),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _changePassphrase(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final oldController = TextEditingController();
+    final newController = TextEditingController();
+    final confirmController = TextEditingController();
+    String? validationMessage;
+    final values = await showDialog<List<String>>(
+      context: context,
+      builder: (BuildContext dialogContext) => StatefulBuilder(
+        builder: (BuildContext context, StateSetter setDialogState) =>
+            AlertDialog(
+              title: Text(l10n.settings_change_passphrase),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TextField(
+                      controller: oldController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: l10n.settings_current_passphrase,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.s3),
+                    TextField(
+                      controller: newController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: l10n.settings_new_passphrase,
+                        helperText: l10n.setup_passphrase_hint,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.s3),
+                    TextField(
+                      controller: confirmController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: l10n.setup_confirm_passphrase,
+                        errorText: validationMessage,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(l10n.action_cancel),
+                ),
+                FilledButton(
+                  onPressed: () {
+                    if (newController.text.runes.length < 12) {
+                      setDialogState(
+                        () =>
+                            validationMessage = l10n.setup_passphrase_too_short,
+                      );
+                      return;
+                    }
+                    if (newController.text != confirmController.text) {
+                      setDialogState(
+                        () =>
+                            validationMessage = l10n.setup_passphrase_mismatch,
+                      );
+                      return;
+                    }
+                    Navigator.of(
+                      dialogContext,
+                    ).pop(<String>[oldController.text, newController.text]);
+                  },
+                  child: Text(l10n.settings_passphrase_save),
+                ),
+              ],
+            ),
+      ),
+    );
+    if (values == null || !context.mounted) {
+      oldController.dispose();
+      newController.dispose();
+      confirmController.dispose();
+      return;
+    }
+    try {
+      final keyManager = await ref.read(keyManagerProvider.future);
+      await keyManager.changePassphrase(
+        currentPassphrase: values[0],
+        newPassphrase: values[1],
+      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.settings_passphrase_changed)),
+        );
+      }
+    } on Exception {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.settings_passphrase_change_failed)),
+        );
+      }
+    } finally {
+      oldController
+        ..clear()
+        ..dispose();
+      newController
+        ..clear()
+        ..dispose();
+      confirmController
+        ..clear()
+        ..dispose();
+    }
+  }
+
+  Future<void> _regenerateRecoveryKey(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final passphraseController = TextEditingController();
+    final passphrase = await showDialog<String>(
+      context: context,
+      builder: (BuildContext dialogContext) => AlertDialog(
+        title: Text(l10n.settings_regenerate_recovery),
+        content: TextField(
+          controller: passphraseController,
+          obscureText: true,
+          decoration: InputDecoration(
+            labelText: l10n.settings_current_passphrase,
+          ),
+          onSubmitted: (String value) => Navigator.of(dialogContext).pop(value),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.action_cancel),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(passphraseController.text),
+            child: Text(l10n.settings_recovery_regenerate_action),
+          ),
+        ],
+      ),
+    );
+    if (passphrase == null || !context.mounted) {
+      passphraseController.dispose();
+      return;
+    }
+
+    try {
+      final keyManager = await ref.read(keyManagerProvider.future);
+      final recoveryKey = await keyManager.regenerateRecoveryKey(
+        passphrase: passphrase,
+      );
+      if (context.mounted) {
+        await _showRecoveryKeyDialog(context, recoveryKey);
+      }
+    } on Exception {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.settings_recovery_regenerate_failed)),
+        );
+      }
+    } finally {
+      passphraseController
+        ..clear()
+        ..dispose();
+    }
+  }
+
+  Future<void> _showRecoveryKeyDialog(
+    BuildContext context,
+    String recoveryKey,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) => AlertDialog(
+        title: Text(l10n.recovery_key_dialog_title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(l10n.recovery_key_dialog_body),
+            const SizedBox(height: AppSpacing.s4),
+            SelectableText(
+              recoveryKey,
+              style: const TextStyle(fontFamily: 'monospace'),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton.icon(
+            onPressed: () async {
+              try {
+                await Clipboard.setData(ClipboardData(text: recoveryKey));
+                if (dialogContext.mounted) {
+                  ScaffoldMessenger.of(dialogContext).showSnackBar(
+                    SnackBar(content: Text(l10n.recovery_key_copied)),
+                  );
+                }
+              } on PlatformException {
+                if (dialogContext.mounted) {
+                  ScaffoldMessenger.of(
+                    dialogContext,
+                  ).showSnackBar(SnackBar(content: Text(l10n.error_generic)));
+                }
+              } on MissingPluginException {
+                if (dialogContext.mounted) {
+                  ScaffoldMessenger.of(
+                    dialogContext,
+                  ).showSnackBar(SnackBar(content: Text(l10n.error_generic)));
+                }
+              }
+            },
+            icon: const Icon(Icons.copy),
+            label: Text(l10n.recovery_key_dialog_copy),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.recovery_key_dialog_confirm),
           ),
         ],
       ),
@@ -283,24 +541,12 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             title: Text(l10n.settings_change_passphrase),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => unawaited(
-              _showInformationDialog(
-                context,
-                title: l10n.settings_coming_soon_title,
-                message: l10n.settings_change_passphrase_guidance,
-              ),
-            ),
+            onTap: () => unawaited(_changePassphrase(context, ref)),
           ),
           ListTile(
             title: Text(l10n.settings_regenerate_recovery),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => unawaited(
-              _showInformationDialog(
-                context,
-                title: l10n.settings_coming_soon_title,
-                message: l10n.settings_coming_soon_body,
-              ),
-            ),
+            onTap: () => unawaited(_regenerateRecoveryKey(context, ref)),
           ),
           ListTile(
             title: Text(l10n.settings_max_attempts),

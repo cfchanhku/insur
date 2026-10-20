@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../features/archive/screens/archive_screen.dart';
 import '../features/audit/screens/audit_log_screen.dart';
 import '../features/auth/screens/login_screen.dart';
+import '../features/auth/screens/recovery_screen.dart';
 import '../features/backup/screens/backup_screen.dart';
 import '../features/backup/screens/restore_screen.dart';
 import '../features/clients/screens/client_detail_screen.dart';
@@ -60,14 +61,8 @@ final routerProvider = Provider<GoRouter>((Ref ref) {
       ),
       GoRoute(
         path: '/recovery',
-        pageBuilder: (context, state) => _fadePage(
-          context,
-          state,
-          PlaceholderScreen(
-            title: AppLocalizations.of(context).recovery_title,
-            message: AppLocalizations.of(context).coming_soon,
-          ),
-        ),
+        pageBuilder: (context, state) =>
+            _fadePage(context, state, const RecoveryScreen()),
       ),
       GoRoute(
         path: '/clients/new',

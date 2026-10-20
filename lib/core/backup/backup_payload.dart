@@ -7,12 +7,14 @@ import 'backup_exception.dart';
 /// Authenticated inner payload containing the SQLCipher file and vault state.
 ///
 /// The inner state is encrypted by the outer backup envelope. It contains no
-/// login passphrase or plaintext recovery key.
+/// login passphrase or plaintext recovery key. Version 2 adds a separate
+/// passphrase verifier; version 1 remains readable using its master key as the
+/// legacy verifier.
 class BackupPayload {
   /// Creates a payload from owned database bytes and key material.
   BackupPayload({required this.databaseBytes, required this.keyMaterial});
 
-  static const List<int> _magic = <int>[
+  static const List<int> _legacyMagic = <int>[
     0x53,
     0x49,
     0x50,
@@ -21,6 +23,16 @@ class BackupPayload {
     0x50,
     0x59,
     0x31,
+  ];
+  static const List<int> _magic = <int>[
+    0x53,
+    0x49,
+    0x50,
+    0x4d,
+    0x2d,
+    0x50,
+    0x59,
+    0x32,
   ];
 
   /// SQLCipher database file bytes.
@@ -45,6 +57,7 @@ class BackupPayload {
         _magic.length +
         32 +
         32 +
+        32 +
         2 +
         parameters.length +
         1 +
@@ -59,6 +72,8 @@ class BackupPayload {
     bytes.setRange(offset, offset + 32, keyMaterial.masterKey);
     offset += 32;
     bytes.setRange(offset, offset + 32, keyMaterial.masterSalt);
+    offset += 32;
+    bytes.setRange(offset, offset + 32, keyMaterial.passphraseVerifier);
     offset += 32;
     data.setUint16(offset, parameters.length);
     offset += 2;
@@ -93,14 +108,14 @@ class BackupPayload {
     if (bytes.length < fixedSize) {
       throw const BackupFormatException('Backup payload is truncated');
     }
-    for (var index = 0; index < _magic.length; index++) {
-      if (bytes[index] != _magic[index]) {
-        throw const BackupFormatException('Backup payload magic is invalid');
-      }
+    final isLegacy = _matchesMagic(bytes, _legacyMagic);
+    if (!isLegacy && !_matchesMagic(bytes, _magic)) {
+      throw const BackupFormatException('Backup payload magic is invalid');
     }
     final data = ByteData.sublistView(bytes);
     Uint8List? masterKey;
     Uint8List? masterSalt;
+    Uint8List? passphraseVerifier;
     Uint8List? recoverySalt;
     Uint8List? recoveryWrappedMasterKey;
     Uint8List? recoveryVerificationHash;
@@ -112,6 +127,13 @@ class BackupPayload {
       offset += 32;
       masterSalt = _readBytes(bytes, offset, 32);
       offset += 32;
+      if (!isLegacy) {
+        _requireRemaining(bytes, offset, 32);
+        passphraseVerifier = _readBytes(bytes, offset, 32);
+        offset += 32;
+      } else {
+        passphraseVerifier = Uint8List.fromList(masterKey);
+      }
       final parametersLength = data.getUint16(offset);
       offset += 2;
       final parametersBytes = _readBytes(bytes, offset, parametersLength);
@@ -160,6 +182,7 @@ class BackupPayload {
       material = KeyBackupMaterial(
         masterKey: masterKey,
         masterSalt: masterSalt,
+        passphraseVerifier: passphraseVerifier,
         kdfParameters: parameters,
         recoverySalt: recoverySalt,
         recoveryWrappedMasterKey: recoveryWrappedMasterKey,
@@ -176,6 +199,7 @@ class BackupPayload {
     } finally {
       masterKey?.fillRange(0, masterKey.length, 0);
       masterSalt?.fillRange(0, masterSalt.length, 0);
+      passphraseVerifier?.fillRange(0, passphraseVerifier.length, 0);
       recoverySalt?.fillRange(0, recoverySalt.length, 0);
       recoveryWrappedMasterKey?.fillRange(
         0,
@@ -203,6 +227,18 @@ class BackupPayload {
     return Uint8List.fromList(bytes.sublist(offset, offset + length));
   }
 
+  static bool _matchesMagic(Uint8List bytes, List<int> magic) {
+    if (bytes.length < magic.length) {
+      return false;
+    }
+    for (var index = 0; index < magic.length; index++) {
+      if (bytes[index] != magic[index]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   static void _requireRemaining(Uint8List bytes, int offset, int length) {
     if (length < 0 || offset < 0 || offset > bytes.length - length) {
       throw const BackupFormatException('Backup payload is truncated');
@@ -212,6 +248,7 @@ class BackupPayload {
   static void _validateMaterial(KeyBackupMaterial material) {
     if (material.masterKey.length != 32 ||
         material.masterSalt.length != 32 ||
+        material.passphraseVerifier.length != 32 ||
         material.kdfParameters.isEmpty) {
       throw const BackupFormatException('Backup key material is invalid');
     }

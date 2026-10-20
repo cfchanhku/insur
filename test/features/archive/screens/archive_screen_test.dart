@@ -110,7 +110,7 @@ void main() {
     await tester.tap(find.byTooltip('Restore'));
     await tester.pumpAndSettle();
     expect(find.text('Restore record?'), findsOneWidget);
-    await tester.tap(find.widgetWithText(TextButton, 'Restore'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Restore'));
     await tester.pumpAndSettle();
 
     expect(find.text('No archived clients'), findsOneWidget);
@@ -132,13 +132,13 @@ void main() {
       ),
       findsOneWidget,
     );
-    await tester.tap(find.widgetWithText(TextButton, 'Continue'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
     await tester.pumpAndSettle();
     expect(
       find.text('Are you absolutely sure? This is your last chance to cancel.'),
       findsOneWidget,
     );
-    await tester.tap(find.widgetWithText(TextButton, 'Delete'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
     await tester.pumpAndSettle();
 
     expect(find.text('No archived clients'), findsOneWidget);
@@ -170,7 +170,7 @@ void main() {
 
     await tester.tap(find.byTooltip('Delete permanently'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(TextButton, 'Continue'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, 'Cancel'));
     await tester.pumpAndSettle();

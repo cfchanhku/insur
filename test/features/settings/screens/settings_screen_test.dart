@@ -179,22 +179,20 @@ void main() {
     expect(switchTile.onChanged, isNull);
   });
 
-  testWidgets('shows the passphrase guidance dialog', (
-    WidgetTester tester,
-  ) async {
+  testWidgets('opens passphrase change form', (WidgetTester tester) async {
     await _pumpSettings(tester);
     await _showText(tester, 'Change passphrase');
     await tester.tap(find.text('Change passphrase'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Coming soon'), findsOneWidget);
-    expect(
-      find.textContaining('Use your Recovery Key to reset your passphrase.'),
-      findsOneWidget,
-    );
+    expect(find.text('Current passphrase'), findsOneWidget);
+    expect(find.text('New passphrase'), findsOneWidget);
+    expect(find.text('Confirm passphrase'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
   });
 
-  testWidgets('shows the recovery-key coming-soon dialog', (
+  testWidgets('opens recovery-key regeneration form', (
     WidgetTester tester,
   ) async {
     await _pumpSettings(tester);
@@ -202,11 +200,10 @@ void main() {
     await tester.tap(find.text('Regenerate recovery key'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Coming soon'), findsOneWidget);
-    expect(
-      find.text('This feature will be available in a future update.'),
-      findsOneWidget,
-    );
+    expect(find.text('Current passphrase'), findsOneWidget);
+    expect(find.text('Regenerate'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
   });
 
   testWidgets('shows the reset-app coming-soon dialog', (
@@ -268,7 +265,7 @@ void main() {
     await _showText(tester, 'Logout');
     await tester.tap(find.text('Logout'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(TextButton, 'Logout'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Logout'));
     await tester.pumpAndSettle();
 
     expect(find.text('Login screen opened'), findsOneWidget);

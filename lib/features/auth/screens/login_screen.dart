@@ -7,7 +7,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:local_auth/local_auth.dart';
 
 import '../../../core/audit/audit_event_type.dart';
 import '../../../core/security/key_manager.dart';
@@ -34,7 +33,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _biometricAvailability = _biometricAvailable(ref.read(localAuthProvider));
+    _biometricAvailability = _biometricAvailable(ref);
   }
 
   Future<void> _signIn() async {
@@ -46,6 +45,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       final keyManager = await ref.read(keyManagerProvider.future);
       keyManager.onAudit = null;
+      if (await keyManager.isPassphraseResetRequired()) {
+        if (mounted) {
+          _showMessage(l10n.recovery_reset_required);
+          context.go('/recovery');
+        }
+        return;
+      }
       final success = await keyManager.unlock(passphrase: _passphrase);
       if (!mounted) {
         return;
@@ -191,10 +197,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 }
 
-Future<bool> _biometricAvailable(LocalAuthentication localAuth) async {
+Future<bool> _biometricAvailable(WidgetRef ref) async {
   try {
+    final localAuth = ref.read(localAuthProvider);
+    final keyManager = await ref.read(keyManagerProvider.future);
     return await localAuth.canCheckBiometrics &&
-        await localAuth.isDeviceSupported();
+        await localAuth.isDeviceSupported() &&
+        await keyManager.isBiometricEnabled() &&
+        !await keyManager.isPassphraseResetRequired();
   } on Exception {
     return false;
   }

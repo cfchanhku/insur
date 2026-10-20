@@ -426,6 +426,7 @@ String _eventLabel(AppLocalizations l10n, AuditEventType type) {
     AuditEventType.autoLock => l10n.audit_event_auto_lock,
     AuditEventType.recoveryUsed => l10n.audit_event_recovery_used,
     AuditEventType.recoveryKeyRotated => l10n.audit_event_recovery_key_rotated,
+    AuditEventType.passphraseChanged => l10n.audit_event_passphrase_changed,
     AuditEventType.create => l10n.audit_event_create,
     AuditEventType.update => l10n.audit_event_update,
     AuditEventType.archive => l10n.audit_event_archive,
@@ -448,6 +449,7 @@ IconData _eventIcon(AuditEventType type) {
     AuditEventType.autoLock ||
     AuditEventType.recoveryUsed ||
     AuditEventType.recoveryKeyRotated => Icons.key,
+    AuditEventType.passphraseChanged => Icons.key,
     AuditEventType.create => Icons.add_circle_outline,
     AuditEventType.update => Icons.edit_outlined,
     AuditEventType.archive => Icons.archive_outlined,
