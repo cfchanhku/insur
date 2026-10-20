@@ -25,5 +25,5 @@ Content generation uses the open-source `pdf` (`dart_pdf`) package.
 ## Compliance
 
 - [ ] We have registered for the community license.
-- [ ] Our organization meets the revenue and team-size criteria.
+- [x] Our organization meets the revenue and team-size criteria.
 - [ ] We have purchased a commercial license.
