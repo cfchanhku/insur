@@ -12,6 +12,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart' as ffi;
 import 'package:sqflite_sqlcipher/sqflite.dart' as cipher;
 import 'package:sqflite_sqlcipher/sqflite.dart'
@@ -44,6 +45,7 @@ class AppDatabase {
   static Future<AppDatabase> open({
     required Uint8List dbKey,
     required String path,
+    @visibleForTesting ffi.DatabaseFactory? databaseFactory,
   }) async {
     if (dbKey.length != 32) {
       throw ArgumentError.value(
@@ -60,11 +62,11 @@ class AppDatabase {
     const onUpgrade = runMigrations;
 
     late final Database database;
-    if (Platform.isWindows || Platform.isLinux) {
-      final databaseFactory = ffi.createDatabaseFactoryFfi(
-        ffiInit: _initializeDesktopSqlCipher,
-      );
-      database = await databaseFactory.openDatabase(
+    if (databaseFactory != null || Platform.isWindows || Platform.isLinux) {
+      final factory =
+          databaseFactory ??
+          ffi.createDatabaseFactoryFfi(ffiInit: _initializeDesktopSqlCipher);
+      database = await factory.openDatabase(
         path,
         options: ffi.OpenDatabaseOptions(
           version: Schema.currentSchemaVersion,

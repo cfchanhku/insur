@@ -128,6 +128,22 @@ xcode-select -p
 
 Homebrew is optional. If used, install it from its official source and use it for developer tooling such as FVM or Git only according to the team's supported setup. Do not use unreviewed tap formulas for cryptographic or signing dependencies.
 
+### Running database tests
+
+Database tests use SQLCipher through SQLite FFI on macOS, so install the
+Homebrew SQLCipher library and point the test process to its dynamic library:
+
+```bash
+brew install sqlcipher
+export INSUR_SQLCIPHER_LIBRARY="$(brew --prefix sqlcipher)/lib/libsqlcipher.dylib"
+cd <repository>
+fvm flutter test
+```
+
+The tests fail explicitly if the library path is missing or invalid; they do
+not fall back to unencrypted SQLite. This test setup does not add the missing
+macOS app host project or make macOS app builds supported.
+
 ### Flutter, CocoaPods, and VS Code
 
 Install FVM and use the repository pin. Install CocoaPods using an organization-approved method compatible with the project; run `pod --version`. Install VS Code plus the official Dart and Flutter extensions.

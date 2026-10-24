@@ -23,6 +23,7 @@ void main() {
 
   setUp(() async {
     database = await createTestDatabase();
+    addTearDown(() => tearDownTestDatabase(database));
     audit = AuditRepository(db: database);
     final fieldCrypto = FieldCrypto(
       fieldKey: Uint8List.fromList(List<int>.filled(32, 0x53)),
@@ -38,10 +39,6 @@ void main() {
       audit: audit,
     );
     clientId = (await clientRepository.save(_createClient())).id!;
-  });
-
-  tearDown(() async {
-    await tearDownTestDatabase(database);
   });
 
   group('PolicyRepository — audit emission', () {
