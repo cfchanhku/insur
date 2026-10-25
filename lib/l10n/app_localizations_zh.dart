@@ -185,6 +185,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get plan_category => 'Category';
 
   @override
+  String get plan_insured_label => 'Insured person';
+
+  @override
+  String get plan_insured_hint => 'Select the person covered by this plan';
+
+  @override
+  String get plan_insured_optional => 'Not assigned';
+
+  @override
+  String plan_insured_display(String name) {
+    return 'Insured: $name';
+  }
+
+  @override
   String get plan_name => 'Plan name';
 
   @override
@@ -253,6 +267,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get plan_form_error_category_required => 'Category is required';
+
+  @override
+  String get plan_form_error_insured_required =>
+      'Select an insured person for this plan category';
 
   @override
   String get plan_form_error_coverage_invalid =>
@@ -1472,6 +1490,20 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get plan_category => '類別';
 
   @override
+  String get plan_insured_label => '受保人';
+
+  @override
+  String get plan_insured_hint => '選擇此計劃的受保人';
+
+  @override
+  String get plan_insured_optional => '未指定';
+
+  @override
+  String plan_insured_display(String name) {
+    return '受保人：$name';
+  }
+
+  @override
   String get plan_name => '計劃名稱';
 
   @override
@@ -1539,6 +1571,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get plan_form_error_category_required => '類別為必填';
+
+  @override
+  String get plan_form_error_insured_required => '此類別計劃必須選擇受保人';
 
   @override
   String get plan_form_error_coverage_invalid => '金額必須為零或以上';

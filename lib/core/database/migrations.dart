@@ -38,6 +38,14 @@ Future<void> runMigrations(Database db, int oldVersion, int newVersion) async {
         await db.execute(
           'ALTER TABLE ${Schema.plans} ADD COLUMN ${Schema.deductible} TEXT',
         );
+      case 4:
+        await db.execute(
+          'ALTER TABLE ${Schema.plans} ADD COLUMN ${Schema.insuredId} TEXT '
+          'REFERENCES ${Schema.clients}(${Schema.id}) ON DELETE SET NULL',
+        );
+        await db.execute(
+          'CREATE INDEX idx_plans_insured ON ${Schema.plans}(${Schema.insuredId})',
+        );
       default:
         throw StateError('No migration is defined for schema version $version');
     }

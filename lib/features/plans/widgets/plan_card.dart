@@ -13,10 +13,13 @@ import '../models/plan_category.dart';
 /// Reusable plan summary card.
 class PlanCard extends StatelessWidget {
   /// Creates a plan card for [plan].
-  const PlanCard({required this.plan, this.onTap, super.key});
+  const PlanCard({required this.plan, this.insuredName, this.onTap, super.key});
 
   /// Plan displayed by the card.
   final Plan plan;
+
+  /// Name of the insured client, when available.
+  final String? insuredName;
 
   /// Called when the plan card is selected.
   final VoidCallback? onTap;
@@ -50,7 +53,15 @@ class PlanCard extends StatelessWidget {
       child: ListTile(
         leading: Icon(icon),
         title: Text(title),
-        subtitle: Text(l10n.plan_card_summary(categoryLabel, coverage)),
+        subtitle: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(l10n.plan_card_summary(categoryLabel, coverage)),
+            if (insuredName != null)
+              Text(l10n.plan_insured_display(insuredName!)),
+          ],
+        ),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),

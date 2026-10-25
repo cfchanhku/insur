@@ -427,6 +427,30 @@ abstract class AppLocalizations {
   /// **'Category'**
   String get plan_category;
 
+  /// No description provided for @plan_insured_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Insured person'**
+  String get plan_insured_label;
+
+  /// No description provided for @plan_insured_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the person covered by this plan'**
+  String get plan_insured_hint;
+
+  /// No description provided for @plan_insured_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Not assigned'**
+  String get plan_insured_optional;
+
+  /// No description provided for @plan_insured_display.
+  ///
+  /// In en, this message translates to:
+  /// **'Insured: {name}'**
+  String plan_insured_display(String name);
+
   /// No description provided for @plan_name.
   ///
   /// In en, this message translates to:
@@ -564,6 +588,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Category is required'**
   String get plan_form_error_category_required;
+
+  /// No description provided for @plan_form_error_insured_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an insured person for this plan category'**
+  String get plan_form_error_insured_required;
 
   /// No description provided for @plan_form_error_coverage_invalid.
   ///

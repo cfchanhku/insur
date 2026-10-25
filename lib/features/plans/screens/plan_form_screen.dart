@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../features/clients/models/client.dart';
+import '../../../features/clients/models/client_enums.dart';
 import '../../../features/plans/models/plan.dart';
 import '../../../features/plans/models/plan_category.dart';
 import '../../../features/riders/models/rider.dart';
@@ -43,6 +45,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
   final TextEditingController _notesController = TextEditingController();
 
   PlanCategory _category = PlanCategory.life;
+  String? _insuredId;
   Plan? _loadedPlan;
   final List<_RiderDraft> _riders = <_RiderDraft>[];
   final Set<String> _removedRiderIds = <String>{};
@@ -73,6 +76,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
   void _populate(Plan plan, List<Rider> riders) {
     _loadedPlan = plan;
     _category = plan.category;
+    _insuredId = plan.insuredId;
     _planNameController.text = plan.planName;
     _coverageController.text = plan.coverageAmount?.toString() ?? '';
     _paymentTermController.text = plan.paymentTerm ?? '';
@@ -111,6 +115,13 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     PlanCategory.accident,
   }.contains(_category);
 
+  bool _requiresInsured() => <PlanCategory>{
+    PlanCategory.life,
+    PlanCategory.ci,
+    PlanCategory.hospital,
+    PlanCategory.accident,
+  }.contains(_category);
+
   String? _validateOptionalAmount(String? value, AppLocalizations l10n) {
     if (value == null || value.trim().isEmpty) {
       return null;
@@ -124,6 +135,10 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
   Future<void> _save(String policyId) async {
     final l10n = AppLocalizations.of(context);
     if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    if (_requiresInsured() && _insuredId == null) {
+      setState(() => _error = l10n.plan_form_error_insured_required);
       return;
     }
     if (_showPlanName() && _planNameController.text.trim().isEmpty) {
@@ -153,6 +168,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
         Plan(
           id: widget.id,
           policyId: policyId,
+          insuredId: _insuredId,
           category: _category,
           planName: name,
           coverageAmount: _showCoverage()
@@ -254,6 +270,10 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     final ridersAsync = isEditing
         ? ref.watch(ridersByPlanProvider(widget.id!))
         : const AsyncValue<List<Rider>>.data(<Rider>[]);
+    final clientsAsync = ref.watch(clientListProvider);
+    final selectedInsuredAsync = _insuredId == null
+        ? null
+        : ref.watch(clientByIdProvider(_insuredId!));
     if (isEditing &&
         planAsync.hasValue &&
         ridersAsync.hasValue &&
@@ -274,7 +294,46 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
       showBottomNav: false,
       body: isEditing && !_initialized
           ? _loadingOrError(planAsync, ridersAsync, l10n)
-          : _buildForm(context, l10n, policyId!),
+          : clientsAsync.when(
+              data: (List<Client> clients) {
+                final insuredClients = clients
+                    .where((Client client) => client.role == ClientRole.insured)
+                    .toList(growable: false);
+                if (_insuredId == null ||
+                    insuredClients.any(
+                      (Client client) => client.id == _insuredId,
+                    )) {
+                  return _buildForm(context, l10n, policyId!, insuredClients);
+                }
+                return selectedInsuredAsync!.when(
+                  data: (Client? selectedInsured) {
+                    if (selectedInsured == null) {
+                      return ErrorState(
+                        message: l10n.error_generic,
+                        onRetry: () =>
+                            ref.invalidate(planByIdProvider(widget.id!)),
+                      );
+                    }
+                    final clientsForForm = <Client>[
+                      ...insuredClients,
+                      selectedInsured,
+                    ];
+                    return _buildForm(context, l10n, policyId!, clientsForForm);
+                  },
+                  loading: () => const LoadingIndicator(),
+                  error: (Object error, StackTrace stackTrace) => ErrorState(
+                    message: l10n.error_generic,
+                    onRetry: () =>
+                        ref.invalidate(clientByIdProvider(_insuredId!)),
+                  ),
+                );
+              },
+              loading: () => const LoadingIndicator(),
+              error: (Object error, StackTrace stackTrace) => ErrorState(
+                message: l10n.error_generic,
+                onRetry: () => ref.invalidate(clientListProvider),
+              ),
+            ),
     );
   }
 
@@ -299,6 +358,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     BuildContext context,
     AppLocalizations l10n,
     String policyId,
+    List<Client> insuredClients,
   ) {
     final theme = Theme.of(context);
     return Form(
@@ -337,6 +397,35 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
                               _error = null;
                             });
                           }
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.s3),
+                      DropdownButtonFormField<String?>(
+                        initialValue: _insuredId,
+                        decoration: InputDecoration(
+                          labelText: l10n.plan_insured_label,
+                          hintText: l10n.plan_insured_hint,
+                        ),
+                        items: <DropdownMenuItem<String?>>[
+                          DropdownMenuItem<String?>(
+                            child: Text(l10n.plan_insured_optional),
+                          ),
+                          ...insuredClients.map(
+                            (Client client) => DropdownMenuItem<String?>(
+                              value: client.id,
+                              child: Text(client.name),
+                            ),
+                          ),
+                        ],
+                        validator: (String? value) =>
+                            _requiresInsured() && value == null
+                            ? l10n.plan_form_error_insured_required
+                            : null,
+                        onChanged: (String? value) {
+                          setState(() {
+                            _insuredId = value;
+                            _error = null;
+                          });
                         },
                       ),
                       if (_showPlanName()) ...<Widget>[

@@ -9,6 +9,7 @@ void main() {
     sample = Plan(
       id: '123e4567-e89b-42d3-a456-426614174000',
       policyId: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
+      insuredId: 'insured-client-id',
       category: PlanCategory.ci,
       planName: 'Synthetic critical illness cover',
       coverageAmount: 125000.5,
@@ -57,6 +58,7 @@ void main() {
   group('Plan constructor', () {
     test('constructs a valid plan', () {
       expect(sample.id, '123e4567-e89b-42d3-a456-426614174000');
+      expect(sample.insuredId, 'insured-client-id');
       expect(sample.coverageAmount, 125000.5);
     });
 
@@ -104,6 +106,7 @@ void main() {
         paymentTerm: null,
         coveragePeriod: null,
         notes: null,
+        insuredId: null,
       );
 
       expect(updated.coverageAmount, isNull);
@@ -137,6 +140,7 @@ void main() {
       expect(sample.toJson(), <String, Object?>{
         'id': sample.id,
         'policyId': sample.policyId,
+        'insuredId': sample.insuredId,
         'category': 'ci',
         'planName': sample.planName,
         'coverageAmount': '125000.5',

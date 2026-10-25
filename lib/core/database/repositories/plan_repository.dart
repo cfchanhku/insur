@@ -57,6 +57,7 @@ class PlanRepository {
     final row = <String, Object?>{
       Schema.id: id,
       Schema.policyId: saved.policyId,
+      Schema.insuredId: saved.insuredId,
       Schema.category: saved.category.value,
       Schema.planName: saved.planName,
       Schema.coverageAmount: await _fieldCrypto.encryptNullable(
@@ -133,6 +134,19 @@ class PlanRepository {
           ? '${Schema.policyId} = ?'
           : '${Schema.policyId} = ? AND ${Schema.archivedAt} IS NULL',
       whereArgs: <Object?>[policyId],
+    );
+  }
+
+  /// Returns active plans assigned to [insuredId], ordered by creation time.
+  Future<List<Plan>> findByInsuredId(
+    String insuredId, {
+    bool includeArchived = false,
+  }) {
+    return _findMany(
+      where: includeArchived
+          ? '${Schema.insuredId} = ?'
+          : '${Schema.insuredId} = ? AND ${Schema.archivedAt} IS NULL',
+      whereArgs: <Object?>[insuredId],
     );
   }
 
@@ -251,6 +265,7 @@ class PlanRepository {
     return Plan(
       id: id,
       policyId: _requiredString(row, Schema.policyId),
+      insuredId: _optionalString(row, Schema.insuredId),
       category: PlanCategory.fromString(_requiredString(row, Schema.category)),
       planName: _requiredString(row, Schema.planName),
       coverageAmount: parsedCoverage,

@@ -10,6 +10,8 @@ this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Local client, policy, plan, and rider management, including archive and
   restore workflows.
+- Plans can be assigned an insured client; existing plans remain unassigned
+  until edited and explicitly associated.
 - Passphrase-protected vault using a randomly generated master key wrapped by
   an Argon2id-derived key.
 - SQLCipher database encryption and AES-256-GCM field protection.

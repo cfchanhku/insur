@@ -88,6 +88,9 @@ class Schema {
   /// Foreign key to the owning policy.
   static const String policyId = 'policy_id';
 
+  /// Optional foreign key to the person insured by a plan.
+  static const String insuredId = 'insured_id';
+
   /// Plan category.
   static const String category = 'category';
 
@@ -140,7 +143,7 @@ class Schema {
   static const String value = 'value';
 
   /// Latest schema version created for new databases.
-  static const int currentSchemaVersion = 3;
+  static const int currentSchemaVersion = 4;
 
   /// SQL statements creating tables in dependency order.
   static const List<String> createStatements = <String>[

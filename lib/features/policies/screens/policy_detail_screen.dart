@@ -213,8 +213,17 @@ class _PolicyDetails extends ConsumerWidget {
                       : Column(
                           children: values
                               .map((plan) {
+                                final insuredName = plan.insuredId == null
+                                    ? null
+                                    : ref
+                                          .watch(
+                                            clientByIdProvider(plan.insuredId!),
+                                          )
+                                          .valueOrNull
+                                          ?.name;
                                 final card = PlanCard(
                                   plan: plan,
+                                  insuredName: insuredName,
                                   onTap: plan.id == null
                                       ? null
                                       : () => context.push(

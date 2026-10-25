@@ -84,6 +84,17 @@
     }
   },
   "plan_category": "類別",
+  "plan_insured_label": "受保人",
+  "plan_insured_hint": "選擇此計劃的受保人",
+  "plan_insured_optional": "未指定",
+  "plan_insured_display": "受保人：{name}",
+  "@plan_insured_display": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plan_name": "計劃名稱",
   "plan_coverage_amount": "保障額",
   "plan_payment_term": "供款期",
@@ -107,6 +118,7 @@
   "plan_form_cancel": "取消",
   "plan_form_saved": "計劃已儲存",
   "plan_form_error_category_required": "類別為必填",
+  "plan_form_error_insured_required": "此類別計劃必須選擇受保人",
   "plan_form_error_coverage_invalid": "金額必須為零或以上",
   "plan_form_error_name_required": "計劃名稱為必填",
   "plan_form_error_save": "儲存失敗：{message}",

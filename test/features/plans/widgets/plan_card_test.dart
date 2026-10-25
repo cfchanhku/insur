@@ -39,6 +39,14 @@ void main() {
     expect(find.text('Life'), findsOneWidget);
   });
 
+  testWidgets('shows the assigned insured client', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      _app(PlanCard(plan: _plan(), insuredName: 'Synthetic insured')),
+    );
+
+    expect(find.text('Insured: Synthetic insured'), findsOneWidget);
+  });
+
   testWidgets('calls onTap when selected', (WidgetTester tester) async {
     var tapped = false;
     await tester.pumpWidget(

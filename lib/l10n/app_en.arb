@@ -84,6 +84,17 @@
     }
   },
   "plan_category": "Category",
+  "plan_insured_label": "Insured person",
+  "plan_insured_hint": "Select the person covered by this plan",
+  "plan_insured_optional": "Not assigned",
+  "plan_insured_display": "Insured: {name}",
+  "@plan_insured_display": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "plan_name": "Plan name",
   "plan_coverage_amount": "Coverage amount",
   "plan_payment_term": "Payment term",
@@ -107,6 +118,7 @@
   "plan_form_cancel": "Cancel",
   "plan_form_saved": "Plan saved",
   "plan_form_error_category_required": "Category is required",
+  "plan_form_error_insured_required": "Select an insured person for this plan category",
   "plan_form_error_coverage_invalid": "Amount must be zero or greater",
   "plan_form_error_name_required": "Plan name is required",
   "plan_form_error_save": "Failed to save: {message}",

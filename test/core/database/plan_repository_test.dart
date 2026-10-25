@@ -26,6 +26,7 @@ void main() {
   late AppDatabase database;
   late FieldCrypto fieldCrypto;
   late AuditRepository audit;
+  late ClientRepository clients;
   late PlanRepository repository;
   late RiderRepository riderRepository;
   late String firstPolicyId;
@@ -38,7 +39,7 @@ void main() {
     fieldCrypto = FieldCrypto(
       fieldKey: Uint8List.fromList(List<int>.filled(32, 0x53)),
     );
-    final clients = ClientRepository(
+    clients = ClientRepository(
       db: database,
       fieldCrypto: fieldCrypto,
       audit: audit,
@@ -129,10 +130,71 @@ void main() {
           repository.save(_plan('missing-policy')),
           throwsA(anything),
         );
-
         expect(await audit.count(), before);
       },
     );
+
+    test(
+      'rejects an unknown insured client without recording an audit event',
+      () async {
+        final plan = _plan(firstPolicyId).copyWith(insuredId: 'missing-client');
+        final createEventsBefore = await audit.findAll(
+          eventType: AuditEventType.create,
+        );
+
+        await expectLater(repository.save(plan), throwsA(anything));
+
+        expect(
+          await audit.findAll(eventType: AuditEventType.create),
+          createEventsBefore,
+        );
+        expect(await repository.findAll(), isEmpty);
+      },
+    );
+  });
+
+  group('PlanRepository — findByInsuredId', () {
+    test(
+      'returns matching active plans and optionally archived plans',
+      () async {
+        final insured = await clients.save(
+          _client('Synthetic insured', role: ClientRole.insured),
+        );
+        final active = await repository.save(
+          _plan(firstPolicyId).copyWith(insuredId: insured.id),
+        );
+        final archived = await repository.save(
+          _plan(secondPolicyId).copyWith(insuredId: insured.id),
+        );
+        await repository.archive(archived.id!);
+
+        expect(await repository.findByInsuredId(insured.id!), <Plan>[active]);
+        expect(
+          await repository.findByInsuredId(insured.id!, includeArchived: true),
+          containsAll(<Plan>[
+            active,
+            (await repository.findById(archived.id!))!,
+          ]),
+        );
+      },
+    );
+
+    test('clears the insured reference when its client is deleted', () async {
+      final insured = await clients.save(
+        _client('Synthetic insured', role: ClientRole.insured),
+      );
+      final plan = await repository.save(
+        _plan(firstPolicyId).copyWith(insuredId: insured.id),
+      );
+
+      await database.db.delete(
+        Schema.clients,
+        where: '${Schema.id} = ?',
+        whereArgs: <Object?>[insured.id],
+      );
+
+      expect((await repository.findById(plan.id!))!.insuredId, isNull);
+    });
   });
 
   group('PlanRepository — save (update)', () {
@@ -383,9 +445,9 @@ void main() {
   });
 }
 
-Client _client(String name) {
+Client _client(String name, {ClientRole role = ClientRole.holder}) {
   return Client(
-    role: ClientRole.holder,
+    role: role,
     name: name,
     gender: Gender.other,
     dob: DateTime.utc(1980, 1, 2),

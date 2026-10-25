@@ -11,6 +11,7 @@ class Plan {
   Plan({
     this.id,
     required this.policyId,
+    this.insuredId,
     required this.category,
     required this.planName,
     this.coverageAmount,
@@ -45,6 +46,9 @@ class Plan {
 
   /// UUID of the policy that owns this plan.
   final String policyId;
+
+  /// UUID of the insured client, when assigned.
+  final String? insuredId;
 
   /// Insurance category for this plan.
   final PlanCategory category;
@@ -82,6 +86,7 @@ class Plan {
   Plan copyWith({
     Object? id = _unset,
     String? policyId,
+    Object? insuredId = _unset,
     PlanCategory? category,
     String? planName,
     Object? coverageAmount = _unset,
@@ -96,6 +101,7 @@ class Plan {
     return Plan(
       id: _copyNullable<String>(id, this.id),
       policyId: policyId ?? this.policyId,
+      insuredId: _copyNullable<String>(insuredId, this.insuredId),
       category: category ?? this.category,
       planName: planName ?? this.planName,
       coverageAmount: _copyNullableDouble(coverageAmount, this.coverageAmount),
@@ -120,6 +126,7 @@ class Plan {
     return <String, Object?>{
       'id': id,
       'policyId': policyId,
+      'insuredId': insuredId,
       'category': category.value,
       'planName': planName,
       'coverageAmount': coverageAmount?.toString(),
@@ -138,6 +145,7 @@ class Plan {
     return Plan(
       id: _optionalString(json, 'id'),
       policyId: _requiredString(json, 'policyId'),
+      insuredId: _optionalString(json, 'insuredId'),
       category: PlanCategory.fromString(_requiredString(json, 'category')),
       planName: _requiredString(json, 'planName'),
       coverageAmount: _optionalDoubleString(json, 'coverageAmount'),
@@ -156,6 +164,7 @@ class Plan {
     return other is Plan &&
         other.id == id &&
         other.policyId == policyId &&
+        other.insuredId == insuredId &&
         other.category == category &&
         other.planName == planName &&
         other.coverageAmount == coverageAmount &&
@@ -172,6 +181,7 @@ class Plan {
   int get hashCode => Object.hash(
     id,
     policyId,
+    insuredId,
     category,
     planName,
     coverageAmount,

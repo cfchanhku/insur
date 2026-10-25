@@ -186,6 +186,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plan_category => 'Category';
 
   @override
+  String get plan_insured_label => 'Insured person';
+
+  @override
+  String get plan_insured_hint => 'Select the person covered by this plan';
+
+  @override
+  String get plan_insured_optional => 'Not assigned';
+
+  @override
+  String plan_insured_display(String name) {
+    return 'Insured: $name';
+  }
+
+  @override
   String get plan_name => 'Plan name';
 
   @override
@@ -254,6 +268,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plan_form_error_category_required => 'Category is required';
+
+  @override
+  String get plan_form_error_insured_required =>
+      'Select an insured person for this plan category';
 
   @override
   String get plan_form_error_coverage_invalid =>

@@ -64,6 +64,7 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
     final planRepository = await ref.read(planRepositoryProvider.future);
     final riderRepository = await ref.read(riderRepositoryProvider.future);
     final bundles = <ClientExportBundle>[];
+    final insuredIds = <String>{};
     for (final client in clients.where(
       (Client item) => selectedIds.contains(item.id),
     )) {
@@ -89,6 +90,9 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
           if (planId == null) {
             throw StateError('Plan is not persisted');
           }
+          if (plan.insuredId != null) {
+            insuredIds.add(plan.insuredId!);
+          }
           final riders = await riderRepository.findByPlanId(planId);
           planBundles.add(PlanWithRiders(plan: plan, riders: riders));
         }
@@ -98,7 +102,25 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
         ClientExportBundle(client: persistedClient, policies: policyBundles),
       );
     }
-    return bundles;
+    final insuredNamesById = <String, String>{};
+    for (final insuredId in insuredIds) {
+      final insured = await clientRepository.findById(insuredId);
+      if (insured == null) {
+        throw StateError(
+          'An insured client referenced by a plan is unavailable',
+        );
+      }
+      insuredNamesById[insuredId] = insured.name;
+    }
+    return bundles
+        .map(
+          (ClientExportBundle bundle) => ClientExportBundle(
+            client: bundle.client,
+            policies: bundle.policies,
+            insuredNamesById: insuredNamesById,
+          ),
+        )
+        .toList(growable: false);
   }
 
   Future<void> _export(List<Client> clients) async {
