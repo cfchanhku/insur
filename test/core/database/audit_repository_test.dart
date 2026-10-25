@@ -15,11 +15,8 @@ void main() {
 
   setUp(() async {
     database = await createTestDatabase();
+    addTearDown(() => tearDownTestDatabase(database));
     repository = AuditRepository(db: database);
-  });
-
-  tearDown(() async {
-    await tearDownTestDatabase(database);
   });
 
   group('AuditRepository — initialize', () {

@@ -33,6 +33,7 @@ void main() {
 
   setUp(() async {
     database = await createTestDatabase();
+    addTearDown(() => tearDownTestDatabase(database));
     audit = AuditRepository(db: database);
     fieldCrypto = FieldCrypto(
       fieldKey: Uint8List.fromList(List<int>.filled(32, 0x53)),
@@ -61,10 +62,6 @@ void main() {
     final secondClient = await clients.save(_client('Synthetic Client Two'));
     firstPolicyId = (await policies.save(_policy(firstClient.id!))).id!;
     secondPolicyId = (await policies.save(_policy(secondClient.id!))).id!;
-  });
-
-  tearDown(() async {
-    await tearDownTestDatabase(database);
   });
 
   Future<Map<String, Object?>> rawPlan(String id) async {

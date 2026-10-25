@@ -18,6 +18,7 @@ void main() {
 
   setUp(() async {
     database = await createTestDatabase();
+    addTearDown(() => tearDownTestDatabase(database));
     audit = AuditRepository(db: database);
     repository = ClientRepository(
       db: database,
@@ -26,10 +27,6 @@ void main() {
       ),
       audit: audit,
     );
-  });
-
-  tearDown(() async {
-    await tearDownTestDatabase(database);
   });
 
   group('ClientRepository — audit emission', () {

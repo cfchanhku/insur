@@ -19,6 +19,7 @@ import 'package:insur/core/security/key_manager.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as path;
 
+import '../database/database_test_helper.dart';
 import 'fake_backup_file_service.dart';
 
 void main() {
@@ -68,7 +69,7 @@ void main() {
     sourceBackupPath = path.join(temporaryDirectory.path, 'source.enc');
     currentDatabasePath = path.join(temporaryDirectory.path, 'current.db');
 
-    sourceDatabase = await AppDatabase.open(
+    sourceDatabase = await openTestDatabase(
       dbKey: Uint8List.fromList(sourceKeyManager.dbKey),
       path: sourceDatabasePath,
     );
@@ -80,7 +81,7 @@ void main() {
     await sourceDatabase.close();
     sourceDatabaseBytes = await File(sourceDatabasePath).readAsBytes();
 
-    targetDatabase = await AppDatabase.open(
+    targetDatabase = await openTestDatabase(
       dbKey: Uint8List.fromList(targetKeyManager.dbKey),
       path: targetDatabasePath,
     );
@@ -193,7 +194,7 @@ void main() {
         dbFilePath: sourceDatabasePath,
         destinationPath: path.join(temporaryDirectory.path, 'audited.enc'),
       );
-      final reopened = await AppDatabase.open(
+      final reopened = await openTestDatabase(
         dbKey: Uint8List.fromList(sourceKeyManager.dbKey),
         path: sourceDatabasePath,
       );
@@ -257,7 +258,7 @@ void main() {
         await targetKeyManager.unlock(passphrase: sourceLoginPassphrase),
         isTrue,
       );
-      final reopened = await AppDatabase.open(
+      final reopened = await openTestDatabase(
         dbKey: Uint8List.fromList(targetKeyManager.dbKey),
         path: currentDatabasePath,
       );

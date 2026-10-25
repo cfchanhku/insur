@@ -33,6 +33,7 @@ void main() {
 
   setUp(() async {
     database = await createTestDatabase();
+    addTearDown(() => tearDownTestDatabase(database));
     audit = AuditRepository(db: database);
     fieldCrypto = FieldCrypto(
       fieldKey: Uint8List.fromList(List<int>.filled(32, 0x53)),
@@ -61,10 +62,6 @@ void main() {
     final policy = await policies.save(_policy(client.id!));
     planId = (await planRepository.save(_plan(policy.id!))).id!;
     secondPlanId = (await planRepository.save(_plan(policy.id!))).id!;
-  });
-
-  tearDown(() async {
-    await tearDownTestDatabase(database);
   });
 
   Future<Map<String, Object?>> rawRider(String id) async {

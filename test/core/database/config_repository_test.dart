@@ -10,10 +10,9 @@ void main() {
 
   setUp(() async {
     database = await createTestDatabase();
+    addTearDown(() => tearDownTestDatabase(database));
     repository = ConfigRepository(db: database);
   });
-
-  tearDown(() => tearDownTestDatabase(database));
 
   test('returns null for a missing setting', () async {
     expect(await repository.get('settings.language'), isNull);

@@ -28,6 +28,7 @@ void main() {
 
   setUp(() async {
     database = await createTestDatabase();
+    addTearDown(() => tearDownTestDatabase(database));
     audit = AuditRepository(db: database);
     fieldCrypto = FieldCrypto(
       fieldKey: Uint8List.fromList(List<int>.filled(32, 0x53)),
@@ -37,10 +38,6 @@ void main() {
       fieldCrypto: fieldCrypto,
       audit: audit,
     );
-  });
-
-  tearDown(() async {
-    await tearDownTestDatabase(database);
   });
 
   group('ClientRepository — save', () {
