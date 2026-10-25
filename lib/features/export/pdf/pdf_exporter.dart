@@ -119,7 +119,10 @@ class PdfExporter {
         ..add(
           pw.Text(
             l10n.pdf_doc_title,
-            style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
+            style: const pw.TextStyle(
+              fontSize: 22,
+              fontWeight: pw.FontWeight.bold,
+            ),
           ),
         )
         ..add(pw.SizedBox(height: 14))
@@ -153,7 +156,7 @@ class PdfExporter {
               padding: const pw.EdgeInsets.only(top: 8, bottom: 4),
               child: pw.Text(
                 l10n.pdf_policy_title(policy.policyNo),
-                style: pw.TextStyle(
+                style: const pw.TextStyle(
                   fontSize: 14,
                   fontWeight: pw.FontWeight.bold,
                 ),
@@ -190,7 +193,7 @@ class PdfExporter {
                 padding: const pw.EdgeInsets.only(top: 7, bottom: 3),
                 child: pw.Text(
                   l10n.pdf_plan_title(plan.planName),
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                     fontSize: 12,
                     fontWeight: pw.FontWeight.bold,
                   ),
@@ -227,7 +230,7 @@ class PdfExporter {
                   padding: const pw.EdgeInsets.only(top: 5),
                   child: pw.Text(
                     l10n.pdf_rider_title(rider.riderName),
-                    style: pw.TextStyle(
+                    style: const pw.TextStyle(
                       fontSize: 10,
                       fontStyle: pw.FontStyle.italic,
                     ),
@@ -288,7 +291,7 @@ class PdfExporter {
     padding: const pw.EdgeInsets.only(top: 5, bottom: 3),
     child: pw.Text(
       value,
-      style: pw.TextStyle(fontSize: 15, fontWeight: pw.FontWeight.bold),
+      style: const pw.TextStyle(fontSize: 15, fontWeight: pw.FontWeight.bold),
     ),
   );
 
