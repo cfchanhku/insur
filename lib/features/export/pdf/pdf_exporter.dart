@@ -386,7 +386,7 @@ class PdfExporter {
             children: <pw.Widget>[
               pw.Text(
                 _label('title', language),
-                style: pw.TextStyle(
+                style: const pw.TextStyle(
                   fontSize: 18,
                   fontWeight: pw.FontWeight.bold,
                 ),
@@ -759,7 +759,7 @@ class PdfExporter {
           child: pw.Text(
             _label(sectionKey, language),
             maxLines: 1,
-            style: pw.TextStyle(
+            style: const pw.TextStyle(
               fontSize: 9,
               fontWeight: pw.FontWeight.bold,
               lineSpacing: 0,
@@ -820,7 +820,7 @@ class PdfExporter {
     child: pw.Text(
       value,
       maxLines: 1,
-      style: pw.TextStyle(
+      style: const pw.TextStyle(
         fontSize: 9,
         fontWeight: pw.FontWeight.bold,
         lineSpacing: 0,
