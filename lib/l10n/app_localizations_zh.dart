@@ -1140,6 +1140,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backup_destination_required => 'Choose a destination to continue';
 
   @override
+  String get backup_destination_at_save =>
+      'Choose where to save the encrypted backup when prompted.';
+
+  @override
   String get restore_title => 'Restore';
 
   @override
@@ -1257,6 +1261,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get export_pdf_error => 'Export failed. Please try again.';
+
+  @override
+  String export_pdf_destination_error(String code) {
+    return 'Could not open the save dialog (error code: $code). Verify file access permission and try again.';
+  }
 
   @override
   String get export_pdf_open_file => 'Share or open PDF';
@@ -2420,6 +2429,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get backup_destination_required => '請先選擇目的地';
 
   @override
+  String get backup_destination_at_save => '建立加密備份後，請在提示時選擇儲存位置。';
+
+  @override
   String get restore_title => '還原';
 
   @override
@@ -2528,6 +2540,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get export_pdf_error => '匯出失敗，請再試一次。';
+
+  @override
+  String export_pdf_destination_error(String code) {
+    return '無法開啟儲存對話框（錯誤代碼：$code）。請確認檔案存取權限後再試。';
+  }
 
   @override
   String get export_pdf_open_file => '分享或開啟 PDF';

@@ -183,6 +183,33 @@ void main() {
       },
     );
 
+    test('saves a backup through the platform save flow', () async {
+      final service = makeService(
+        database: sourceDatabase,
+        auditRepository: AuditRepository(db: sourceDatabase),
+        keyManager: sourceKeyManager,
+      );
+
+      final result = await service.createBackupToPicker(
+        passphrase: passphrase,
+        dbFilePath: sourceDatabasePath,
+        suggestedName: 'picker-created.enc',
+      );
+
+      expect(result?.success, isTrue);
+      expect(
+        result?.path,
+        path.join(temporaryDirectory.path, 'picker-created.enc'),
+      );
+      expect(
+        (await service.verifyBackup(
+          passphrase: passphrase,
+          sourcePath: result!.path,
+        )).isValid,
+        isTrue,
+      );
+    });
+
     test('records the backup event after the database is reopened', () async {
       final serviceBeforeClose = makeService(
         database: sourceDatabase,

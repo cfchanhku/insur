@@ -74,6 +74,60 @@ class BackupService {
     if (_samePath(dbFilePath, destinationPath)) {
       throw ArgumentError('Backup destination must differ from the database');
     }
+    final backup = await _buildBackupBytes(
+      passphrase: passphrase,
+      dbFilePath: dbFilePath,
+    );
+    try {
+      await _fileService.writeBytes(destinationPath, backup.bytes);
+      return BackupResult(
+        success: true,
+        path: destinationPath,
+        sizeBytes: backup.bytes.length,
+        createdAt: backup.createdAt,
+      );
+    } finally {
+      backup.bytes.fillRange(0, backup.bytes.length, 0);
+    }
+  }
+
+  /// Creates an encrypted backup and asks the platform picker to save it.
+  ///
+  /// Mobile document pickers require the encrypted bytes before showing the
+  /// destination picker; desktop pickers still select a path and write locally.
+  Future<BackupResult?> createBackupToPicker({
+    required String passphrase,
+    required String dbFilePath,
+    required String suggestedName,
+  }) async {
+    _validatePassphrase(passphrase);
+    final backup = await _buildBackupBytes(
+      passphrase: passphrase,
+      dbFilePath: dbFilePath,
+    );
+    try {
+      final destinationPath = await _fileService.saveBytes(
+        suggestedName: suggestedName,
+        bytes: backup.bytes,
+      );
+      if (destinationPath == null) {
+        return null;
+      }
+      return BackupResult(
+        success: true,
+        path: destinationPath,
+        sizeBytes: backup.bytes.length,
+        createdAt: backup.createdAt,
+      );
+    } finally {
+      backup.bytes.fillRange(0, backup.bytes.length, 0);
+    }
+  }
+
+  Future<({Uint8List bytes, DateTime createdAt})> _buildBackupBytes({
+    required String passphrase,
+    required String dbFilePath,
+  }) async {
     final databaseBytes = await _readDatabaseFile(dbFilePath);
     KeyBackupMaterial? keyMaterial;
     Uint8List? payloadBytes;
@@ -106,13 +160,7 @@ class BackupService {
         plaintext: payloadBytes,
         header: header,
       );
-      await _fileService.writeBytes(destinationPath, bytes);
-      return BackupResult(
-        success: true,
-        path: destinationPath,
-        sizeBytes: bytes.length,
-        createdAt: createdAt,
-      );
+      return (bytes: bytes, createdAt: createdAt);
     } finally {
       databaseBytes.fillRange(0, databaseBytes.length, 0);
       payloadBytes?.fillRange(0, payloadBytes.length, 0);

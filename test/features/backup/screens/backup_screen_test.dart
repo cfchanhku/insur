@@ -69,6 +69,16 @@ class _BackupFileService implements BackupFileService {
   }) async => destination;
 
   @override
+  bool get pickerWritesBytes => false;
+
+  @override
+  Future<String?> saveBytes({
+    required String suggestedName,
+    required Uint8List bytes,
+    String extension = 'enc',
+  }) async => destination;
+
+  @override
   Future<String?> pickOpenFile() async => null;
 
   @override

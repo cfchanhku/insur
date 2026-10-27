@@ -36,8 +36,8 @@ The supported development arrangement is a two-machine setup: Windows 11 is the 
 | Requirement | Windows 11 | macOS |
 |---|---|---|
 | Flutter/Dart | FVM-pinned Flutter | FVM-pinned Flutter |
-| Native desktop toolchain | Visual Studio 2022, Desktop C++ | Xcode 26 |
-| iOS tooling | — | Xcode 26, CocoaPods |
+| Native desktop toolchain | Visual Studio 2022, Desktop C++ | Xcode compatible with pinned Flutter |
+| iOS tooling | — | Xcode compatible with pinned Flutter, CocoaPods |
 | Version control | Git + SSH | Git + SSH |
 | Editor | VS Code + Flutter/Dart extensions | VS Code + Flutter/Dart extensions |
 | Secret handling | Windows credential protection | macOS Keychain |
@@ -115,14 +115,24 @@ Do not put access tokens, private keys, or credentials in Git configuration.
 
 ## 4. macOS Setup
 
-### Xcode 26
+### Xcode
 
-Install Xcode 26 from Apple's official distribution, open it once to complete setup, accept the license, and install command-line tools. Select the intended Xcode installation with `xcode-select` only if multiple versions exist. Install required simulator runtimes from Xcode settings.
+Install an Xcode version compatible with the repository's pinned Flutter SDK
+from Apple's official distribution, open it once to complete setup, accept
+the license, and install command-line tools. Select the intended Xcode
+installation with `xcode-select` only if multiple versions exist. Install the
+iOS simulator runtime required for testing from Xcode settings.
 
 ```bash
 xcodebuild -version
 xcode-select -p
 ```
+
+The macOS host uses Keychain-backed secure storage. Configure a valid Apple
+development signing identity in Xcode before device or release distribution.
+The iOS target supports iPhone and iPad and currently requires iOS 15 or newer.
+Set the publisher-controlled bundle identifier and signing team in Xcode before
+installing on a physical device or preparing a release.
 
 ### Homebrew
 
@@ -141,8 +151,7 @@ fvm flutter test
 ```
 
 The tests fail explicitly if the library path is missing or invalid; they do
-not fall back to unencrypted SQLite. This test setup does not add the missing
-macOS app host project or make macOS app builds supported.
+not fall back to unencrypted SQLite.
 
 ### Flutter, CocoaPods, and VS Code
 

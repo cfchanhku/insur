@@ -1,9 +1,9 @@
 # Store Metadata — Draft
 
-This is draft copy, not confirmation that a store release is ready. The
-repository currently contains a Windows host project only. Do not submit store
-listings until the relevant native projects, platform behavior, bundle
-identifiers, privacy disclosures, and legal ownership are reviewed.
+This is draft copy, not confirmation that a store release is ready. Windows,
+macOS, and iOS host projects are present, but store distribution still requires
+platform behavior, bundle identifiers, privacy disclosures, and legal
+ownership to be reviewed.
 
 ## Product identity
 
@@ -85,13 +85,13 @@ the required dimensions and device families can change.
 
 Explain that the application stores records locally, has no service account or
 remote sync, and requires a user-created passphrase. Give store reviewers a
-synthetic-data test flow after platform hosts are available. Do not promise
+synthetic-data test flow for the final native build. Do not promise
 biometric unlock, unsupported platform coverage, or non-existent server
 accounts.
 
 ## iOS privacy manifest
 
-There is no `ios/Runner` project in this repository. Do not add speculative
-`PrivacyInfo.xcprivacy` API declarations without the actual iOS host and a
-review of APIs used by the app and dependencies. Generate and validate the
-manifest as part of the iOS platform implementation before App Store submission.
+The iOS host is present. Audit the app and every native dependency against
+Apple's current required-reason API rules, then add or update
+`PrivacyInfo.xcprivacy` before App Store submission. Do not guess declarations;
+verify them against the final dependency versions and native API usage.

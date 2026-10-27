@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 
 import '../../../core/backup/backup_format.dart';
+import '../../../core/backup/backup_result.dart';
 import '../../../core/database/schema.dart';
 import '../../../core/security/key_manager.dart';
 import '../../../l10n/app_localizations.dart';
@@ -38,7 +39,8 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
   bool get _isValid =>
       _passphrase.runes.length >= 12 &&
       _passphrase == _confirmation &&
-      _destinationPath != null;
+      (_destinationPath != null ||
+          ref.read(backupFileServiceProvider).pickerWritesBytes);
 
   @override
   void dispose() {
@@ -78,7 +80,6 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     }
     final l10n = AppLocalizations.of(context);
     final passphrase = _passphrase;
-    final destinationPath = _destinationPath!;
     setState(() {
       _isCreating = true;
       _error = null;
@@ -96,14 +97,32 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
       ref
         ..invalidate(appDatabaseProvider)
         ..invalidate(backupServiceProvider);
-
-      final result = await service.createBackup(
-        passphrase: passphrase,
-        dbFilePath: openedDatabase.path,
-        destinationPath: destinationPath,
-      );
+      final fileService = ref.read(backupFileServiceProvider);
+      final BackupResult? result;
+      if (fileService.pickerWritesBytes) {
+        final appVersion = await ref.read(appVersionProvider.future);
+        final suggestedName = BackupFormat.generateFileName(
+          timestamp: DateTime.now(),
+          schemaVersion: Schema.currentSchemaVersion,
+          appVersion: appVersion,
+        );
+        result = await service.createBackupToPicker(
+          passphrase: passphrase,
+          dbFilePath: openedDatabase.path,
+          suggestedName: suggestedName,
+        );
+      } else {
+        result = await service.createBackup(
+          passphrase: passphrase,
+          dbFilePath: openedDatabase.path,
+          destinationPath: _destinationPath!,
+        );
+      }
       await ref.read(appDatabaseProvider.future);
       databaseClosed = false;
+      if (result == null) {
+        return;
+      }
       final refreshedService = await ref.read(backupServiceProvider.future);
       await refreshedService.recordBackupAudit(result);
       await ref.read(settingsProvider.future);
@@ -269,19 +288,25 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.s3),
-          Text(
-            _destinationPath == null
-                ? l10n.backup_destination_required
-                : l10n.backup_destination_selected(_destinationPath!),
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: _isCreating ? null : _chooseDestination,
-              icon: const Icon(Icons.folder),
-              label: Text(l10n.backup_choose_destination),
+          if (ref
+              .read(backupFileServiceProvider)
+              .pickerWritesBytes) ...<Widget>[
+            Text(l10n.backup_destination_at_save),
+          ] else ...<Widget>[
+            Text(
+              _destinationPath == null
+                  ? l10n.backup_destination_required
+                  : l10n.backup_destination_selected(_destinationPath!),
             ),
-          ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: _isCreating ? null : _chooseDestination,
+                icon: const Icon(Icons.folder),
+                label: Text(l10n.backup_choose_destination),
+              ),
+            ),
+          ],
           if (_error != null) ...<Widget>[
             const SizedBox(height: AppSpacing.s2),
             Text(_error!, style: TextStyle(color: theme.colorScheme.error)),

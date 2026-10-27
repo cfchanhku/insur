@@ -40,18 +40,32 @@ Release preparation checklist. Unchecked items are not release approval.
   database location, SQLCipher runtime, backup/restore, and uninstall.
 - [ ] If unsigned, document the expected SmartScreen warning.
 
+## macOS
+
+- [ ] Build and run on a clean supported Mac.
+- [ ] Confirm the publisher-controlled bundle identifier and signing team.
+- [ ] Validate sandbox entitlements, secure storage, file pickers, PDF export,
+  database, backup, restore, and update behavior.
+- [ ] Sign, notarize, staple, and install the final package using the approved
+  distribution process.
+
+## iOS (iPhone and iPad)
+
+- [ ] Build and test on supported iOS simulators and physical iPhone/iPad
+  devices, including both form factors and orientations.
+- [ ] Replace the development bundle identifier `com.example.insur` with a
+  publisher-controlled identifier and configure signing/provisioning.
+- [ ] Validate Face ID/Touch ID prompts, Keychain behavior, SQLCipher,
+  Files-based backup/restore, PDF export/share, lifecycle, and accessibility.
+- [ ] Review required privacy manifests/API disclosures and App Store metadata;
+  test the signed build through TestFlight.
+
 ## Other platforms — currently blocked
 
-The repository does not contain `android/`, `ios/`, `macos/`, or `linux/`
-platform projects. Do not mark these targets ready or run platform packaging
-steps until those projects and their native integrations exist.
+The repository does not contain `android/` or `linux/` host projects.
 
 - [ ] Add and validate Android host, release signing, APK/AAB, Play Console
   disclosures, and clean-device installation.
-- [ ] Add and validate iOS host, bundle ID, signing/provisioning, privacy
-  manifest, App Store metadata, and TestFlight installation.
-- [ ] Add and validate macOS host, signing identity, hardened runtime and
-  entitlements, notarized DMG, and Gatekeeper installation.
 - [ ] Add and validate Linux host, native dependencies, package metadata,
   `.deb`/tarball packaging, and installation on supported distributions.
 

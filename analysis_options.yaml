@@ -39,6 +39,8 @@ analyzer:
     - ".dart_tool/**"
     - "**/l10n/generated/**"
     - windows/**
+    - macos/**
+    - ios/**
 
 linter:
   rules:

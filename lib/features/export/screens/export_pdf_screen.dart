@@ -1,16 +1,15 @@
 /// Selects client records and exports a localized PDF.
 library;
 
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart' as path;
 import 'package:printing/printing.dart';
 
 import '../../../core/audit/audit_event_type.dart';
+import '../../../core/backup/backup_exception.dart';
 import '../../../core/security/pdf_encryption_exception.dart';
 import '../../../features/clients/models/client.dart';
 import '../../../features/clients/models/client_enums.dart';
@@ -141,15 +140,6 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
     Uint8List? pdfBytes;
     try {
       final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-      final destinationPath = await ref
-          .read(backupFileServiceProvider)
-          .pickSaveLocation(
-            suggestedName: 'insurance_overview_$timestamp.pdf',
-            extension: 'pdf',
-          );
-      if (destinationPath == null) {
-        return;
-      }
       final bundles = await _loadBundles(clients, selectedIds);
       final locale = languageCode == 'zh-Hant'
           ? const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant')
@@ -162,8 +152,17 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
         password: password,
         l10n: localizedStrings,
       );
-      await File(destinationPath).writeAsBytes(pdfBytes, flush: true);
-      pdfBytes.fillRange(0, pdfBytes.length, 0);
+      final filename = 'insurance_overview_$timestamp.pdf';
+      final destinationPath = await ref
+          .read(backupFileServiceProvider)
+          .saveBytes(
+            suggestedName: filename,
+            extension: 'pdf',
+            bytes: pdfBytes,
+          );
+      if (destinationPath == null) {
+        return;
+      }
       final audit = await ref.read(auditRepositoryProvider.future);
       await audit.append(
         eventType: AuditEventType.exportPdf,
@@ -174,11 +173,19 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
         },
       );
       if (mounted) {
-        await _showSuccess(destinationPath, l10n);
+        await _showSuccess(destinationPath, filename, pdfBytes, l10n);
       }
     } on PdfEncryptionException {
       if (mounted) {
         setState(() => _error = l10n.export_pdf_encryption_error);
+      }
+    } on BackupIoException catch (error) {
+      if (mounted) {
+        setState(() {
+          _error = error.platformCode == null
+              ? l10n.export_pdf_error
+              : l10n.export_pdf_destination_error(error.platformCode!);
+        });
       }
     } on Exception {
       if (mounted) {
@@ -195,7 +202,12 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
     }
   }
 
-  Future<void> _showSuccess(String savedPath, AppLocalizations l10n) {
+  Future<void> _showSuccess(
+    String savedPath,
+    String filename,
+    Uint8List bytes,
+    AppLocalizations l10n,
+  ) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
@@ -209,7 +221,7 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
           FilledButton(
             onPressed: () async {
               Navigator.of(dialogContext).pop();
-              await _shareFile(savedPath, l10n);
+              await _shareFile(bytes, filename, l10n);
             },
             child: Text(l10n.export_pdf_open_file),
           ),
@@ -218,11 +230,14 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
     );
   }
 
-  Future<void> _shareFile(String savedPath, AppLocalizations l10n) async {
-    Uint8List? bytes;
+  Future<void> _shareFile(
+    Uint8List bytes,
+    String filename,
+    AppLocalizations l10n,
+  ) async {
+    final shareBytes = Uint8List.fromList(bytes);
     try {
-      bytes = await File(savedPath).readAsBytes();
-      await Printing.sharePdf(bytes: bytes, filename: path.basename(savedPath));
+      await Printing.sharePdf(bytes: shareBytes, filename: filename);
     } on Exception {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -230,7 +245,7 @@ class _ExportPdfScreenState extends ConsumerState<ExportPdfScreen> {
         ).showSnackBar(SnackBar(content: Text(l10n.error_generic)));
       }
     } finally {
-      bytes?.fillRange(0, bytes.length, 0);
+      shareBytes.fillRange(0, shareBytes.length, 0);
     }
   }
 

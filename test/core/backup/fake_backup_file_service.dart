@@ -33,6 +33,26 @@ class FakeBackupFileService implements BackupFileService {
   }) async => path.join(directory.path, suggestedName);
 
   @override
+  bool get pickerWritesBytes => false;
+
+  @override
+  Future<String?> saveBytes({
+    required String suggestedName,
+    required Uint8List bytes,
+    String extension = 'enc',
+  }) async {
+    final destination = await pickSaveLocation(
+      suggestedName: suggestedName,
+      extension: extension,
+    );
+    if (destination == null) {
+      return null;
+    }
+    await writeBytes(destination, bytes);
+    return destination;
+  }
+
+  @override
   Future<String?> pickOpenFile() async => selectedFilePath;
 
   @override

@@ -4,6 +4,20 @@ All notable changes to Insurance Policy Manager are documented here. The
 format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- iOS host project for iPhone and iPad, with an iOS 15 minimum deployment
+  target.
+- Mobile document-picker saving for encrypted PDF exports and backups.
+- Localized Face ID permission descriptions.
+
+### Changed
+
+- Platform build and release guidance now reflects the Windows, macOS, and
+  iOS host projects.
+
 ## [1.0.0] - 2026-10-20
 
 ### Added
@@ -34,9 +48,9 @@ this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Release limitations
 
-- This repository currently contains a Windows desktop host project only.
-  macOS, iOS, Android, and Linux release artifacts are not available from this
-  source tree yet.
+- At the 1.0.0 release, this repository contained a Windows desktop host only.
+  macOS, iOS, Android, and Linux release artifacts were not available from
+  that release source tree.
 - Windows packages are unsigned unless a release operator signs them with an
   authorized code-signing certificate.
 - PDF encryption uses Syncfusion; review [LICENSE-SYNCFUSION.md](LICENSE-SYNCFUSION.md)

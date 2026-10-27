@@ -33,5 +33,8 @@ class BackupVersionException extends BackupException {
 /// Thrown when a backup file operation fails.
 class BackupIoException extends BackupException {
   /// Creates a file I/O error with a safe [message].
-  const BackupIoException(super.message);
+  const BackupIoException(super.message, {this.platformCode});
+
+  /// A stable platform error code, when the failure came from a platform API.
+  final String? platformCode;
 }

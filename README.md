@@ -1,6 +1,6 @@
 # Insurance Policy Manager (insur)
 
-Insurance Policy Manager is a local, encrypted application for managing sensitive insurance policy data derived from the 「尊貴客戶保障總覽」 (Premium Client Protection Overview). The repository currently includes a Windows desktop host; other platforms are planned. The application is designed to keep client, policy, plan, and rider information on the user's device, with no cloud account, synchronization, or server.
+Insurance Policy Manager is a local, encrypted application for managing sensitive insurance policy data derived from the 「尊貴客戶保障總覽」 (Premium Client Protection Overview). The repository includes Windows and macOS desktop hosts and an iOS host for iPhone and iPad. Android and Linux remain planned targets. The application is designed to keep client, policy, plan, and rider information on the user's device, with no cloud account, synchronization, or server.
 
 ## Key characteristics
 
@@ -15,17 +15,17 @@ These are the project's security and product requirements. Review [SECURITY.md](
 
 ## Platform readiness
 
-The repository currently contains a Windows desktop host project. macOS, iOS,
-Android, and Linux are planned targets, but their native host projects and
-release artifacts are not present yet. See
-[docs/BUILD_MATRIX.md](docs/BUILD_MATRIX.md) and
-[docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) before treating a target
-as supported for distribution.
+Windows and macOS desktop hosts and the iOS host are present. iOS targets
+iPhone and iPad and requires iOS 15 or newer. Host presence and successful
+development builds do not constitute release approval; signing, privacy
+disclosures, clean-device behavior, and distribution packaging still require
+platform-specific validation. See [docs/BUILD_MATRIX.md](docs/BUILD_MATRIX.md)
+and [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md).
 
 ## Development setup
 
-- **Windows 11:** primary development environment and required machine for Windows desktop builds. Install Git, VS Code, FVM, Flutter's Windows desktop prerequisites (including Visual Studio with the Desktop development with C++ workload), and the Android SDK if building Android.
-- **macOS:** required for iOS and macOS builds once those platform projects are available. Install Git, VS Code, FVM, Xcode and its command-line tools; install CocoaPods for iOS dependencies. Install the Android SDK if building Android after its host project is added.
+- **Windows 11:** required for Windows desktop builds. Install Git, VS Code, FVM, Flutter's Windows desktop prerequisites (including Visual Studio with the Desktop development with C++ workload).
+- **macOS:** required for iOS and macOS builds. Install Git, VS Code, FVM, Xcode and its command-line tools, and CocoaPods.
 - **GitHub:** source-code hosting and collaboration only. The application does not upload user data to GitHub or any other cloud service.
 
 Use Flutter through FVM so local commands follow the version pinned in [.fvmrc](.fvmrc). Do not commit device data, keys, exports, credentials, or other secrets; see [.gitignore](.gitignore) and [SECURITY.md](SECURITY.md).
@@ -42,9 +42,12 @@ fvm flutter pub get
 fvm flutter run -d windows
 ```
 
-macOS, iOS, Android, and Linux host projects are not present yet. Their run
-and build commands will be documented after the platform integrations are
-implemented and validated.
+### macOS and iOS
+
+On macOS, run `fvm flutter run -d macos` for the desktop app or
+`fvm flutter run -d ios` with an iOS simulator or connected iPhone/iPad.
+Windows builds must run on Windows with the required Visual Studio workload.
+Android and Linux host projects are not present.
 
 Replace `<repository-url>` with the private repository URL supplied by the project maintainer. If platform tooling is not yet installed, run `fvm flutter doctor` and complete the requirements for your target.
 
@@ -53,11 +56,10 @@ Replace `<repository-url>` with the private repository URL supplied by the proje
 Top-level directories planned for the Flutter application:
 
 ```text
-android/          Android host application
 assets/           Fonts, images, and other bundled assets
 docs/             Project and development documentation
 integration_test/ Cross-platform integration tests
-ios/              iOS host application
+ios/              iOS host application (iPhone and iPad)
 lib/              Flutter application source
 macos/            macOS host application
 test/             Unit and widget tests
@@ -70,9 +72,10 @@ Run commands from the repository root with the pinned SDK:
 
 | Target | Current status |
 |---|---|
-| Windows desktop | `fvm flutter build windows --release` |
-| macOS desktop | Host project not present |
-| iOS | Host project not present |
+| Windows desktop | `fvm flutter build windows --release` (build on Windows) |
+| macOS desktop | `fvm flutter build macos --release` (build on macOS) |
+| iOS Simulator | `fvm flutter build ios --simulator --no-codesign` |
+| iOS device / IPA | `fvm flutter build ios` / `fvm flutter build ipa` (signing required) |
 | Android APK / App Bundle | Host project not present |
 | Linux desktop | Host project not present |
 

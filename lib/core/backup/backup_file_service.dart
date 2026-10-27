@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 import 'backup_exception.dart';
 
@@ -15,6 +16,16 @@ abstract class BackupFileService {
   /// Prompts for a backup destination, returning null when cancelled.
   Future<String?> pickSaveLocation({
     required String suggestedName,
+    String extension = 'enc',
+  });
+
+  /// Whether saving through the picker requires providing the bytes up front.
+  bool get pickerWritesBytes;
+
+  /// Saves [bytes] using the platform picker, returning null when cancelled.
+  Future<String?> saveBytes({
+    required String suggestedName,
+    required Uint8List bytes,
     String extension = 'enc',
   });
 
@@ -43,6 +54,9 @@ class PlatformBackupFileService implements BackupFileService {
   const PlatformBackupFileService();
 
   @override
+  bool get pickerWritesBytes => Platform.isIOS || Platform.isAndroid;
+
+  @override
   Future<String?> pickDirectory() async {
     try {
       return await FilePicker.platform.getDirectoryPath();
@@ -62,8 +76,41 @@ class PlatformBackupFileService implements BackupFileService {
         type: FileType.custom,
         allowedExtensions: <String>[extension],
       );
-    } on PlatformException {
-      throw const BackupIoException('Unable to choose backup destination');
+    } on PlatformException catch (error) {
+      throw BackupIoException(
+        'Unable to choose backup destination',
+        platformCode: error.code,
+      );
+    }
+  }
+
+  @override
+  Future<String?> saveBytes({
+    required String suggestedName,
+    required Uint8List bytes,
+    String extension = 'enc',
+  }) async {
+    if (!pickerWritesBytes) {
+      final destinationPath = await pickSaveLocation(
+        suggestedName: suggestedName,
+        extension: extension,
+      );
+      if (destinationPath == null) {
+        return null;
+      }
+      await writeBytes(destinationPath, bytes);
+      return destinationPath;
+    }
+
+    try {
+      return await FilePicker.platform.saveFile(
+        fileName: suggestedName,
+        type: FileType.custom,
+        allowedExtensions: <String>[extension],
+        bytes: bytes,
+      );
+    } on PlatformException catch (error) {
+      throw BackupIoException('Unable to save file', platformCode: error.code);
     }
   }
 
@@ -130,6 +177,19 @@ class PlatformBackupFileService implements BackupFileService {
 
   @override
   Future<Directory> getDefaultBackupDirectory() async {
+    if (Platform.isIOS) {
+      final supportDirectory = await getApplicationSupportDirectory();
+      final directory = Directory(
+        path.join(supportDirectory.path, 'insur_backups'),
+      );
+      try {
+        await directory.create(recursive: true);
+      } on FileSystemException {
+        throw const BackupIoException('Unable to create backup directory');
+      }
+      return directory;
+    }
+
     final String? documentsPath;
     if (Platform.isWindows) {
       final profile = Platform.environment['USERPROFILE'];

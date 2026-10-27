@@ -28,5 +28,6 @@ signature, Windows may display a SmartScreen warning.
 `package-windows.ps1` can package an already-built
 `build\windows\x64\runner\Release` directory without rebuilding it.
 
-macOS, iOS, Android, and Linux build scripts are not provided because their
-host projects are not present in this repository.
+macOS and iOS use Flutter's direct build commands because their host projects
+are present. Run those builds on macOS with Xcode installed. Android and Linux
+build scripts are not provided because their host projects are not present.

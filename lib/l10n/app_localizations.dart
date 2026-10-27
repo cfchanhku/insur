@@ -2191,6 +2191,12 @@ abstract class AppLocalizations {
   /// **'Choose a destination to continue'**
   String get backup_destination_required;
 
+  /// No description provided for @backup_destination_at_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where to save the encrypted backup when prompted.'**
+  String get backup_destination_at_save;
+
   /// No description provided for @restore_title.
   ///
   /// In en, this message translates to:
@@ -2400,6 +2406,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export failed. Please try again.'**
   String get export_pdf_error;
+
+  /// No description provided for @export_pdf_destination_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the save dialog (error code: {code}). Verify file access permission and try again.'**
+  String export_pdf_destination_error(String code);
 
   /// No description provided for @export_pdf_open_file.
   ///

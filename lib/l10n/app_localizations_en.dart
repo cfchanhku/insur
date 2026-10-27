@@ -1141,6 +1141,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backup_destination_required => 'Choose a destination to continue';
 
   @override
+  String get backup_destination_at_save =>
+      'Choose where to save the encrypted backup when prompted.';
+
+  @override
   String get restore_title => 'Restore';
 
   @override
@@ -1258,6 +1262,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get export_pdf_error => 'Export failed. Please try again.';
+
+  @override
+  String export_pdf_destination_error(String code) {
+    return 'Could not open the save dialog (error code: $code). Verify file access permission and try again.';
+  }
 
   @override
   String get export_pdf_open_file => 'Share or open PDF';

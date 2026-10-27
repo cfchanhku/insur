@@ -9,9 +9,9 @@ and install/upgrade behavior have been implemented and validated.
 
 | Platform | Host project present | Release status |
 |---|---:|---|
-| Windows desktop | Yes | Buildable; package with `scripts/build-windows.ps1`. Clean-machine release validation and authorized signing remain required. |
-| macOS desktop | No | Not buildable from this repository yet. |
-| iOS | No | Not buildable from this repository yet. |
+| Windows desktop | Yes | Build on Windows; package with `scripts/build-windows.ps1`. Clean-machine release validation and authorized signing remain required. |
+| macOS desktop | Yes | Buildable on macOS; signing, notarization, and clean-machine release validation remain required. |
+| iOS (iPhone/iPad) | Yes | Simulator buildable on macOS; iOS 15 minimum. Device signing, privacy review, and physical-device validation remain required. |
 | Android | No | Not buildable from this repository yet. |
 | Linux desktop | No | Not buildable from this repository yet. |
 
@@ -34,21 +34,26 @@ Confirm required runtime DLLs are included, app startup and local database
 paths work, backups restore, and upgrade behavior preserves data. Unsigned
 executables may trigger SmartScreen warnings.
 
-## Planned platform build commands
+## macOS and iOS development builds
 
-These commands are references only; Flutter cannot build targets whose host
-project directories have not been generated and validated:
+Run on macOS with Xcode and CocoaPods installed:
+
+```shell
+fvm flutter run -d macos
+fvm flutter run -d ios
+fvm flutter build ios --simulator --no-codesign
+```
+
+The generated iOS project currently uses the development bundle identifier
+`com.example.insur`. Replace it with an identifier the publisher controls
+before device distribution or App Store submission.
+
+## Other planned targets
 
 | Target | Required host |
 |---|---|
-| macOS | macOS with Xcode and an Apple Developer signing identity |
-| iOS | macOS with Xcode, signing/provisioning, and App Store configuration |
 | Android APK/AAB | Android host project, Android SDK, and protected release signing |
 | Linux | Linux host project, desktop dependencies, and distribution packaging |
-
-Do not create release artifacts, store submissions, or privacy manifests for
-these targets until their platform integrations and API disclosures have been
-reviewed.
 
 ## Release evidence and symbols
 
